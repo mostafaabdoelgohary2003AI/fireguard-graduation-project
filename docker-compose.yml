@@ -1,0 +1,66 @@
+version: "3.10"
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: firedb
+      POSTGRES_USER: fireuser
+      POSTGRES_PASSWORD: firepassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fireuser -d firedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ai_service:
+    build:
+      context: ./ai_service
+    restart: always
+    ports:
+      - "8001:8001"
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8001/')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: firedb
+      DB_USER: fireuser
+      DB_PASSWORD: firepassword
+      AI_SERVICE_URL: http://ai_service:8001
+    depends_on:
+      db:
+        condition: service_healthy
+      ai_service:
+        condition: service_healthy
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
