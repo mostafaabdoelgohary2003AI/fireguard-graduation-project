@@ -1,4 +1,3 @@
-Now let me check for more structure details:```markdown
 # Fire Detection System
 
 A real-time fire and smoke detection system built with a microservices architecture. Detects fire, smoke, and spark events from camera feeds using YOLOv8 AI and notifies through a scalable Django backend.
