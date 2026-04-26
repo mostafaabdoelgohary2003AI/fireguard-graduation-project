@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'accounts',
     'cameras',
     'events',
-    'notifications',
+    'notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [

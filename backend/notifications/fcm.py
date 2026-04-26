@@ -1,99 +1,115 @@
-import os
 import firebase_admin
-from firebase_admin import credentials, messaging
+from firebase_admin import messaging
 from django.conf import settings
 
 
 # =========================
-# Firebase Init (once only)
+# Helpers
 # =========================
-def _get_firebase_app():
-    if not firebase_admin._apps:
 
-        path = settings.FIREBASE_CREDENTIALS_PATH
+def _get_event_config(event):
+    """
+    Returns dynamic config based on event type (fire / smoke)
+    """
 
-        # 🔥 Safety check
-        if not os.path.exists(path):
-            raise Exception("Firebase credentials file not found")
+    event_type = getattr(event, "event_type", "fire")
 
-        cred = credentials.Certificate(path)
-        firebase_admin.initialize_app(cred)
+    if event_type == "smoke":
+        return {
+            "title": "💨 Smoke Detected!",
+            "type": "smoke_alert",
+        }
 
-    return firebase_admin.get_app()
+    # default = fire
+    return {
+        "title": "🔥 Fire Detected!",
+        "type": "fire_alert",
+    }
+
+
+def _handle_failed_tokens(tokens, response):
+    from notifications.models import FCMDevice
+
+    failed_tokens = [
+        tokens[i]
+        for i, resp in enumerate(response.responses)
+        if not resp.success
+    ]
+
+    if failed_tokens:
+        FCMDevice.objects.filter(token__in=failed_tokens).update(is_active=False)
 
 
 # =========================
-# 🔥 Fire / Smoke Alert
+# Fire / Smoke Alert
 # =========================
+
 def send_fire_alert_to_all(event):
     """
-    Broadcast fire/smoke alert to all active devices
+    Send FIRE or SMOKE alert to all eligible users
     """
-    try:
-        _get_firebase_app()
 
-        from notifications.models import FCMDevice
+    try:
+        from notifications.models import FCMDevice, NotificationPreference
+
+        config = _get_event_config(event)
+
+        opted_in_users = NotificationPreference.objects.filter(
+            fire_alerts=True
+        ).values_list('user_id', flat=True)
 
         tokens = list(
-            FCMDevice.objects.filter(is_active=True)
-            .values_list('token', flat=True)
+            FCMDevice.objects.filter(
+                is_active=True,
+                user_id__in=opted_in_users
+            ).values_list('token', flat=True)
         )
 
         if not tokens:
-            return {"status": "skipped", "reason": "No active FCM tokens found."}
-
-        # 🔥 dynamic event type
-        event_type = getattr(event, "event_type", "fire")
-
-        title = "🔥 Fire Detected!" if event_type == "fire" else "💨 Smoke Detected!"
-
-        zone_name = event.camera.zone.name if event.camera.zone else "Unknown"
+            return {"status": "skipped", "reason": "No eligible devices found."}
 
         message = messaging.MulticastMessage(
             tokens=tokens,
             notification=messaging.Notification(
-                title=title,
-                body=f"{event.camera.location} — {event.ai_confidence:.1f}% confidence",
+                title=config["title"],
+                body=(
+                    f"{event.camera.location} — "
+                    f"{event.camera.zone.name} — "
+                    f"{event.ai_confidence:.1f}% confidence"
+                ),
             ),
             data={
+                "type": config["type"],
                 "event_id": str(event.id),
                 "camera_id": str(event.camera.id),
                 "camera_name": event.camera.name,
                 "location": event.camera.location,
-                "zone": zone_name,
-                "event_type": event_type,
+                "zone": event.camera.zone.name,
+                "event_type": event.event_type,
                 "ai_confidence": str(event.ai_confidence),
-                "type": "fire_alert",
-                "detected_at": str(event.detected_at),
+                "detected_at": event.detected_at.isoformat(),
             },
             android=messaging.AndroidConfig(
                 priority='high',
                 notification=messaging.AndroidNotification(
                     sound='default',
-                    priority='high',
-                    channel_id='fire_alerts',
+                    channel_id='alerts',
                 ),
             ),
             apns=messaging.APNSConfig(
+                headers={'apns-priority': '10'},
                 payload=messaging.APNSPayload(
                     aps=messaging.Aps(
                         sound='default',
                         badge=1,
+                        content_available=True,
                     ),
                 ),
             ),
         )
 
         response = messaging.send_each_for_multicast(message)
-
-        # 🔥 deactivate invalid tokens
-        if response.failure_count > 0:
-            failed_tokens = [
-                tokens[i]
-                for i, resp in enumerate(response.responses)
-                if not resp.success
-            ]
-            FCMDevice.objects.filter(token__in=failed_tokens).update(is_active=False)
+        _handle_failed_tokens(tokens, response)
 
         return {
             "status": "sent",
@@ -106,20 +122,22 @@ def send_fire_alert_to_all(event):
 
 
 # =========================
-# ✅ Resolved Alert
+# Resolved Alert
 # =========================
-def send_resolved_alert(event):
-    """
-    Notify users when fire/smoke event is resolved
-    """
-    try:
-        _get_firebase_app()
 
-        from notifications.models import FCMDevice
+def send_resolved_alert(event):
+    try:
+        from notifications.models import FCMDevice, NotificationPreference
+
+        opted_in_users = NotificationPreference.objects.filter(
+            resolved_alerts=True
+        ).values_list('user_id', flat=True)
 
         tokens = list(
-            FCMDevice.objects.filter(is_active=True)
-            .values_list('token', flat=True)
+            FCMDevice.objects.filter(
+                is_active=True,
+                user_id__in=opted_in_users
+            ).values_list('token', flat=True)
         )
 
         if not tokens:
@@ -132,17 +150,40 @@ def send_resolved_alert(event):
                 body=f"{event.camera.location} has been resolved.",
             ),
             data={
-                "event_id": str(event.id),
                 "type": "event_resolved",
+                "event_id": str(event.id),
+                "event_type": event.event_type,
             },
         )
 
         response = messaging.send_each_for_multicast(message)
+        _handle_failed_tokens(tokens, response)
 
         return {
             "status": "sent",
             "success_count": response.success_count,
         }
+
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
+
+# =========================
+# Test Push
+# =========================
+
+def send_test_push(token):
+    try:
+        message = messaging.Message(
+            token=token,
+            notification=messaging.Notification(
+                title="FireGuard Test",
+                body="Push notifications working correctly.",
+            ),
+            data={"type": "test"},
+        )
+        message_id = messaging.send(message)
+        return {"status": "sent", "message_id": message_id}
 
     except Exception as e:
         return {"status": "error", "detail": str(e)}

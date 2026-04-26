@@ -1,12 +1,16 @@
 #!/bin/sh
 
-python manage.py migrate --noinput
+echo "Waiting for PostgreSQL..."
+until python -c "
+import os, socket
+s = socket.create_connection((os.environ['DB_HOST'], int(os.environ.get('DB_PORT', 5432))), timeout=1)
+s.close()
+" 2>/dev/null; do
+  sleep 1
+done
 
-if [ -n "$DJANGO_SUPERUSER_USERNAME" ]; then
-  python manage.py createsuperuser --noinput \
-    --username "$DJANGO_SUPERUSER_USERNAME" \
-    --email "${DJANGO_SUPERUSER_EMAIL:-admin@example.com}" \
-    2>/dev/null || echo "Superuser already exists, skipping."
-fi
+echo "PostgreSQL is ready."
+
+python manage.py migrate --noinput
 
 exec python manage.py runserver 0.0.0.0:8000
