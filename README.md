@@ -1,19 +1,6 @@
-# Fire Detection System
+# FireGuard — Real-Time Fire & Smoke Detection System
 
-A real-time fire and smoke detection system built with a microservices architecture. Detects fire, smoke, and spark events from camera feeds using YOLOv8 AI and notifies through a scalable Django backend.
-
----
-
-## Project Overview
-
-**FireGuard** is an intelligent fire detection system designed to provide early warning of fire hazards in real-time. The system processes images from cameras or webcams, analyzes them using an AI model trained on fire detection, and triggers notifications through a centralized backend API.
-
-### Key Capabilities
-- **Real-time Detection**: Process camera frames at scale with YOLOv8 inference
-- **Multiple Event Types**: Detects fire, smoke, and spark events
-- **Microservices Architecture**: Independent, scalable AI and backend services
-- **Production Ready**: Docker containerization with health checks and orchestration
-- **Integrated Notification System**: Events persisted and propagated through Django backend
+A graduation project built with a microservices architecture. Detects fire and smoke from camera feeds using YOLOv8 and notifies users via a Django REST backend and Flutter mobile app.
 
 ---
 
@@ -21,226 +8,143 @@ A real-time fire and smoke detection system built with a microservices architect
 
 ```
 Camera / Webcam Client
-       │
-       ▼
-FastAPI AI Service (YOLOv8) ──► Django Backend API ──► Database
-       │                             │
-       └─────────► /api/events/ ─────┘
+        │
+        ▼
+FastAPI AI Service (YOLOv8)   ──POST /api/events/──►   Django Backend (DRF)
+   port 8001                                                 port 8000
+        │                                                       │
+        └──────────── Returns detection result ◄───────         ▼
+                                                         SQLite Database
+                                                               │
+                                                               ▼
+                                                       Flutter Mobile App
+                                                     (FCM push notifications)
 ```
 
-**Data Flow:**
-
-1. **Camera Input**: Webcam client or external camera source captures frames
-2. **AI Analysis**: FastAPI service runs YOLOv8 inference on each frame
-3. **Detection Results**: AI service returns event type, confidence score, and bounding boxes
-4. **Backend Integration**: If confidence > 50%, event is forwarded to Django via `POST /api/events/`
-5. **Persistence**: Django stores event in PostgreSQL and triggers notifications
-6. **Notification Layer**: System sends alerts through configured notification channels
+**Flow:**
+1. A camera client POSTs a frame to `POST /predict?camera_id=<id>`
+2. AI service runs YOLOv8 inference; if confidence > 50%, notifies the backend
+3. Backend persists the event and sends FCM push notifications to registered devices
 
 ---
 
 ## Tech Stack
 
-| Component | Technology | Version |
-|-----------|-----------|---------|
-| AI Service | FastAPI, Ultralytics YOLO | Latest |
-| Backend API | Django, Django REST Framework | 3.10+ |
-| Database | PostgreSQL | 15 |
-| Containerization | Docker, Docker Compose | Latest |
-| Camera Client | Python, OpenCV | 4.x |
-| ML Framework | PyTorch | via YOLO |
+| Component       | Technology                        |
+|-----------------|-----------------------------------|
+| AI Service      | FastAPI, Ultralytics YOLOv8, OpenCV |
+| Backend API     | Django 4.x, Django REST Framework |
+| Database        | SQLite (local / development)      |
+| Notifications   | Firebase Cloud Messaging (FCM)    |
+| Containerization| Docker, Docker Compose            |
+| Mobile Client   | Flutter (in development)          |
+
+> **Database:** SQLite is used intentionally for simplicity during development. No PostgreSQL setup is required.
 
 ---
 
 ## Project Structure
 
 ```
-fireguard-graduation-project/
-├── backend/                           # Django REST API
+Fire Detection/
+├── ai_service/
 │   ├── Dockerfile
-│   ├── entrypoint.sh                 # DB migration & server startup
+│   ├── main.py            # FastAPI app + /predict endpoint
+│   ├── inference.py       # FireDetector class, backend notification
+│   ├── model.py           # YOLO model loading & inference pipeline
+│   ├── requirements.txt
+│   └── model/
+│       └── best.pt        # YOLOv8 weights (not committed)
+├── backend/
+│   ├── Dockerfile
+│   ├── entrypoint.sh      # Runs migrations then starts server
 │   ├── manage.py
 │   ├── requirements.txt
-│   ├── accounts/                     # User authentication
-│   ├── cameras/                      # Camera management
-│   ├── events/                       # Event models & APIs
-│   ├── detection/                    # Detection logic
-│   ├── notifications/                # Notification system
-│   └── fireguard/                    # Django project settings
-├── ai_service/                        # FastAPI AI microservice
-│   ├── Dockerfile
-│   ├── main.py                       # FastAPI server
-│   ├── inference.py                  # YOLO inference logic
-│   ├── model.py                      # Model loading & management
-│   └── requirements.txt
-├── flutter_client/                    # Mobile app (under development)
-├── webcam_client.py                   # Python webcam demo client
-├── demo.py                            # Terminal demo with output
-├── docker-compose.yml                 # Service orchestration
+│   ├── fireguard/         # Django project settings & URLs
+│   ├── accounts/          # Auth: register, login, profile
+│   ├── cameras/           # Camera & zone management
+│   ├── events/            # Fire event models & API
+│   └── notifications/     # FCM device tokens & push alerts
+├── flutter_client/
+│   └── fire_detection_client.dart
+├── webcam_client.py       # Python demo: sends webcam frames to AI service
+├── demo.py                # Terminal demo with bounding box output
+├── docker-compose.yml
 └── README.md
 ```
 
 ---
 
-## Key Features
+## Prerequisites
 
-### 🎯 Real-time Fire Detection
-- Continuous frame analysis using YOLOv8
-- Sub-second inference latency
-- Multi-class detection: fire, smoke, spark
-
-### 🏗️ Microservices Architecture
-- Decoupled AI and backend services
-- Independent scaling capabilities
-- Service-to-service communication via REST API
-
-### 🐳 Docker Deployment
-- Full containerization with health checks
-- Orchestrated startup with dependency management
-- Database migrations automated in entrypoint
-- Network isolation with custom bridge network
-
-### 🔗 Seamless AI Integration
-- AI service exposes `/predict` endpoint
-- Backend integrates via `/api/events/`
-- Confidence-based filtering (>50% threshold)
-
-### 📊 Event Persistence
-- All detections logged to PostgreSQL
-- Camera-linked events with timestamps
-- Queryable event history and analytics
+- Docker & Docker Compose
+- YOLOv8 model weights — place as `ai_service/model/best.pt`
+- Firebase service account JSON — place as `backend/firebase_credentials.json` (never commit this file)
 
 ---
 
-## Setup Instructions
+## Run the Project
 
-### Prerequisites
-
-- **Docker & Docker Compose** installed ([get Docker](https://docs.docker.com/get-docker/))
-- **Python 3.10+** (for local client development)
-- **YOLOv8 Model Weights**: Place `best.pt` in `ai_service/` directory
-  - Download from your training source or Ultralytics model hub
-
-### 1. Clone Repository
+### Option A — Docker (recommended)
 
 ```bash
-git clone https://github.com/mostafaabdoelgohary2003AI/fireguard-graduation-project.git
-cd fireguard-graduation-project
+docker compose up --build
 ```
 
-### 2. Prepare AI Model
+| Service      | URL                        |
+|--------------|----------------------------|
+| Django API   | http://localhost:8000      |
+| FastAPI AI   | http://localhost:8001      |
 
+> On first run, `entrypoint.sh` automatically applies Django migrations.
+
+To stop:
 ```bash
-# Download YOLOv8 weights (or use your trained model)
-# Place the model file as:
-# ai_service/best.pt
-```
-
-### 3. Configure Environment Variables
-
-Edit `docker-compose.yml` to customize database credentials:
-
-```yaml
-environment:
-  POSTGRES_DB: firedb           # Database name
-  POSTGRES_USER: fireuser       # Database user
-  POSTGRES_PASSWORD: firepassword  # Database password
-  AI_SERVICE_URL: http://ai_service:8001  # Internal AI service URL
-  DB_HOST: db                   # Database hostname
-  DB_PORT: 5432                 # Database port
+docker compose down
 ```
 
 ---
 
-## Running the System
+### Option B — Manual (no Docker)
 
-### Start All Services
-
-```bash
-docker-compose up --build
-```
-
-**Startup Sequence:**
-1. PostgreSQL database starts and waits for healthcheck
-2. AI service (FastAPI) initializes YOLO model and starts
-3. Backend service waits for DB, runs migrations, then starts Django
-
-**Expected Output:**
-```
-db_1           | ready to accept connections
-ai_service_1   | Uvicorn running on http://0.0.0.0:8001
-backend_1      | Starting development server at http://0.0.0.0:8000
-```
-
-### Verify Services
-
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Django API | http://localhost:8000/ | REST API endpoints, admin panel |
-| FastAPI AI | http://localhost:8001/ | Inference service, `/predict` endpoint |
-| PostgreSQL | localhost:5432 | Database (internal only) |
-
-### Health Checks
-
-Services include automated health checks:
+**1. AI Service**
 
 ```bash
-# Check service status
-docker-compose ps
+cd ai_service
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+```
 
-# View logs
-docker-compose logs -f backend
-docker-compose logs -f ai_service
+Set backend URL if different from default:
+```bash
+export DJANGO_BACKEND_URL=http://localhost:8000
+```
+
+**2. Backend**
+
+```bash
+cd backend
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
 ```
 
 ---
 
-## Testing with Webcam Client
+## API Reference
 
-### Install Client Dependencies
+### AI Service — `POST /predict`
 
-```bash
-pip install opencv-python requests
-```
-
-### Run Real-time Webcam Detection
+Send a camera frame for inference.
 
 ```bash
-python webcam_client.py
-```
-
-**Output:**
-```
-Webcam started. Sending frames every 2 seconds...
-event_type=none  confidence=0.0
-No fire
-event_type=fire  confidence=87.34
-🔥 FIRE DETECTED
-```
-
-### Run Terminal Demo
-
-```bash
-python demo.py
-```
-
-Displays detection results with bounding box visualization.
-
----
-
-## API Endpoints
-
-### FastAPI AI Service
-
-#### `POST /predict`
-
-Send an image frame for inference.
-
-**Request:**
-```bash
-curl -X POST http://localhost:8001/predict \
+curl -X POST "http://localhost:8001/predict?camera_id=1" \
   -F "file=@frame.jpg"
 ```
+
+| Query Param | Type | Default | Description                      |
+|-------------|------|---------|----------------------------------|
+| `camera_id` | int  | `1`     | Database ID of the source camera |
 
 **Response:**
 ```json
@@ -251,219 +155,96 @@ curl -X POST http://localhost:8001/predict \
     {
       "label": "fire",
       "confidence": 87.34,
-      "x1": 120.5,
-      "y1": 80.2,
-      "x2": 340.1,
-      "y2": 260.9
-    },
-    {
-      "label": "smoke",
-      "confidence": 72.15,
-      "x1": 95.0,
-      "y1": 50.0,
-      "x2": 400.0,
-      "y2": 300.0
+      "x1": 120.5, "y1": 80.2,
+      "x2": 340.1, "y2": 260.9
     }
   ]
 }
 ```
 
-**Response Schema:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `event_type` | string | Event type: `"fire"`, `"smoke"`, `"spark"`, or `"none"` |
-| `confidence` | float | Highest confidence score (0–100) |
-| `detections` | array | All detected objects with coordinates |
+`event_type` is `"fire"`, `"smoke"`, or `"none"`. Confidence is 0–100.
 
 ---
 
-### Django Backend API
+### Backend — Key Endpoints
 
-#### `POST /api/events/`
+All endpoints except `POST /api/events/` and auth routes require `Authorization: Token <token>`.
 
-Log a fire/smoke detection event.
+| Method | Endpoint                        | Description                    |
+|--------|---------------------------------|--------------------------------|
+| POST   | `/api/auth/register/`           | Register a new user            |
+| POST   | `/api/auth/login/`              | Login, returns auth token      |
+| GET    | `/api/events/`                  | List fire events (filterable)  |
+| POST   | `/api/events/`                  | Create event (used by AI service) |
+| GET    | `/api/events/active/`           | Latest active event            |
+| GET    | `/api/events/stats/`            | Event count statistics         |
+| PATCH  | `/api/events/<id>/resolve/`     | Mark event as resolved         |
+| PATCH  | `/api/events/<id>/false-alarm/` | Mark as false alarm            |
+| GET    | `/api/cameras/`                 | List cameras                   |
+| GET    | `/api/notifications/`           | List notification preferences  |
 
-**Request Body:**
-```json
-{
-  "camera": 1,
-  "event_type": "fire",
-  "ai_confidence": 87.34
-}
+**Filter events:**
 ```
-
-**Response:**
-```json
-{
-  "id": 42,
-  "camera": 1,
-  "event_type": "fire",
-  "ai_confidence": 87.34,
-  "timestamp": "2026-04-21T14:32:00Z",
-  "resolved": false
-}
+GET /api/events/?status=active&type=fire&camera=1&zone=2
 ```
-
-#### `POST /api/predict/`
-
-Proxy endpoint that accepts an image, runs AI inference, and returns results.
-
-**Request:**
-```bash
-curl -X POST http://localhost:8000/api/predict/ \
-  -F "file=@frame.jpg"
-```
-
-**Response:** Same as FastAPI `/predict`
-
-#### Additional Endpoints
-
-- `GET /api/events/` — List all detected events
-- `GET /api/events/{id}/` — Retrieve specific event
-- `GET /api/cameras/` — List registered cameras
-- `POST /api/cameras/` — Register new camera
 
 ---
 
-## Database Migrations
-
-Migrations run automatically on backend startup via `entrypoint.sh`.
-
-**To manually apply migrations:**
+## Webcam Demo Client
 
 ```bash
-docker-compose exec backend python manage.py migrate
+pip install opencv-python requests
+python webcam_client.py
 ```
 
-**To create a new migration:**
+Sends a frame every 2 seconds to `http://localhost:8001/predict`.
+
+---
+
+## Flutter Client
+
+The `flutter_client/fire_detection_client.dart` targets the AI service. Set the server URL at build time:
 
 ```bash
-docker-compose exec backend python manage.py makemigrations
+flutter run --dart-define=AI_SERVICE_URL=http://192.168.1.100:8001
 ```
 
----
-
-## Project Status
-
-### ✅ Completed
-
-- **Django Backend**: Fully functional REST API with user authentication, camera management, event logging, and notification framework
-- **FastAPI AI Service**: Production-ready YOLO inference server with health checks
-- **Docker Deployment**: Complete containerization with orchestration and health checks
-- **Webcam Client**: Working Python client for real-time testing
-- **Database Layer**: PostgreSQL setup with migrations and models
-
-### 🔄 Under Development
-
-- **Flutter Mobile Client**: UI/UX design and API integration in progress
-  - Located in `flutter_client/` directory
-  - Expected features: live camera feed, event notifications, alert history
-  - Estimated completion: Post-graduation iteration
+Default (Android emulator): `http://10.0.2.2:8001`
 
 ---
 
-## Future Work
+## Environment Variables
 
-### 📱 Mobile Application
-- Complete Flutter mobile client with push notifications
-- Real-time camera streaming to mobile devices
-- Event history and analytics dashboard
-- User preference settings and alert configuration
-
-### 🧠 Model Improvements
-- Expand training dataset with diverse fire scenarios
-- Fine-tune YOLOv8 for improved accuracy and low false-positive rate
-- Support additional detection classes (e.g., embers, heat haze)
-- Implement model versioning and A/B testing
-
-### 🎥 Enhanced Streaming
-- WebSocket integration for real-time frame streaming
-- Multi-camera support with aggregated event dashboard
-- Video archival and playback system
-- Cloud storage integration for event footage
-
-### 📊 Analytics & Reporting
-- Event statistics and trend analysis
-- False positive rate tracking
-- Performance metrics dashboard
-- Incident reports generation
-
-### 🔐 Security & Compliance
-- End-to-end encryption for sensitive data
-- GDPR-compliant data retention policies
-- Role-based access control (RBAC)
-- Audit logging for all system actions
+| Variable              | Service    | Default                   | Description                          |
+|-----------------------|------------|---------------------------|--------------------------------------|
+| `DJANGO_BACKEND_URL`  | AI Service | `http://backend:8000`     | Backend URL for event notifications  |
+| `SECRET_KEY`          | Backend    | *(fallback set)*          | Django secret key — set in prod      |
+| `DEBUG`               | Backend    | `True`                    | Set to `False` in production         |
+| `FIREBASE_CREDENTIALS_PATH` | Backend | `firebase_credentials.json` | Path to FCM service account      |
 
 ---
 
 ## Troubleshooting
 
-### Services fail to start
-
+**AI service fails to start — model not found**
 ```bash
-# Check logs
-docker-compose logs backend
-docker-compose logs ai_service
-
-# Ensure DB is healthy
-docker-compose ps
+# Ensure weights exist at:
+ls ai_service/model/best.pt
 ```
 
-### AI service model not found
-
+**Backend fails — missing migrations**
 ```bash
-# Verify model exists
-ls -la ai_service/best.pt
-
-# Rebuild image if needed
-docker-compose build ai_service
+docker compose exec backend python manage.py migrate
 ```
 
-### Database connection errors
-
-```bash
-# Wait for DB initialization
-docker-compose logs db
-
-# Reset database (CAUTION)
-docker-compose down -v
-docker-compose up --build
-```
-
-### Webcam client connection refused
-
-```bash
-# Verify services are running
-docker-compose ps
-
-# Check AI service is accessible
-curl http://localhost:8001/
-```
-
----
-
-## Contributing
-
-Contributions are welcome! Please follow standard Git workflow:
-
-1. Create feature branch: `git checkout -b feature/your-feature`
-2. Commit changes: `git commit -am 'Add feature'`
-3. Push to branch: `git push origin feature/your-feature`
-4. Submit pull request
+**FCM notifications not sending**
+- Confirm `backend/firebase_credentials.json` exists and is valid
+- Check `docker compose logs backend` for Firebase initialization errors
 
 ---
 
 ## License
 
-This project is part of a graduation capstone. All rights reserved.
+Graduation capstone project. All rights reserved.
 
----
-
-## Contact & Support
-
-For questions or issues, please create a GitHub issue or contact the development team.
-
-**Project Lead**: Mostafa Abdoelgohary  
-**Repository**: [fireguard-graduation-project](https://github.com/mostafaabdoelgohary2003AI/fireguard-graduation-project)
-```
+**Author:** Mostafa Abdoelgohary
