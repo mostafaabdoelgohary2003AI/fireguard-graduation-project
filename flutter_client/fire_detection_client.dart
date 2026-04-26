@@ -3,9 +3,18 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
-const String predictUrl = 'http://localhost:8001/predict';
+// Override at build time:
+//   flutter run --dart-define=AI_SERVICE_URL=http://192.168.1.100:8001
+// Android emulator default: http://10.0.2.2:8001
+// iOS simulator default:    http://localhost:8001
+const String _aiServiceUrl = String.fromEnvironment(
+  'AI_SERVICE_URL',
+  defaultValue: 'http://10.0.2.2:8001',
+);
 
-Future<void> captureAndPredict() async {
+const String predictUrl = '$_aiServiceUrl/predict';
+
+Future<void> captureAndPredict({int cameraId = 1}) async {
   final picker = ImagePicker();
   final XFile? photo = await picker.pickImage(source: ImageSource.camera);
 
@@ -15,7 +24,10 @@ Future<void> captureAndPredict() async {
   }
 
   try {
-    final request = http.MultipartRequest('POST', Uri.parse(predictUrl));
+    final uri = Uri.parse(predictUrl).replace(
+      queryParameters: {'camera_id': '$cameraId'},
+    );
+    final request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('file', photo.path));
 
     final streamedResponse = await request.send();
@@ -30,7 +42,7 @@ Future<void> captureAndPredict() async {
       print('confidence: $confidence');
 
       if (eventType != 'none') {
-        print('🔥 FIRE DETECTED');
+        print('FIRE DETECTED');
       } else {
         print('No fire');
       }

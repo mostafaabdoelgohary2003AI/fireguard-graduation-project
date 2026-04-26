@@ -5,5 +5,11 @@ __pycache__/
 venv/
 
 ai_service/model/*.pt
+model/*.pt
 
 *.log
+*.sqlite3
+
+# Firebase service account — never commit real credentials
+backend/firebase_credentials.json
+firebase_credentials.json
