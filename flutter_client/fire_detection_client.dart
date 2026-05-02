@@ -3,14 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
-// Override at build time:
-//   flutter run --dart-define=AI_SERVICE_URL=http://192.168.1.100:8001
-// Android emulator default: http://10.0.2.2:8001
-// iOS simulator default:    http://localhost:8001
-const String _aiServiceUrl = String.fromEnvironment(
-  'AI_SERVICE_URL',
-  defaultValue: 'http://10.0.2.2:8001',
-);
+// Must be set at build time — no default works on real devices:
+//   flutter run --dart-define=AI_SERVICE_URL=http://192.168.1.x:8001
+const String _aiServiceUrl = String.fromEnvironment('AI_SERVICE_URL');
 
 const String predictUrl = '$_aiServiceUrl/predict';
 

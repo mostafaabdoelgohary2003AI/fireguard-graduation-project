@@ -9,7 +9,7 @@ from model import load_model, run_inference
 
 logger = logging.getLogger(__name__)
 
-DJANGO_BACKEND_URL = os.getenv("DJANGO_BACKEND_URL", "http://backend:8000")
+DJANGO_BACKEND_URL = os.getenv("DJANGO_BACKEND_URL", "https://bodareda0001.pythonanywhere.com")
 
 
 class FireDetector:
