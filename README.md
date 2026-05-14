@@ -1,8 +1,6 @@
 <div align="center">
 
-<a href="#">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff512f,100:dd2476&height=220&section=header&text=FireGuard&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=Real-Time%20AI%20Fire%20%26%20Smoke%20Detection%20Platform&descSize=18&descAlignY=58&animation=fadeIn" alt="FireGuard Banner"/>
-</a>
+![FireGuard Banner](https://capsule-render.vercel.app/api?type=waving&color=0:ff512f,100:dd2476&height=220&section=header&text=FireGuard&fontSize=70&fontColor=ffffff&animation=fadeIn)
 
 <br/>
 
