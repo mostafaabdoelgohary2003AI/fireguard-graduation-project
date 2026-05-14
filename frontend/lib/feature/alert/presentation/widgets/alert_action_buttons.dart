@@ -51,7 +51,7 @@ class AlertActionButtons extends StatelessWidget {
         const VerticalSpace(24),
         TextButton.icon(
           onPressed: () {
-            context.read<AlertProvider>().dismissAlarm();
+            context.read<AlertProvider>().clearAlert();
             context.pop();
           },
           icon: Icon(

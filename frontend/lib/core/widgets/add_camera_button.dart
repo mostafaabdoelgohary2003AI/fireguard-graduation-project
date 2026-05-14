@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/widgets/app_button.dart';
+import 'app_button.dart';
 import '../../feature/cameras/add_camera_screen.dart';
 
 class AddCameraButton extends StatelessWidget {

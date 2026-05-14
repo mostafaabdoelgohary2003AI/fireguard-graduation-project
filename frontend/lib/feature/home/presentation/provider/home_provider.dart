@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/models/event_model.dart';
 import '../../../../core/services/event_service.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../domain/entities/recent_activity_entity.dart';
 
 /// Provides the home screen with live system stats, recent events, and
 /// connection status. Polls the backend every 10 seconds as a reliable
@@ -34,6 +35,18 @@ class HomeProvider extends ChangeNotifier {
   int get activeAlerts  => _stats['active']         ?? 0;
   int get totalEvents   => _stats['total']          ?? 0;
   int get resolvedToday => _stats['resolved']       ?? 0;
+
+  bool get isAlertSimulated => activeAlerts > 0;
+
+  List<RecentActivityEntity> get recentActivities => _recentEvents
+      .map((e) => RecentActivityEntity(
+            id:        e.id.toString(),
+            title:     e.displayTitle,
+            value:     e.cameraName,
+            timestamp: e.formattedDate,
+            trailing:  e.status,
+          ))
+      .toList();
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 

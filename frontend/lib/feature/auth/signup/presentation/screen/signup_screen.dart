@@ -96,12 +96,59 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 const VerticalSpace(32),
 
-                AppButton(
-                  text: AppStrings.signUp,
-                  type: AppButtonType.primary,
-                  onPressed: () {
-                    context.goNamed(AppRouteConstants.home);
-                  },
+                Consumer<AuthProvider>(
+                  builder: (ctx, auth, _) => AppButton(
+                    text: AppStrings.signUp,
+                    type: AppButtonType.primary,
+                    onPressed: auth.isLoading
+                        ? null
+                        : () async {
+                            final username = _nameController.text.trim();
+                            final email    = _emailController.text.trim();
+                            final password = _passwordController.text;
+                            final confirm  = _confirmPasswordController.text;
+
+                            if (username.isEmpty ||
+                                email.isEmpty ||
+                                password.isEmpty) {
+                              ScaffoldMessenger.of(ctx).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please fill in all fields.'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (password != confirm) {
+                              ScaffoldMessenger.of(ctx).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Passwords do not match.'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            final ok = await auth.register(
+                              username: username,
+                              email:    email,
+                              password: password,
+                            );
+
+                            if (!ctx.mounted) return;
+
+                            if (ok) {
+                              ctx.goNamed(AppRouteConstants.home);
+                            } else {
+                              ScaffoldMessenger.of(ctx).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    auth.error ?? 'Registration failed.',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                  ),
                 ),
                 const VerticalSpace(24),
                 const AlreadyHaveAccountText(),

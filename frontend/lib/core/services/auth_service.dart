@@ -51,7 +51,12 @@ class AuthService {
   }) async {
     final response = await ApiService.post(
       ApiConstants.register,
-      data: {'username': username, 'email': email, 'password': password},
+      data: {
+        'username':  username,
+        'email':     email,
+        'password':  password,
+        'password2': password,
+      },
     );
     final data = response.data as Map<String, dynamic>;
     await saveToken(data['token'] as String);

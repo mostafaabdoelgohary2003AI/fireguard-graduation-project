@@ -56,6 +56,36 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // ── Register ──────────────────────────────────────────────────────────────
+
+  Future<bool> register({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    _setLoading(true);
+    try {
+      final data = await AuthService.register(
+        username: username.trim(),
+        email:    email.trim(),
+        password: password,
+      );
+      _user   = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      _status = AuthStatus.authenticated;
+      _error  = null;
+
+      // Register FCM token with the backend after successful registration.
+      await NotificationService.registerFcmToken();
+
+      return true;
+    } on DioException catch (e) {
+      _error = parseApiError(e);
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   // ── Logout ────────────────────────────────────────────────────────────────
 
   Future<void> logout() async {

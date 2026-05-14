@@ -69,13 +69,13 @@ class _AlertScreenState extends State<AlertScreen>
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   Color get _bgColor =>
-      widget.event?.isSmoke ? const Color(0xFF1A1A2E) : const Color(0xFF8B0000);
+      (widget.event?.isSmoke ?? false) ? const Color(0xFF1A1A2E) : const Color(0xFF8B0000);
 
   Color get _bgColorLight =>
-      widget.event?.isSmoke ? const Color(0xFF16213E) : const Color(0xFFB71C1C);
+      (widget.event?.isSmoke ?? false) ? const Color(0xFF16213E) : const Color(0xFFB71C1C);
 
   IconData get _alertIcon =>
-      widget.event?.isSmoke ? Icons.cloud_outlined : Icons.local_fire_department;
+      (widget.event?.isSmoke ?? false) ? Icons.cloud_outlined : Icons.local_fire_department;
 
   String get _alertTitle =>
       widget.event?.displayTitle ?? 'FIRE DETECTED';
