@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="#">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,2,30,30&height=220&section=header&text=%F0%9F%94%A5%20FireGuard&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=Real-Time%20AI%20Fire%20%26%20Smoke%20Detection%20Platform&descSize=18&descAlignY=58&animation=fadeIn" alt="FireGuard Banner"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff512f,100:dd2476&height=220&section=header&text=FireGuard&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=Real-Time%20AI%20Fire%20%26%20Smoke%20Detection%20Platform&descSize=18&descAlignY=58&animation=fadeIn" alt="FireGuard Banner"/>
 </a>
 
 <br/>
