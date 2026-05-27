@@ -1,14 +1,13 @@
+import 'package:fire_gaurd/feature/auth/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:provider/provider.dart';
 import '../../../../core/constant/app_route_constant.dart';
-import '../../../../core/services/auth_service.dart';
-import '../widgets/splash_loading_indicator.dart';
 import '../widgets/splash_logo.dart';
 import '../widgets/splash_title.dart';
+import '../widgets/splash_loading_indicator.dart';
 import '../../../../core/widgets/spacing_widget.dart';
 
-/// Checks the stored token and redirects to Home or Login accordingly.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -20,20 +19,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigate();
+    _handleStartup();
   }
 
-  Future<void> _navigate() async {
-    // Brief pause for the splash animation.
+  void _handleStartup() async {
+    final authProvider = context.read<AuthProvider>();
+    
+    // Minimal splash time
     await Future.delayed(const Duration(seconds: 2));
+
+    await authProvider.getProfile();
+
     if (!mounted) return;
 
-    final loggedIn = await AuthService.isLoggedIn();
-    if (!mounted) return;
-
-    context.goNamed(
-      loggedIn ? AppRouteConstants.home : AppRouteConstants.login,
-    );
+    if (authProvider.isAuthenticated) {
+      context.goNamed(AppRouteConstants.home);
+    } else {
+      context.goNamed(AppRouteConstants.login);
+    }
   }
 
   @override

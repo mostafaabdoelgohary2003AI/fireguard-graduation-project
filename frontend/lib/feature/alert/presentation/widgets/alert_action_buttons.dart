@@ -1,4 +1,5 @@
 import 'package:fire_gaurd/core/constant/app_route_constant.dart';
+import 'package:fire_gaurd/feature/home/presentation/provider/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -42,6 +43,7 @@ class AlertActionButtons extends StatelessWidget {
                 type: AppButtonType.dangerDark,
                 icon: Icons.check_circle_outline,
                 onPressed: () {
+                  context.read<HomeProvider>().resolveAlert();
                   context.pushNamed(AppRouteConstants.home);
                 },
               ),
@@ -51,7 +53,8 @@ class AlertActionButtons extends StatelessWidget {
         const VerticalSpace(24),
         TextButton.icon(
           onPressed: () {
-            context.read<AlertProvider>().clearAlert();
+            context.read<HomeProvider>().resolveAlert();
+            context.read<AlertProvider>().dismissAlarm();
             context.pop();
           },
           icon: Icon(

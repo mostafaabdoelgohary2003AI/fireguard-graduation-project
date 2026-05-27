@@ -1,108 +1,108 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import '../constant/api_constants.dart';
-import 'auth_service.dart';
+import '../error/exceptions.dart';
+import 'cache_helper.dart';
+import 'endpoints.dart';
 
-/// Singleton Dio client.
-///
-/// Call [ApiService.initialize()] once from main() before runApp().
-/// All requests automatically attach the stored auth token.
-/// 401 responses automatically clear the token (caller must redirect to login).
 class ApiService {
-  ApiService._();
+  late final Dio dio;
 
-  static final Dio _dio = Dio();
-  static bool _initialized = false;
-
-  static void initialize() {
-    if (_initialized) return;
-
-    _dio.options = BaseOptions(
-      baseUrl:        ApiConstants.baseUrl,
-      connectTimeout: ApiConstants.connectTimeout,
-      receiveTimeout: ApiConstants.receiveTimeout,
-      headers: {'Content-Type': 'application/json'},
+  ApiService() {
+    final baseOptions = BaseOptions(
+      baseUrl: Endpoints.baseUrl,
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      headers: {'Content-Type': 'application/json', 'Accept-Language': 'en'},
     );
+    dio = Dio(baseOptions);
 
-    _dio.interceptors.add(_AuthInterceptor());
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final token = CacheHelper.getData(key: 'token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Token $token';
+          }
+          return handler.next(options);
+        },
+      ),
+    );
+  }
 
-    if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(
-        requestBody:  true,
-        responseBody: true,
-        logPrint:     (o) => debugPrint(o.toString()),
-      ));
+  Future<Response> get(String path, {Map<String, dynamic>? query}) async {
+    try {
+      return await dio.get(path, queryParameters: query);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ServerException(e.toString());
     }
-
-    _initialized = true;
   }
 
-  // ── Public helpers ────────────────────────────────────────────────────────
-
-  static Future<Response<T>> get<T>(
-    String path, {
-    Map<String, dynamic>? params,
-  }) =>
-      _dio.get<T>(path, queryParameters: params);
-
-  static Future<Response<T>> post<T>(
-    String path, {
-    dynamic data,
-  }) =>
-      _dio.post<T>(path, data: data);
-
-  static Future<Response<T>> patch<T>(
-    String path, {
-    dynamic data,
-  }) =>
-      _dio.patch<T>(path, data: data);
-
-  static Future<Response<T>> delete<T>(
-    String path, {
-    dynamic data,
-  }) =>
-      _dio.delete<T>(path, data: data);
-}
-
-// ── Auth interceptor ────────────────────────────────────────────────────────
-
-class _AuthInterceptor extends Interceptor {
-  @override
-  Future<void> onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
-    final token = await AuthService.getToken();
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Token $token';
+  Future<Response> post(String path, Map<String, dynamic>? data) async {
+    try {
+      return await dio.post(path, data: data);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ServerException(e.toString());
     }
-    handler.next(options);
   }
 
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401) {
-      // Silently clear the stored token; the caller / provider handles navigation.
-      AuthService.clearToken();
+  Future<Response> patch(String path, Map<String, dynamic>? data) async {
+    try {
+      return await dio.patch(path, data: data);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ServerException(e.toString());
     }
-    handler.next(err);
   }
-}
 
-/// Parses a [DioException] into a user-readable string.
-String parseApiError(DioException e) {
-  final data = e.response?.data;
-  if (data is Map) {
-    // DRF sends {"error": "..."} or {"detail": "..."}
-    return (data['error'] ?? data['detail'] ?? data.values.first)
-        .toString();
+  Future<Response> delete(String path) async {
+    try {
+      return await dio.delete(path);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
-  if (e.type == DioExceptionType.connectionTimeout ||
-      e.type == DioExceptionType.receiveTimeout) {
-    return 'Connection timed out. Check your network.';
+
+  Future<Response> postMultipart(String path, FormData data) async {
+    try {
+      return await dio.post(path, data: data);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
-  if (e.type == DioExceptionType.connectionError) {
-    return 'Cannot reach the server. Check your internet.';
+
+  ServerException _handleDioError(DioException error) {
+    if (error.response != null) {
+      final data = error.response!.data;
+      if (data is Map<String, dynamic>) {
+        // Try common error keys from backend
+        if (data.containsKey('message')) {
+          return ServerException(data['message'].toString());
+        } else if (data.containsKey('error')) {
+          return ServerException(data['error'].toString());
+        } else if (data.containsKey('detail')) {
+          return ServerException(data['detail'].toString());
+        } else if (data.isNotEmpty) {
+          // In Django REST Framework, 400 errors are often field-level: {'email': ['Email already exists']}
+          final firstKey = data.keys.first;
+          final firstError = data[firstKey];
+          if (firstError is List && firstError.isNotEmpty) {
+            return ServerException('$firstKey: ${firstError.first}');
+          } else {
+            return ServerException('$firstKey: $firstError');
+          }
+        }
+      }
+      return ServerException('Server error occurred with status code: ${error.response?.statusCode}');
+    } else {
+      return ServerException('Network error or connection timeout');
+    }
   }
-  return 'An unexpected error occurred.';
 }

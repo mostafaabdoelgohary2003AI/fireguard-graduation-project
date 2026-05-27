@@ -18,6 +18,13 @@ class AppTheme {
       onSurface: AppColors.textPrimary,
     ),
     scaffoldBackgroundColor: AppColors.background,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      iconTheme: IconThemeData(color: Colors.white),
+      centerTitle: false,
+      elevation: 0,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.input,

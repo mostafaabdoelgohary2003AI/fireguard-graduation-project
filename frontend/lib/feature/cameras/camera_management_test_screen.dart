@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../../../core/widgets/add_camera_button.dart';
 import '../../../core/widgets/delete_camera_button.dart';
@@ -37,7 +39,7 @@ class CameraManagementTestScreen extends StatelessWidget {
             // TEST BUTTON: Simple button to verify navigation works
             ElevatedButton(
               onPressed: () {
-                print("BUTTON CLICKED");
+                log("BUTTON CLICKED");
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -2,7 +2,9 @@ class AppStrings {
   static const String appName = "FireGuard";
   static const String loginTitle = "Advanced Monitoring System";
   static const String email = "Email Address";
+  static const String emailHint = "admin@fireguard.com";
   static const String password = "Password";
+  static const String passwordHint = "••••••••";
   static const String signIn = "Sign In";
   static const String forgotPassword = "Forgot Password?";
   static const String requestAccess = "Request Access";
@@ -10,9 +12,11 @@ class AppStrings {
 
   static const String currentStatus = "Current Status";
   static const String systemSecure = "System Secure";
+  static const String systemNotSecure = "System Not Secure";
   static const String cameraNetwork = "Camera Network";
   static const String totalUnits = "Total Units";
   static const String onlineNow = "Online Now";
+  static const String offlineNow = "Offline Now";
   static const String recentActivity = "Recent Activity";
   static const String history = "History";
   static const String lastEvent = "Last Event";

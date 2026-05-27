@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "453207344732",
+    "project_id": "fireguard-adfcd",
+    "storage_bucket": "fireguard-adfcd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453207344732:android:aa8fab1f73f70a10b1c899",
+        "android_client_info": {
+          "package_name": "com.example.firegaurd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt9-uxIS35RwpbaPXOoYrH84CaSq_Wqy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

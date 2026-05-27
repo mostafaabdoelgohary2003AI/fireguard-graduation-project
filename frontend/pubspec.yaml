@@ -1,6 +1,6 @@
 name: fire_gaurd
-description: "FireGuard — Real-time fire and smoke detection mobile app."
-publish_to: 'none'
+description: "A new Flutter project."
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -10,38 +10,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-
-  # UI / layout
+  #A flutter plugin for adapting screen and font size.Guaranteed to look good on different models
   flutter_screenutil: ^5.9.3
-
-  # Routing
+  #A flutter plugin for routing and navigation.
   go_router: ^17.2.1
-
-  # State management
+  #A flutter plugin for state management.
   provider: ^6.1.5+1
-
-  # Networking
-  dio: ^5.7.0
-
-  # Secure token storage
-  flutter_secure_storage: ^9.2.2
-
-  # Firebase — push notifications
-  firebase_core: ^3.13.1
-  firebase_messaging: ^15.2.5
-
-  # Local notification display
+  shared_preferences: ^2.5.5
+  dio: ^5.9.2
+  firebase_core: ^4.9.0
+  firebase_messaging: ^16.2.2
   flutter_local_notifications: ^18.0.1
-
-  # Alarm sound
-  audioplayers: ^6.4.0
-
-  # Vibration
-  vibration: ^3.1.0
-
-  # Date formatting
+  sqflite: ^2.4.1
+  path: ^1.9.1
   intl: ^0.20.2
+  image_picker: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -50,8 +36,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    # Place your alarm sound file here: assets/sounds/alarm.mp3
-    # Any royalty-free siren MP3 works. Rename it to alarm.mp3.
-    - assets/sounds/

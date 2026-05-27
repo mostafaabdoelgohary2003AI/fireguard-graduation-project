@@ -19,7 +19,7 @@ class AlertInfoRow extends StatelessWidget {
           child: AlertInfoCard(
             icon: Icons.location_on_outlined,
             label: AppStrings.location,
-            value: alert?.location ?? '',
+            value: alert.location,
           ),
         ),
         const HorizontalSpace(12),
@@ -27,7 +27,7 @@ class AlertInfoRow extends StatelessWidget {
           child: AlertInfoCard(
             icon: Icons.access_time_rounded,
             label: AppStrings.time,
-            value: alert?.shortTime ?? '',
+            value: alert.time,
           ),
         ),
         const HorizontalSpace(12),
@@ -35,7 +35,7 @@ class AlertInfoRow extends StatelessWidget {
           child: AlertInfoCard(
             icon: Icons.analytics_outlined,
             label: AppStrings.aiConfidence,
-            value: "${alert?.aiConfidence ?? 0}%",
+            value: "${alert.aiConfidence}%",
             valueColor: AppColors.warning,
           ),
         ),

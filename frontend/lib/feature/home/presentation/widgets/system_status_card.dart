@@ -6,23 +6,26 @@ import '../../../../core/theme/app_text_style.dart';
 import '../../../../core/constant/app_strings.dart';
 import '../provider/home_provider.dart';
 import '../../../../core/widgets/spacing_widget.dart';
+import 'package:fire_gaurd/feature/activity/presentation/provider/activity_provider.dart';
 
 class SystemStatusCard extends StatelessWidget {
   const SystemStatusCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isAlertSimulated = context.watch<HomeProvider>().isAlertSimulated;
+    final homeProvider = context.watch<HomeProvider>();
+    final activityProvider = context.watch<ActivityProvider>();
+    final isSystemAlert = homeProvider.isSystemAlert || activityProvider.hasActiveActivities;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
       decoration: BoxDecoration(
-        color: isAlertSimulated ? AppColors.danger : AppColors.success,
+        color: isSystemAlert ? AppColors.danger : AppColors.success,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: (isAlertSimulated ? AppColors.danger : AppColors.success),
+            color: (isSystemAlert ? AppColors.danger : AppColors.success),
             blurRadius: 20.r,
             offset: const Offset(0, 8),
           ),
@@ -37,10 +40,10 @@ class SystemStatusCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              isAlertSimulated
+              isSystemAlert
                   ? Icons.warning_amber_rounded
                   : Icons.verified_user_outlined,
-              color: isAlertSimulated ? AppColors.danger : AppColors.success,
+              color: isSystemAlert ? AppColors.danger : AppColors.success,
               size: 32.sp,
             ),
           ),
@@ -51,12 +54,12 @@ class SystemStatusCard extends StatelessWidget {
           ),
           const VerticalSpace(4),
           Text(
-            isAlertSimulated
-                ? AppStrings.fireDetected.toUpperCase()
+            isSystemAlert
+                ? AppStrings.systemNotSecure.toUpperCase()
                 : AppStrings.systemSecure.toUpperCase(),
             style: AppTextStyles.heading2(color: AppColors.textWhite, letterSpacing: 1.0),
           ),
-          if (isAlertSimulated) ...[
+          if (isSystemAlert) ...[
             const VerticalSpace(16),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),

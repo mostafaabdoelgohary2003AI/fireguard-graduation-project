@@ -13,6 +13,7 @@ class AuthTextField extends StatelessWidget {
   final String? hintText;
   final bool isPassword;
   final bool isConfirmPassword;
+  final String? Function(String?)? validator;
 
   const AuthTextField({
     super.key,
@@ -22,6 +23,7 @@ class AuthTextField extends StatelessWidget {
     this.hintText,
     this.isPassword = false,
     this.isConfirmPassword = false,
+    this.validator,
   });
 
   @override
@@ -39,16 +41,26 @@ class AuthTextField extends StatelessWidget {
           style: AppTextStyles.labelMedium(letterSpacing: 0.5),
         ),
         const VerticalSpace(8),
-        TextField(
+        TextFormField(
           controller: controller,
           obscureText: isPassword && obscure,
-          style: AppTextStyles.titleMedium(color: AppColors.primary, weight: FontWeight.w600),
+          validator: validator,
+          style: AppTextStyles.titleMedium(
+            color: AppColors.primary,
+            weight: FontWeight.w600,
+          ),
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.card,
             hintText: hintText,
-            hintStyle: AppTextStyles.titleMedium(color: AppColors.textSecondary, weight: FontWeight.w400),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            hintStyle: AppTextStyles.titleMedium(
+              color: AppColors.textSecondary,
+              weight: FontWeight.w400,
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 16.h,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.input, width: 1.w),
@@ -59,10 +71,19 @@ class AuthTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(
-                color: AppColors.primary,
-                width: 2.w,
-              ),
+              borderSide: BorderSide(color: AppColors.primary, width: 2.w),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(color: AppColors.error, width: 1.w),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(color: AppColors.error, width: 2.w),
+            ),
+            errorStyle: TextStyle(
+              color: AppColors.error,
+              fontSize: 12.sp,
             ),
             prefixIcon: Icon(
               prefixIcon,

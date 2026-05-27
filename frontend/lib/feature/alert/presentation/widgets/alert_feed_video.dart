@@ -43,7 +43,7 @@ class AlertFeedVideo extends StatelessWidget {
                   size: 80.sp,
                 ),
               ),
-              if (alert?.isActive ?? false)
+              if (alert.isLive)
                 Positioned(
                  top: 16.h,
                  left: 16.w,
@@ -83,7 +83,7 @@ class AlertFeedVideo extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: Text(
-                    (alert?.cameraName ?? '').toUpperCase(),
+                    alert.cameraName.toUpperCase(),
                     style: AppTextStyles.labelSmall(color: AppColors.textWhite, weight: FontWeight.w800, letterSpacing: 1.0),
                   ),
                 ),

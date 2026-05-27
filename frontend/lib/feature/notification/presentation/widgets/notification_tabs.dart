@@ -10,7 +10,7 @@ class NotificationTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HistoryProvider>(
+    return Consumer<NotificationProvider>(
       builder: (context, provider, child) {
         return Container(
           color: AppColors.card,
@@ -19,7 +19,7 @@ class NotificationTabs extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: provider.tabs.map((tab) {
-                final isSelected = provider.tabToFilter(tab) == provider.filter;
+                final isSelected = provider.selectedTab == tab;
                 return GestureDetector(
                   onTap: () => provider.selectTab(tab),
                   child: AnimatedContainer(

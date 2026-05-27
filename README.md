@@ -1,6 +1,12 @@
 <div align="center">
 
+
 ![FireGuard Banner](https://capsule-render.vercel.app/api?type=waving&color=0:ff512f,100:dd2476&height=220&section=header&text=FireGuard&fontSize=70&fontColor=ffffff&animation=fadeIn)
+
+<a href="#">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,2,30,30&height=220&section=header&text=%F0%9F%94%A5%20FireGuard&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=Real-Time%20AI%20Fire%20%26%20Smoke%20Detection%20Platform&descSize=18&descAlignY=58&animation=fadeIn" alt="FireGuard Banner" />
+</a>
+
 
 <br/>
 
@@ -30,7 +36,11 @@
   <img src="https://img.shields.io/badge/Status-Production%20Ready-success?style=flat-square" alt="status" />
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-blue?style=flat-square" alt="platform" />
   <img src="https://img.shields.io/badge/Architecture-Microservices-purple?style=flat-square" alt="architecture" />
+
   <img src="https://img.shields.io/badge/License-Academic-red?style=flat-square" alt="license" />
+
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="license" />
+ (docs: reorganize repository and improve documentation)
 </p>
 
 <br/>
@@ -41,7 +51,12 @@
 <a href="#-ai-pipeline">🧠 AI Pipeline</a> •
 <a href="#-api-overview">📡 API</a> •
 <a href="#-docker-deployment-flow">🐳 Docker</a> •
+
 <a href="#-screenshots">📸 Screenshots</a>
+
+<a href="#-screenshots">📸 Screenshots</a> •
+<a href="#-documentation">📚 Docs</a>
+ (docs: reorganize repository and improve documentation)
 
 </div>
 
@@ -74,9 +89,16 @@
 18. [Environment Variables](#-environment-variables)
 19. [Screenshots](#-screenshots)
 20. [Demo](#-demo)
+
 21. [Future Improvements](#-future-improvements)
 22. [Contributors](#-contributors)
 23. [License](#-license)
+
+21. [Documentation](#-documentation)
+22. [Future Improvements](#-future-improvements)
+23. [Contributors](#-contributors)
+24. [License](#-license)
+ (docs: reorganize repository and improve documentation)
 
 </details>
 
@@ -890,6 +912,7 @@ Fire Detection/
 │           ├── notification/     # Notification history + tabs
 │           └── settings/         # SettingsScreen
 │
+
 ├── 🐳 docker-compose.yml         # ai_service · backend · db · app_network
 │
 ├── 🧪 webcam_client.py           # OpenCV → POST /predict every 2s
@@ -897,6 +920,27 @@ Fire Detection/
 ├── 🧪 main.py / inference.py / model.py   # Root copies for local dev
 │
 └── 📖 README.md                  # This file
+
+├── 📂 docs/                      # 📖 Project documentation
+│   ├── architecture.md           # System architecture & data flow
+│   ├── firebase-setup.md         # Firebase configuration guide
+│   └── diagrams/                 # Exported architecture diagrams
+│
+├── 📂 screenshots/               # 📸 App screenshots for README & report
+│
+├── 🐳 docker-compose.yml         # ai_service · backend · db · app_network
+├── 📖 README.md                  # This file
+├── 📜 LICENSE                    # MIT License
+├── 🤝 CONTRIBUTING.md            # Contribution guidelines
+├── 📋 .env.example               # Environment variables template
+├── 📖 API_DOCS.md                # Full API reference
+├── 📖 DEPLOYMENT.md              # Deployment guide
+├── 📖 README_1.MD                # End-to-end local runbook
+│
+├── 🧪 webcam_client.py           # OpenCV → POST /predict every 2s
+├── 🧪 demo.py                    # Terminal-style live demo
+└── 🧪 main.py / inference.py / model.py   # Root copies for local dev
+ (docs: reorganize repository and improve documentation)
 ```
 
 </details>
@@ -1086,7 +1130,11 @@ Both Python services run with `restart: always` and **service-level health check
 
 ## 📸 Screenshots
 
+
 > Drop your captured screens into `frontend/screenshots/` and they'll render here. Below are placeholder slots that match the actual implemented screens.
+
+> Drop your captured screens into `screenshots/` and they'll render here. Below are placeholder slots that match the actual implemented screens.
+ (docs: reorganize repository and improve documentation)
 
 <table>
 <tr>
@@ -1096,10 +1144,17 @@ Both Python services run with `restart: always` and **service-level health check
 <th width="25%">🎥 Cameras</th>
 </tr>
 <tr>
+
 <td><img src="frontend/screenshots/splash.png" alt="Splash" /></td>
 <td><img src="frontend/screenshots/login.png" alt="Login" /></td>
 <td><img src="frontend/screenshots/home.png" alt="Home" /></td>
 <td><img src="frontend/screenshots/cameras.png" alt="Cameras" /></td>
+
+<td><img src="screenshots/splash.png" alt="Splash" /></td>
+<td><img src="screenshots/login.png" alt="Login" /></td>
+<td><img src="screenshots/home.png" alt="Home" /></td>
+<td><img src="screenshots/cameras.png" alt="Cameras" /></td>
+ (docs: reorganize repository and improve documentation)
 </tr>
 <tr>
 <th>🚨 Alert (Fire)</th>
@@ -1108,10 +1163,17 @@ Both Python services run with `restart: always` and **service-level health check
 <th>⚙️ Settings</th>
 </tr>
 <tr>
+
 <td><img src="frontend/screenshots/alert_fire.png" alt="Alert Fire" /></td>
 <td><img src="frontend/screenshots/alert_smoke.png" alt="Alert Smoke" /></td>
 <td><img src="frontend/screenshots/notifications.png" alt="Notifications" /></td>
 <td><img src="frontend/screenshots/settings.png" alt="Settings" /></td>
+
+<td><img src="screenshots/alert_fire.png" alt="Alert Fire" /></td>
+<td><img src="screenshots/alert_smoke.png" alt="Alert Smoke" /></td>
+<td><img src="screenshots/notifications.png" alt="Notifications" /></td>
+<td><img src="screenshots/settings.png" alt="Settings" /></td>
+ (docs: reorganize repository and improve documentation)
 </tr>
 </table>
 
@@ -1156,6 +1218,7 @@ python demo.py
 
 ---
 
+
 ## 🔮 Future Improvements
 
 <table>
@@ -1196,9 +1259,26 @@ python demo.py
 </tr>
 </table>
 
+
+## 📚 Documentation
+
+The `docs/` directory contains extended documentation for this project:
+
+| Document | Description |
+| :--- | :--- |
+| [`docs/architecture.md`](docs/architecture.md) | Full system architecture, data flow diagrams, technology stack, and database schema |
+| [`docs/firebase-setup.md`](docs/firebase-setup.md) | Complete Firebase Cloud Messaging configuration guide |
+| [`API_DOCS.md`](API_DOCS.md) | Full REST API reference with request/response examples |
+| [`DEPLOYMENT.md`](DEPLOYMENT.md) | Deployment guide: Docker, manual setup, PythonAnywhere |
+| [`README_1.MD`](README_1.MD) | End-to-end local development runbook |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Contribution guidelines and coding standards |
+| [`.env.example`](.env.example) | Environment variables template for all services |
+
+ (docs: reorganize repository and improve documentation)
 <br/>
 
 ---
+
 
 ## 👥 Contributors
 
@@ -1245,9 +1325,52 @@ python demo.py
 
 </div>
 
+
+## 🔮 Future Improvements
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+#### 🧠 Model & Inference
+- 📊 Larger / more diverse fire & smoke dataset
+- 🌫️ Dedicated smoke-only fine-tune to suppress steam false positives
+- ⚡ Quantized `int8` model for edge devices (Jetson / Coral)
+- 🎯 Per-camera confidence thresholds & cooldowns
+- 🎥 Direct RTSP stream consumption inside the AI service
+
+#### 🗄️ Backend
+- 🐘 Switch to **PostgreSQL** for multi-worker safety (compose already provisioned)
+- 🧾 Snapshot upload from the AI service (currently the field exists but isn't filled)
+- 📈 Time-series aggregations & dashboards
+- ⛓️ Async tasks (Celery + Redis) for FCM fan-out
+
+</td>
+<td width="50%" valign="top">
+
+#### 📱 Mobile
+- 🎞️ Live thumbnail / RTSP preview inside `CameraCard`
+- 🌙 Dark theme + dynamic color
+- 🗺️ Map view of zones & cameras
+- 👥 Multi-role accounts (operator vs admin)
+- 🔄 Offline event queue with sync
+
+#### 🔐 Ops & Security
+- 🔑 Per-environment `SECRET_KEY` & rotated tokens
+- 🌐 HTTPS termination + restricted CORS
+- 📜 Structured logging + centralized log shipping
+- ✅ CI pipeline (lint · tests · build · push)
+- 🩺 Prometheus / Grafana metrics
+
+</td>
+</tr>
+</table>
+
+ (docs: reorganize repository and improve documentation)
 <br/>
 
 ---
+
 
 ## 📜 License
 
@@ -1261,9 +1384,82 @@ This repository is part of a **graduation capstone project** and is released for
 
 Please contact the maintainers before any commercial reuse.
 
+
+## 👥 Contributors
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center" width="50%">
+
+<a href="https://github.com/mostafaabdoelgohary2003AI">
+  <img src="https://avatars.githubusercontent.com/mostafaabdoelgohary2003AI" width="120" style="border-radius:50%" alt="Mostafa Abdo El-Gohary" />
+</a>
+
+<br/>
+
+**Mostafa Abdo Fathy Abdo El-Gohary**
+
+`AI / Backend / Mobile Lead`
+
+<a href="https://github.com/mostafaabdoelgohary2003AI">
+  <img src="https://img.shields.io/badge/GitHub-mostafaabdoelgohary2003AI-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
+</a>
+
+</td>
+<td align="center" width="50%">
+
+<a href="https://github.com/Abdelrahman000111">
+  <img src="https://avatars.githubusercontent.com/Abdelrahman000111" width="120" style="border-radius:50%" alt="Abdelrahman Reda" />
+</a>
+
+<br/>
+
+**Abdelrahman Reda**
+
+`Backend / Notifications`
+
+<a href="https://github.com/Abdelrahman000111">
+  <img src="https://img.shields.io/badge/GitHub-Abdelrahman000111-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
+</a>
+
+</td>
+</tr>
+</table>
+
+</div>
+
+ (docs: reorganize repository and improve documentation)
 <br/>
 
 ---
+
+
+<div align="center">
+
+<sub>Built with 🔥 by the FireGuard team — keeping people safer, one frame at a time.</sub>
+
+## 📜 License
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
+
+</div>
+
+This project is licensed under the **MIT License** — see the [`LICENSE`](LICENSE) file for details.
+
+This repository is part of a **graduation capstone project** and is released for academic, educational, and portfolio purposes. All trademarks (Django, FastAPI, Flutter, Firebase, Ultralytics, Docker, SQLite) belong to their respective owners.
+
+<br/>
+ (docs: reorganize repository and improve documentation)
+
+<br/>
+
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,2,30,30&height=80&section=footer" alt="footer" />
+
 
 <div align="center">
 
@@ -1273,4 +1469,5 @@ Please contact the maintainers before any commercial reuse.
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,2,30,30&height=80&section=footer" alt="footer" />
 
+ (docs: reorganize repository and improve documentation)
 </div>

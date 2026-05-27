@@ -8,14 +8,25 @@ import '../../../../core/constant/app_strings.dart';
 import '../provider/camera_provider.dart';
 import '../widgets/camera_card.dart';
 
-class CamerasScreen extends StatelessWidget {
+class CamerasScreen extends StatefulWidget {
   const CamerasScreen({super.key});
 
   @override
+  State<CamerasScreen> createState() => _CamerasScreenState();
+}
+
+class _CamerasScreenState extends State<CamerasScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CameraProvider>().fetchCameras();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CameraProvider(),
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
@@ -38,23 +49,33 @@ class CamerasScreen extends StatelessWidget {
         ),
         body: Consumer<CameraProvider>(
           builder: (context, provider, child) {
+            if (provider.isLoading && provider.cameras.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (provider.error != null && provider.cameras.isEmpty) {
+              return Center(child: Text(provider.error!));
+            }
+
             return Column(
               children: [
                 Expanded(
-                  child: GridView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                    itemCount: provider.cameras.length,
-                    gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16.w,
-                          mainAxisSpacing: 16.h,
-                          childAspectRatio: 0.9,
+                  child: provider.cameras.isEmpty
+                      ? const Center(child: Text('No cameras found'))
+                      : GridView.builder(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                          itemCount: provider.cameras.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16.w,
+                                mainAxisSpacing: 16.h,
+                                childAspectRatio: 0.9,
+                              ),
+                          itemBuilder: (context, index) {
+                            return CameraCard(camera: provider.cameras[index]);
+                          },
                         ),
-                    itemBuilder: (context, index) {
-                      return CameraCard(camera: provider.cameras[index]);
-                    },
-                  ),
                 ),
                 Container(
                   width: double.infinity,
@@ -69,7 +90,6 @@ class CamerasScreen extends StatelessWidget {
             );
           },
         ),
-      ),
-    );
+      );
   }
 }

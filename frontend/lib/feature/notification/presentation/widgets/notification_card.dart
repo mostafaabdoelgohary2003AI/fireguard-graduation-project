@@ -70,8 +70,8 @@ class NotificationCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                 top: -2.h,
-                 left: -2.w,
+                  top: -2.h,
+                  left: -2.w,
                   child: Container(
                     width: 14.w,
                     height: 14.h,
@@ -95,15 +95,16 @@ class NotificationCard extends StatelessWidget {
                   children: [
                     Text(
                       item.date.toUpperCase(),
-                      style: AppTextStyles.bodyMedium(color: AppColors.textSecondary, weight: FontWeight.w800, letterSpacing: 0.5),
+                      style: AppTextStyles.bodyMedium(
+                        color: AppColors.textSecondary,
+                        weight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ],
                 ),
                 const VerticalSpace(4),
-                Text(
-                  item.title,
-                  style: AppTextStyles.titleLarge(),
-                ),
+                Text(item.title, style: AppTextStyles.titleLarge()),
                 const VerticalSpace(6),
                 Row(
                   children: [
@@ -113,10 +114,7 @@ class NotificationCard extends StatelessWidget {
                       size: 14.sp,
                     ),
                     const HorizontalSpace(4),
-                    Text(
-                      item.confidence,
-                      style: AppTextStyles.bodyMedium(),
-                    ),
+                    Text(item.confidence, style: AppTextStyles.bodyMedium()),
                     const HorizontalSpace(12),
                     Icon(
                       Icons.location_on_outlined,

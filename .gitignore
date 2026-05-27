@@ -1,15 +1,61 @@
+# ─────────────────────────────────────────────────────────────
+# FireGuard — .gitignore
+# ─────────────────────────────────────────────────────────────
+
+# ── Python ──────────────────────────────────────────────────
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
 
+# ── Environment / secrets ──────────────────────────────────
 .env
+.env.local
+.env.*.local
 venv/
+.venv/
 
+# ── Model weights ──────────────────────────────────────────
 ai_service/model/*.pt
 model/*.pt
 
+# ── Django ─────────────────────────────────────────────────
 *.log
 *.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
 
-# Firebase service account — never commit real credentials
+# ── Firebase service account — never commit real credentials
 backend/firebase_credentials.json
 firebase_credentials.json
+
+# ── IDE / Editor ───────────────────────────────────────────
+.cursor/
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.sublime-project
+*.sublime-workspace
+
+# ── OS-generated files ─────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+Icon?
+
+# ── Flutter / Dart (additional) ────────────────────────────
+frontend/.dart_tool/
+frontend/build/
+
+# ── Node.js (if any tooling) ──────────────────────────────
+node_modules/
+
+# ── Docker ─────────────────────────────────────────────────
+*.pid

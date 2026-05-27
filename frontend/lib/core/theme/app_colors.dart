@@ -23,4 +23,5 @@ class AppColors {
   static const Color textWhite = Colors.white;
 
   static const Color accent = Color(0xFF3B82F6);
+  static const Color error = Color(0xFFFF3B30);
 }

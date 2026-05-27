@@ -25,6 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   late final TextEditingController _confirmPasswordController;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -44,15 +45,51 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
+  void _handleSignup(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Passwords do not match'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    final authProvider = context.read<AuthProvider>();
+    
+    await authProvider.register(userData: {
+      'username': _nameController.text.trim(),
+      'email': _emailController.text.trim(),
+      'password': _passwordController.text,
+      'password2': _confirmPasswordController.text,
+    });
+
+    if (context.mounted) {
+      if (authProvider.status == AuthStatus.authenticated) {
+        context.goNamed(AppRouteConstants.home);
+      } else if (authProvider.status == AuthStatus.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Registration failed'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
-      child: Scaffold(
-        backgroundColor: AppColors.card,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+    return Scaffold(
+      backgroundColor: AppColors.card,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+          child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -66,6 +103,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _nameController,
                   prefixIcon: Icons.person_outline_rounded,
                   hintText: "John Doe",
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your full name';
+                    }
+                    return null;
+                  },
                 ),
                 const VerticalSpace(16),
 
@@ -73,7 +116,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   label: AppStrings.email,
                   controller: _emailController,
                   prefixIcon: Icons.mail_outline_rounded,
-                  hintText: "admin@fireguard.com",
+                  hintText: AppStrings.emailHint,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
                 ),
                 const VerticalSpace(16),
 
@@ -82,7 +131,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _passwordController,
                   prefixIcon: Icons.lock_outline_rounded,
                   isPassword: true,
-                  hintText: "••••••••",
+                  hintText: AppStrings.passwordHint,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
                 ),
                 const VerticalSpace(16),
 
@@ -92,63 +150,25 @@ class _SignupScreenState extends State<SignupScreen> {
                   prefixIcon: Icons.lock_outline_rounded,
                   isPassword: true,
                   isConfirmPassword: true,
-                  hintText: "••••••••",
+                  hintText: AppStrings.passwordHint,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    return null;
+                  },
                 ),
                 const VerticalSpace(32),
 
                 Consumer<AuthProvider>(
-                  builder: (ctx, auth, _) => AppButton(
-                    text: AppStrings.signUp,
-                    type: AppButtonType.primary,
-                    onPressed: auth.isLoading
-                        ? null
-                        : () async {
-                            final username = _nameController.text.trim();
-                            final email    = _emailController.text.trim();
-                            final password = _passwordController.text;
-                            final confirm  = _confirmPasswordController.text;
-
-                            if (username.isEmpty ||
-                                email.isEmpty ||
-                                password.isEmpty) {
-                              ScaffoldMessenger.of(ctx).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please fill in all fields.'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (password != confirm) {
-                              ScaffoldMessenger.of(ctx).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Passwords do not match.'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            final ok = await auth.register(
-                              username: username,
-                              email:    email,
-                              password: password,
-                            );
-
-                            if (!ctx.mounted) return;
-
-                            if (ok) {
-                              ctx.goNamed(AppRouteConstants.home);
-                            } else {
-                              ScaffoldMessenger.of(ctx).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    auth.error ?? 'Registration failed.',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                  ),
+                  builder: (context, auth, _) {
+                    return AppButton(
+                      text: AppStrings.signUp,
+                      type: AppButtonType.primary,
+                      isLoading: auth.isLoading,
+                      onPressed: () => _handleSignup(context),
+                    );
+                  },
                 ),
                 const VerticalSpace(24),
                 const AlreadyHaveAccountText(),

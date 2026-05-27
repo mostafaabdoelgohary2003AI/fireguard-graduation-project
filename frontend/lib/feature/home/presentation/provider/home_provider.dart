@@ -1,134 +1,73 @@
+import 'package:flutter/material.dart';
+import '../../domain/entities/recent_activity_entity.dart';
+import '../../../../core/services/database_service.dart';
+import '../../../../core/services/firebase_notifications.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-
-import '../../../../core/models/event_model.dart';
-import '../../../../core/services/event_service.dart';
-import '../../../../core/services/notification_service.dart';
-import '../../domain/entities/recent_activity_entity.dart';
-
-/// Provides the home screen with live system stats, recent events, and
-/// connection status. Polls the backend every 10 seconds as a reliable
-/// fallback for when FCM is unavailable.
 class HomeProvider extends ChangeNotifier {
-  List<EventModel>   _recentEvents    = [];
-  Map<String, int>   _stats           = {};
-  bool               _isLoading       = false;
-  bool               _isConnected     = false;
-  String             _connectionStatus = 'Checking…';
-  Timer?             _pollTimer;
-  int?               _lastAlertId;
+  bool _isAlertSimulated = false;
+  bool _isRealAlertActive = false;
+  List<RecentActivityEntity> _recentActivities = [];
+  StreamSubscription? _notificationSubscription;
 
-  /// Called by the screen when a new alert must be displayed.
-  /// Wired to [AlertProvider.onNewAlert] + navigation in the screen.
-  void Function(EventModel)? onNewAlert;
+  bool get isAlertSimulated => _isAlertSimulated;
+  bool get isRealAlertActive => _isRealAlertActive;
+  bool get isSystemAlert => _isAlertSimulated || _isRealAlertActive;
+  
+  List<RecentActivityEntity> get recentActivities => _recentActivities;
 
-  // ── Getters ───────────────────────────────────────────────────────────────
+  HomeProvider() {
+    loadActivities();
+    _listenToNotifications();
+  }
 
-  List<EventModel> get recentEvents     => _recentEvents;
-  Map<String, int> get stats            => _stats;
-  bool             get isLoading        => _isLoading;
-  bool             get isConnected      => _isConnected;
-  String           get connectionStatus => _connectionStatus;
-
-  int get totalCameras  => _stats['total_cameras'] ?? 0;
-  int get activeAlerts  => _stats['active']         ?? 0;
-  int get totalEvents   => _stats['total']          ?? 0;
-  int get resolvedToday => _stats['resolved']       ?? 0;
-
-  bool get isAlertSimulated => activeAlerts > 0;
-
-  List<RecentActivityEntity> get recentActivities => _recentEvents
-      .map((e) => RecentActivityEntity(
-            id:        e.id.toString(),
-            title:     e.displayTitle,
-            value:     e.cameraName,
-            timestamp: e.formattedDate,
-            trailing:  e.status,
-          ))
-      .toList();
-
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
-
-  void initialize(void Function(EventModel) alertCallback) {
-    onNewAlert = alertCallback;
-    _loadDashboard();
-    _startPolling();
-    _listenToFcm();
+  void _listenToNotifications() {
+    _notificationSubscription = FirebaseNotifications.notificationStream.listen((alert) {
+      if (alert.type == 'fire_alert') {
+        _isRealAlertActive = true;
+        loadActivities();
+      }
+    });
   }
 
   @override
   void dispose() {
-    _pollTimer?.cancel();
+    _notificationSubscription?.cancel();
     super.dispose();
   }
 
-  // ── Data loading ──────────────────────────────────────────────────────────
+  Future<void> loadActivities() async {
+    final alerts = await DatabaseService.instance.getAllNotifications();
+    
+    _recentActivities = alerts.map((alert) {
+      return RecentActivityEntity(
+        id: alert.eventId,
+        title: "FIRE ALERT: ${alert.cameraName}",
+        value: "${alert.eventType} - ${alert.location}",
+        timestamp: DateFormat('MMM dd, yyyy').format(alert.detectedAt),
+        trailing: DateFormat('HH:mm').format(alert.detectedAt),
+      );
+    }).toList();
 
-  Future<void> refresh() => _loadDashboard();
-
-  Future<void> _loadDashboard() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      final results = await Future.wait([
-        EventService.getStats(),
-        EventService.getEvents(),
-      ]);
-
-      _stats        = results[0] as Map<String, int>;
-      final all     = results[1] as List<EventModel>;
-      _recentEvents = all.take(5).toList();
-
-      _isConnected     = true;
-      _connectionStatus = 'Connected';
-    } catch (e) {
-      _isConnected      = false;
-      _connectionStatus = 'Disconnected';
-      debugPrint('HomeProvider: dashboard load failed: $e');
-    }
-
-    _isLoading = false;
     notifyListeners();
   }
 
-  // ── Polling ───────────────────────────────────────────────────────────────
+  void simulateAlert(VoidCallback onNavigateCallback) {
+    if (_isAlertSimulated) return;
 
-  void _startPolling() {
-    _pollTimer?.cancel();
-    _pollTimer = Timer.periodic(
-      const Duration(seconds: 10),
-      (_) => _pollActiveEvent(),
-    );
-  }
-
-  Future<void> _pollActiveEvent() async {
-    try {
-      final event = await EventService.getActiveEvent();
-      _isConnected     = true;
-      _connectionStatus = 'Connected';
-
-      if (event != null && event.id != _lastAlertId) {
-        _lastAlertId = event.id;
-        onNewAlert?.call(event);
-      }
-    } catch (e) {
-      _isConnected      = false;
-      _connectionStatus = 'Disconnected';
-      debugPrint('HomeProvider: poll failed: $e');
-    }
+    _isAlertSimulated = true;
     notifyListeners();
-  }
 
-  // ── FCM fallback ──────────────────────────────────────────────────────────
-
-  void _listenToFcm() {
-    NotificationService.alertStream.listen((event) {
-      if (event.id != _lastAlertId) {
-        _lastAlertId = event.id;
-        onNewAlert?.call(event);
-      }
+    Future.delayed(const Duration(seconds: 3), () {
+      onNavigateCallback();
+      _isAlertSimulated = false;
+      notifyListeners();
     });
+  }
+
+  void resolveAlert() {
+    _isRealAlertActive = false;
+    notifyListeners();
   }
 }

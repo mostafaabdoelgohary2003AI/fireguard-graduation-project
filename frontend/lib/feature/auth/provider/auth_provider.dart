@@ -1,107 +1,114 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/services/cache_helper.dart';
+import '../data/model/user_model.dart';
+import '../data/repository/auth_repository.dart';
+import '../../../../core/services/firebase_notifications.dart';
 
-import '../../../core/models/user_model.dart';
-import '../../../core/services/api_service.dart';
-import '../../../core/services/auth_service.dart';
-import '../../../core/services/notification_service.dart';
-
-enum AuthStatus { unknown, authenticated, unauthenticated }
+enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
 
 class AuthProvider extends ChangeNotifier {
-  AuthStatus _status    = AuthStatus.unknown;
-  UserModel? _user;
-  bool       _isLoading = false;
-  String?    _error;
+  final AuthRepository authRepository;
 
-  // Password-field visibility — used by login / signup forms.
-  bool _obscurePassword        = true;
+  AuthProvider({required this.authRepository});
+
+  UserModel? _user;
+  AuthStatus _status = AuthStatus.initial;
+  String? _errorMessage;
+  bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  AuthStatus get status               => _status;
-  UserModel? get user                 => _user;
-  bool       get isLoading            => _isLoading;
-  String?    get error                => _error;
-  bool       get isAuthenticated      => _status == AuthStatus.authenticated;
-  bool       get obscurePassword      => _obscurePassword;
-  bool       get obscureConfirmPassword => _obscureConfirmPassword;
+  UserModel? get user => _user;
+  
+  // Role-Based Access Control getters
+  bool get isAdmin => _user?.isStuff == true;
+  bool get isMember => _user?.isStuff == false;
+  
+  AuthStatus get status => _status;
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _status == AuthStatus.loading;
+  bool get isAuthenticated => _status == AuthStatus.authenticated;
+  bool get obscurePassword => _obscurePassword;
+  bool get obscureConfirmPassword => _obscureConfirmPassword;
 
-  // ── Init ─────────────────────────────────────────────────────────────────
+  Future<void> login({required String email, required String password}) async {
+    _status = AuthStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
 
-  Future<void> checkAuthStatus() async {
-    final loggedIn = await AuthService.isLoggedIn();
-    _status = loggedIn ? AuthStatus.authenticated : AuthStatus.unauthenticated;
+    try {
+      _user = await authRepository.login(username: email, password: password);
+      _status = AuthStatus.authenticated;
+      FirebaseNotifications().sendTokenToBackend();
+    } catch (e) {
+      _status = AuthStatus.error;
+      _errorMessage = e.toString();
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> register({required Map<String, dynamic> userData}) async {
+    _status = AuthStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _user = await authRepository.register(userData: userData);
+      _status = AuthStatus.authenticated;
+      FirebaseNotifications().sendTokenToBackend();
+    } catch (e) {
+      _status = AuthStatus.error;
+      _errorMessage = e.toString();
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> logout() async {
+    await authRepository.logout();
+    _user = null;
+    _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
 
-  // ── Login ─────────────────────────────────────────────────────────────────
-
-  Future<bool> login(String username, String password) async {
-    _setLoading(true);
-    try {
-      final data = await AuthService.login(username.trim(), password);
-      _user   = UserModel.fromJson(data['user'] as Map<String, dynamic>);
-      _status = AuthStatus.authenticated;
-      _error  = null;
-
-      // Register FCM token with the backend after successful login.
-      await NotificationService.registerFcmToken();
-
-      return true;
-    } on DioException catch (e) {
-      _error = parseApiError(e);
-      return false;
-    } finally {
-      _setLoading(false);
-    }
-  }
-
-  // ── Register ──────────────────────────────────────────────────────────────
-
-  Future<bool> register({
-    required String username,
-    required String email,
-    required String password,
-  }) async {
-    _setLoading(true);
-    try {
-      final data = await AuthService.register(
-        username: username.trim(),
-        email:    email.trim(),
-        password: password,
-      );
-      _user   = UserModel.fromJson(data['user'] as Map<String, dynamic>);
-      _status = AuthStatus.authenticated;
-      _error  = null;
-
-      // Register FCM token with the backend after successful registration.
-      await NotificationService.registerFcmToken();
-
-      return true;
-    } on DioException catch (e) {
-      _error = parseApiError(e);
-      return false;
-    } finally {
-      _setLoading(false);
-    }
-  }
-
-  // ── Logout ────────────────────────────────────────────────────────────────
-
-  Future<void> logout() async {
-    _setLoading(true);
-    try {
-      await NotificationService.unregisterFcmToken();
-      await AuthService.logout();
-    } catch (_) {} finally {
-      _user   = null;
+  Future<void> getProfile() async {
+    final token = CacheHelper.getData(key: 'token');
+    if (token == null) {
       _status = AuthStatus.unauthenticated;
-      _error  = null;
-      _setLoading(false);
+      notifyListeners();
+      return;
+    }
+
+    try {
+      _user = await authRepository.getProfile();
+      _status = AuthStatus.authenticated;
+      FirebaseNotifications().sendTokenToBackend();
+    } catch (e) {
+      _status = AuthStatus.unauthenticated;
+      // If profile fails, token might be invalid
+      await authRepository.logout();
+    } finally {
+      notifyListeners();
     }
   }
 
-  // ── Password visibility helpers ──────────────────────────────────────────
+  Future<bool> updateProfile(int id, Map<String, dynamic> data) async {
+    _status = AuthStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _user = await authRepository.updateProfile(id, data);
+      _status = AuthStatus.authenticated;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _status = AuthStatus.error;
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 
   void togglePasswordVisibility() {
     _obscurePassword = !_obscurePassword;
@@ -113,21 +120,10 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetVisibility() {
-    _obscurePassword        = true;
+  void resetTextStates() {
+    _obscurePassword = true;
     _obscureConfirmPassword = true;
-    notifyListeners();
-  }
-
-  void clearError() {
-    _error = null;
-    notifyListeners();
-  }
-
-  // ── Private ───────────────────────────────────────────────────────────────
-
-  void _setLoading(bool v) {
-    _isLoading = v;
+    _errorMessage = null;
     notifyListeners();
   }
 }

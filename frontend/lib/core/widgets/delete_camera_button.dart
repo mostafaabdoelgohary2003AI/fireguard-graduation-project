@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_button.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../feature/cameras/delete_camera_screen.dart';
 
 class DeleteCameraButton extends StatelessWidget {

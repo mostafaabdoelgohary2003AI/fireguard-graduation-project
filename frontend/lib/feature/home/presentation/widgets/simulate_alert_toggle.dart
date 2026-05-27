@@ -25,9 +25,11 @@ class SimulateAlertToggle extends StatelessWidget {
         const VerticalSpace(12),
         GestureDetector(
           onTap: () {
-            if (context.mounted) {
-              context.pushNamed(AppRouteConstants.alert);
-            }
+            context.read<HomeProvider>().simulateAlert(() {
+              if (context.mounted) {
+                context.pushNamed(AppRouteConstants.alert);
+              }
+            });
             onSimulate();
           },
           child: Container(

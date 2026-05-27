@@ -16,4 +16,8 @@ class AppRouteConstants {
   static const String notification = "notification";
 
   static const String settings = "settings";
+  static const String cameraDetails = "cameraDetails";
+  static const String editCamera = "editCamera";
+  static const String profile = "profile";
+  static const String activityHistory = "activityHistory";
 }

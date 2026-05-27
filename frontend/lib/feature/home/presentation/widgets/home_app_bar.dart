@@ -37,15 +37,6 @@ class HomeAppBar extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: () => context.pushNamed(AppRouteConstants.notification),
-            child: Icon(
-              Icons.notifications_none_rounded,
-              color: AppColors.primary,
-              size: 24.sp,
-            ),
-          ),
-          const HorizontalSpace(16),
-          InkWell(
             onTap: () => context.pushNamed(AppRouteConstants.settings),
             child: Icon(
               Icons.settings_outlined,

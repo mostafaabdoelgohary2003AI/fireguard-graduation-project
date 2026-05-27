@@ -10,14 +10,8 @@ import '../../../../core/widgets/spacing_widget.dart';
 class HomeSectionHeader extends StatelessWidget {
   final String title;
   final String? action;
-  final VoidCallback? onAction;
 
-  const HomeSectionHeader({
-    super.key,
-    required this.title,
-    this.action,
-    this.onAction,
-  });
+  const HomeSectionHeader({super.key, required this.title, this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +37,7 @@ class HomeSectionHeader extends StatelessWidget {
         ),
         if (action != null)
           TextButton(
-            onPressed: onAction ?? () => context.pushNamed(AppRouteConstants.notification),
+            onPressed: () => context.pushNamed(AppRouteConstants.activityHistory),
             child: Text(
               action!.toUpperCase(),
               style: AppTextStyles.bodyMedium(color: AppColors.accent, weight: FontWeight.w800, letterSpacing: 0.5),

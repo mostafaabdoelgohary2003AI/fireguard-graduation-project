@@ -15,7 +15,7 @@ enum AppButtonType {
 
 class AppButton extends StatelessWidget {
   final String text;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final AppButtonType type;
   final IconData? icon;
   final bool isLoading;
@@ -23,7 +23,7 @@ class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
     required this.text,
-    this.onPressed,
+    required this.onPressed,
     this.type = AppButtonType.primary,
     this.icon,
     this.isLoading = false,
@@ -34,16 +34,16 @@ class AppButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 50.h,
-        child: ElevatedButton(
+      child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: _getButtonStyle(),
         child: isLoading
             ? SizedBox(
                 height: 20.h,
-                width:  20.h,
-                child:  CircularProgressIndicator(
+                width: 20.h,
+                child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color:       _getTextColor(),
+                  color: _getTextColor(),
                 ),
               )
             : Row(
@@ -53,8 +53,7 @@ class AppButton extends StatelessWidget {
                     Icon(icon, size: 20.sp),
                     const HorizontalSpace(8),
                   ],
-                  Text(text,
-                      style: AppTextStyles.titleLarge(color: _getTextColor())),
+                  Text(text, style: AppTextStyles.titleLarge(color: _getTextColor())),
                 ],
               ),
       ),
