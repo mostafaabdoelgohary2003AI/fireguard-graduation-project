@@ -1,382 +1,365 @@
-# FireGuard — System Architecture
+<![CDATA[# FireGuard — Architecture
 
-> Comprehensive architecture reference for the FireGuard real-time fire & smoke detection platform.  
-> This document is designed for inclusion in the graduation report/book.
+## 1. High-Level Architecture
 
----
-
-## Table of Contents
-
-1. [System Overview](#1-system-overview)
-2. [Component Architecture](#2-component-architecture)
-3. [Data Flow](#3-data-flow)
-4. [Technology Stack](#4-technology-stack)
-5. [Database Schema](#5-database-schema)
-6. [Notification Pipeline](#6-notification-pipeline)
-7. [Deployment Architecture](#7-deployment-architecture)
-
----
-
-## 1. System Overview
-
-FireGuard is a **microservice-based platform** composed of three independent services that communicate over HTTP:
+FireGuard follows a **three-tier architecture** composed of an edge AI service, a centralized backend API, and a mobile client. The tiers communicate asynchronously through HTTP and Firebase Cloud Messaging.
 
 ```mermaid
 graph TB
-    subgraph EDGE["🌍 Edge / Client Layer"]
-        WC["🖥️ webcam_client.py<br/>OpenCV loop"]
-        DM["🧪 demo.py<br/>ASCII visualizer"]
-        FL["📱 Flutter App<br/>FireGuard Mobile"]
+    subgraph EDGE["Edge Tier (AI Service)"]
+        direction LR
+        CAM[🎥 Camera Hardware]
+        CV[OpenCV<br/>Frame Capture]
+        YOLO[YOLOv8<br/>Inference Engine]
+        SNAP[Snapshot<br/>Generator]
     end
 
-    subgraph CORE["🛠️ Core Services"]
-        AI["⚡ AI Service<br/>FastAPI · YOLOv8<br/>:8001"]
-        BE["🗄️ Backend<br/>Django REST + Gunicorn<br/>:8000"]
-        DB[("💾 SQLite<br/>db.sqlite3")]
+    subgraph BACKEND_TIER["Backend Tier (Django)"]
+        direction TB
+        DRF[Django REST Framework<br/>API Gateway]
+        AUTH_APP[accounts app<br/>Authentication]
+        CAM_APP[cameras app<br/>Camera Management]
+        EVT_APP[events app<br/>Event Lifecycle]
+        NOTIF_APP[notifications app<br/>FCM Integration]
+        SQLITE[(SQLite3<br/>Database)]
     end
 
-    subgraph EXT["☁️ External"]
-        FCM["🔔 Firebase Cloud<br/>Messaging"]
+    subgraph CLIENT_TIER["Client Tier (Flutter)"]
+        direction TB
+        API_SVC[ApiService<br/>Dio HTTP Client]
+        PROVIDERS[Provider<br/>State Management]
+        SCREENS[Feature Screens<br/>UI Layer]
+        FCM_CLIENT[FirebaseNotifications<br/>Push Handler]
+        LOCAL_DB[(Local SQLite<br/>Notification Cache)]
     end
 
-    WC -- "POST /predict" --> AI
-    DM -- "POST /predict" --> AI
-    FL -- "REST + Auth Token" --> BE
-    AI -- "POST /api/events/<br/>(confidence > 50%)" --> BE
-    BE <--> DB
-    BE -- "send_each_for_multicast()" --> FCM
-    FCM -- "data + notification payload" --> FL
+    subgraph EXTERNAL["External Services"]
+        FCM[Firebase Cloud<br/>Messaging]
+    end
 
-    style EDGE fill:#E3F2FD,stroke:#0F2A44
-    style CORE fill:#FFF8E1,stroke:#FFC107
-    style EXT fill:#FFEBEE,stroke:#FF3B30
-    style AI fill:#FFCE00,color:#000
-    style BE fill:#092E20,color:#fff
-    style DB fill:#003B57,color:#fff
-    style FCM fill:#FFCA28,color:#000
-    style FL fill:#02569B,color:#fff
+    CAM --> CV --> YOLO --> SNAP
+    SNAP -->|HTTP POST /api/events/| DRF
+    DRF --> AUTH_APP
+    DRF --> CAM_APP
+    DRF --> EVT_APP
+    DRF --> NOTIF_APP
+    EVT_APP --> SQLITE
+    CAM_APP --> SQLITE
+    AUTH_APP --> SQLITE
+    NOTIF_APP --> SQLITE
+    NOTIF_APP -->|Firebase Admin SDK| FCM
+    FCM -->|Push Notification| FCM_CLIENT
+    FCM_CLIENT --> PROVIDERS
+    FCM_CLIENT --> LOCAL_DB
+    PROVIDERS --> SCREENS
+    API_SVC -->|HTTP GET/POST/PATCH/DELETE| DRF
+    SCREENS --> API_SVC
 ```
 
-### Design Principles
+---
 
-| Principle | Implementation |
-| :--- | :--- |
-| **Separation of concerns** | Each service owns a single domain (AI inference, business logic, mobile UX) |
-| **Loose coupling** | Services communicate via HTTP REST — no shared state or databases |
-| **Independent deployability** | Each service has its own Dockerfile and can be deployed/scaled independently |
-| **Graceful degradation** | If Firebase credentials are missing, the app still works minus push notifications |
+## 2. Component Responsibilities
+
+### 2.1 AI Service — Edge Tier
+
+| Component | File | Responsibility |
+|-----------|------|---------------|
+| Camera Capture | `camera.py` | Opens webcam via `cv2.VideoCapture(0)`, reads frames in a loop |
+| YOLOv8 Inference | `camera.py` | Loads `best.pt`, runs `model(frame, conf=0.5, stream=True)` |
+| Cooldown Controller | `camera.py` | Enforces 10-second minimum interval between alerts |
+| Snapshot Generator | `camera.py` | Saves annotated frames as `alert_YYYYMMDD_HHMMSS.jpg` |
+| Event Reporter | `camera.py` | Sends `POST /api/events/` with multipart form data (snapshot + metadata) |
+| Display Window | `camera.py` | Shows live detection feed via `cv2.imshow()` |
+
+### 2.2 Django Backend — Backend Tier
+
+| App | Responsibility | Key Models |
+|-----|---------------|------------|
+| `fireguard` | Project configuration, URL routing, Firebase initialization | — |
+| `accounts` | User registration, authentication (Token), profile management | `UserProfile` |
+| `cameras` | Camera and zone CRUD, status management, statistics | `Zone`, `Camera` |
+| `events` | Fire event lifecycle (create, list, resolve, false alarm, stats) | `FireEvent` |
+| `notifications` | FCM device management, notification preferences, push dispatch | `FCMDevice`, `NotificationPreference` |
+
+### 2.3 Flutter Mobile App — Client Tier
+
+| Layer | Component | Responsibility |
+|-------|-----------|---------------|
+| **Services** | `ApiService` | Dio-based HTTP client with token interceptor |
+| **Services** | `CacheHelper` | SharedPreferences wrapper for token storage |
+| **Services** | `FirebaseNotifications` | FCM initialization, foreground/background handling, local notification display |
+| **Services** | `DatabaseService` | Local SQLite for offline notification history |
+| **State** | `AuthProvider` | Login/logout state, token management |
+| **State** | `CameraProvider` | Camera list, CRUD operations state |
+| **State** | `ActivityProvider` | Event history list, resolve actions |
+| **State** | `HomeProvider` | Dashboard statistics |
+| **Navigation** | `GoRouter` | Declarative route definitions, deep linking from notifications |
+| **UI** | Feature screens | Splash, Login, Signup, Home, Cameras, Alert, Activity, Settings, Profile |
 
 ---
 
-## 2. Component Architecture
+## 3. Integration Workflow
 
-### 2.1 AI Service (FastAPI + YOLOv8)
-
-| Attribute | Value |
-| :--- | :--- |
-| **Framework** | FastAPI 0.110 |
-| **Server** | Uvicorn (ASGI) |
-| **Model** | YOLOv8 (Ultralytics) — custom trained |
-| **Port** | 8001 |
-| **Input** | Multipart image upload (JPEG/PNG) |
-| **Output** | JSON: `{event_type, confidence, detections[]}` |
-
-**Responsibilities:**
-- Load and warm up the YOLOv8 model on startup
-- Accept image frames via `POST /predict`
-- Run inference, filter to target classes (`fire`, `smoke`)
-- Auto-notify the Django backend when confidence > 50%
-- Provide health check and mock camera endpoints
-
-**Key files:** `ai_service/main.py`, `ai_service/inference.py`, `ai_service/model.py`
-
----
-
-### 2.2 Backend (Django REST Framework)
-
-| Attribute | Value |
-| :--- | :--- |
-| **Framework** | Django 5.2 + DRF 3.17 |
-| **Server** | Gunicorn (3 workers) |
-| **Database** | SQLite3 |
-| **Port** | 8000 |
-| **Auth** | DRF Token Authentication |
-
-**Django apps:**
-
-| App | Domain | Key Models |
-| :--- | :--- | :--- |
-| `accounts` | User management | `UserProfile` |
-| `cameras` | Infrastructure registry | `Zone`, `Camera` |
-| `events` | Detection lifecycle | `FireEvent` |
-| `notifications` | Push delivery | `FCMDevice`, `NotificationPreference` |
-
-**Key files:** `backend/fireguard/settings.py`, `backend/fireguard/urls.py`, `backend/fireguard/firebase.py`
-
----
-
-### 2.3 Mobile App (Flutter)
-
-| Attribute | Value |
-| :--- | :--- |
-| **Framework** | Flutter 3.9+ / Dart ^3.9 |
-| **State management** | Provider ^6.1.5 |
-| **HTTP client** | Dio ^5.7.0 (with auth interceptor) |
-| **Routing** | go_router ^17.2.1 |
-| **Push** | firebase_core + firebase_messaging |
-
-**Architecture:** Feature-first, clean-architecture-lite layout under `frontend/lib/`.
-
-**Feature modules:** `splash`, `auth`, `home`, `cameras`, `alert`, `notification`, `settings`
-
----
-
-## 3. Data Flow
-
-### 3.1 End-to-End Detection Lifecycle
+### 3.1 Event Creation Flow
 
 ```mermaid
 sequenceDiagram
-    autonumber
-    participant Camera as 📷 Camera/Webcam
-    participant AI as ⚡ AI Service
-    participant Backend as 🗄️ Django Backend
-    participant DB as 💾 SQLite
-    participant FCM as ☁️ Firebase
-    participant App as 📱 Flutter App
-    participant User as 👤 Operator
+    participant AI as camera.py
+    participant API as Django API
+    participant DB as SQLite3
+    participant FCM_SRV as fcm.py
+    participant FCM as Firebase Cloud
+    participant APP as Flutter App
 
-    Camera->>AI: POST /predict (image frame)
-    AI->>AI: YOLOv8 inference<br/>filter {fire, smoke}
-    
-    alt confidence > 50%
-        AI->>Backend: POST /api/events/<br/>{camera, event_type, ai_confidence}
-        Backend->>DB: INSERT FireEvent (status=active)
-        Backend->>FCM: send_each_for_multicast(tokens)
-        FCM-->>App: 🔥 Push notification
-        App->>App: Full-screen alert<br/>+ siren + vibration
-        App->>User: 🚨 Emergency screen
-        
-        alt Operator resolves
-            User->>App: Tap "MARK AS RESOLVED"
-            App->>Backend: PATCH /events/<id>/resolve/
-            Backend->>DB: UPDATE status=resolved
-            Backend->>FCM: send_resolved_alert()
-        end
-    else confidence ≤ 50%
-        AI-->>Camera: {event_type: "none"}
-    end
+    AI->>API: POST /api/events/<br/>{camera, event_type, ai_confidence, snapshot}
+    API->>API: Validate via FireEventCreateSerializer
+    API->>DB: FireEvent.objects.create()
+    API->>FCM_SRV: send_fire_alert_to_all(event)
+    FCM_SRV->>FCM_SRV: Query NotificationPreference (fire_alerts=True)
+    FCM_SRV->>FCM_SRV: Fetch active FCMDevice tokens
+    FCM_SRV->>FCM: MulticastMessage with notification + data payload
+    FCM->>APP: Push notification delivered
+    API-->>AI: 201 Created {event, fcm_result}
 ```
 
-### 3.2 Request Lifecycle Table
-
-| # | Step | Component | Action |
-| :-: | :--- | :--- | :--- |
-| 1 | Frame captured | Edge client | Webcam or device camera grabs JPEG |
-| 2 | Frame uploaded | AI Service | `POST /predict` (multipart) |
-| 3 | Inference | YOLOv8 | Classify + filter to `{fire, smoke}` |
-| 4 | Notify backend | AI Service → Django | `POST /api/events/` if conf > 50% |
-| 5 | Persist | Django | `FireEvent` row written to SQLite |
-| 6 | Push fan-out | Django → FCM | `send_each_for_multicast()` to opted-in devices |
-| 7 | Mobile alert | Flutter | Full-screen alert + siren + vibration |
-| 8 | Operator action | Flutter → Django | `PATCH /events/<id>/resolve/` or `/false-alarm/` |
-
----
-
-## 4. Technology Stack
-
-### 4.1 Backend Technologies
-
-| Technology | Version | Purpose |
-| :--- | :--- | :--- |
-| Python | 3.10+ | Runtime |
-| Django | 5.2 | Web framework |
-| Django REST Framework | 3.17 | REST API |
-| Gunicorn | 21.2 | WSGI production server |
-| SQLite3 | Built-in | Database |
-| firebase-admin | Latest | FCM push dispatch |
-| django-cors-headers | Latest | CORS handling |
-| python-dotenv | Latest | Environment variable loading |
-
-### 4.2 AI Service Technologies
-
-| Technology | Version | Purpose |
-| :--- | :--- | :--- |
-| FastAPI | 0.110 | API framework |
-| Uvicorn | Latest | ASGI server |
-| Ultralytics (YOLOv8) | Latest | Object detection model |
-| OpenCV (headless) | Latest | Image decoding/processing |
-| NumPy | Latest | Array operations |
-
-### 4.3 Mobile Technologies
-
-| Technology | Version | Purpose |
-| :--- | :--- | :--- |
-| Flutter | 3.9+ | Cross-platform framework |
-| Dart | ^3.9 | Programming language |
-| Provider | ^6.1.5 | State management |
-| Dio | ^5.7.0 | HTTP client |
-| go_router | ^17.2.1 | Navigation |
-| firebase_core | ^3.13 | Firebase initialization |
-| firebase_messaging | ^15.2 | Push notifications |
-| flutter_local_notifications | ^18.0 | Local notification banners |
-| audioplayers | ^6.4.0 | Alarm siren audio |
-| vibration | ^3.1.0 | Device vibration |
-| flutter_screenutil | ^5.9.3 | Responsive sizing |
-| flutter_secure_storage | ^9.2.2 | Token persistence |
-
-### 4.4 DevOps
-
-| Technology | Purpose |
-| :--- | :--- |
-| Docker + Docker Compose | Container orchestration |
-| PythonAnywhere | Free-tier cloud hosting |
-| Firebase Cloud Messaging | Push notification delivery |
-
----
-
-## 5. Database Schema
+### 3.2 Event Resolution Flow
 
 ```mermaid
-erDiagram
-    USER ||--|| USERPROFILE : has
-    USER ||--|| NOTIFICATIONPREFERENCE : has
-    USER ||--o{ FCMDEVICE : owns
-    ZONE ||--o{ CAMERA : contains
-    CAMERA ||--o{ FIREEVENT : triggers
+sequenceDiagram
+    participant APP as Flutter App
+    participant API as Django API
+    participant DB as SQLite3
+    participant FCM_SRV as fcm.py
+    participant FCM as Firebase Cloud
 
-    USER {
-        int id PK
-        string username
-        string email
-        bool is_staff
-    }
-    USERPROFILE {
-        string phone
-        image avatar
-    }
-    ZONE {
-        int id PK
-        string name
-        text description
-        datetime created_at
-    }
-    CAMERA {
-        int id PK
-        string name
-        string location
-        url stream_url
-        image thumbnail
-        string status "online | offline"
-    }
-    FIREEVENT {
-        int id PK
-        string event_type "fire | smoke"
-        string status "active | resolved | false_alarm"
-        float ai_confidence
-        image snapshot
-        text notes
-        datetime detected_at
-        datetime resolved_at
-    }
-    FCMDEVICE {
-        text token
-        string platform "android | ios"
-        bool is_active
-    }
-    NOTIFICATIONPREFERENCE {
-        bool fire_alerts
-        bool resolved_alerts
-        bool false_alarm_alerts
-        bool sound_enabled
-    }
+    APP->>API: PATCH /api/events/{id}/resolve/
+    API->>DB: event.status = 'resolved'<br/>event.resolved_at = now()
+    API->>FCM_SRV: send_resolved_alert(event)
+    FCM_SRV->>FCM_SRV: Query opted-in users (resolved_alerts=True)
+    FCM_SRV->>FCM: MulticastMessage (event_resolved)
+    FCM->>APP: Push notification (resolved)
+    API-->>APP: 200 OK {event data}
+```
+
+### 3.3 User Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant APP as Flutter App
+    participant CACHE as SharedPreferences
+    participant API as Django API
+    participant DB as SQLite3
+
+    APP->>API: POST /api/auth/register/ {username, email, password, password2}
+    API->>DB: User.objects.create_user()
+    API->>DB: Token.objects.get_or_create(user)
+    API-->>APP: 201 {token, user}
+    APP->>CACHE: Save token
+
+    Note over APP: Subsequent requests
+    APP->>API: GET /api/events/<br/>Header: Authorization: Token {token}
+    API->>API: TokenAuthentication validates token
+    API->>DB: Query events
+    API-->>APP: 200 {events}
 ```
 
 ---
 
-## 6. Notification Pipeline
+## 4. Runtime Workflow
 
 ```mermaid
-flowchart LR
-    A["🔥 FireEvent created"] --> B{"User has<br/>fire_alerts = true?"}
-    B -->|Yes| C["Collect active<br/>FCMDevice tokens"]
-    B -->|No| D["Skip user"]
-    C --> E["send_each_for_multicast()"]
-    E --> F["☁️ Firebase Cloud Messaging"]
-    F --> G["📱 Flutter: _handleForegroundMessage()"]
-    G --> H["AlarmService.trigger()<br/>siren + vibration"]
-    H --> I["🚨 Full-screen AlertScreen"]
+stateDiagram-v2
+    [*] --> CameraCapture: Start camera.py
+    CameraCapture --> FrameRead: Read frame
+    FrameRead --> YOLOInference: Pass to YOLO model
+    YOLOInference --> CheckDetection: Check results
 
-    style A fill:#FF3B30,color:#fff
-    style F fill:#FFCA28,color:#000
-    style I fill:#02569B,color:#fff
+    CheckDetection --> FrameRead: No detection
+    CheckDetection --> CheckCooldown: Detection found
+
+    CheckCooldown --> FrameRead: Cooldown active (< 10s)
+    CheckCooldown --> SaveSnapshot: Cooldown expired
+
+    SaveSnapshot --> PostToAPI: HTTP POST event
+    PostToAPI --> FrameRead: Continue loop
+
+    PostToAPI --> [*]: User presses 'q'
 ```
 
-### Payload structure
+---
 
-| Block | Key | Example |
-| :--- | :--- | :--- |
-| `notification` | `title` | `🔥 Fire Detected!` |
-| `notification` | `body` | `Camera: Main Entrance — Zone: Warehouse A` |
-| `data` | `type` | `fire_alert` / `smoke_alert` / `event_resolved` |
-| `data` | `event_id` | `42` |
-| `data` | `camera_name` | `Main Entrance` |
-| `data` | `ai_confidence` | `87.34` |
-| `data` | `detected_at` | `2026-05-14T19:32:00Z` |
+## 5. Detection Workflow
 
-### Platform-specific configuration
+```mermaid
+flowchart TD
+    A[Camera frame captured] --> B[YOLOv8 inference<br/>conf=0.5, stream=True]
+    B --> C{Boxes detected?}
+    C -->|No| A
+    C -->|Yes| D[Extract class, confidence]
+    D --> E{event_type = fire or smoke?}
+    E -->|Yes| F{Current time - last_sent > 10s?}
+    F -->|No| A
+    F -->|Yes| G[Save annotated frame as JPEG]
+    G --> H[POST to /api/events/]
+    H --> I[Backend creates FireEvent]
+    I --> J[FCM notification sent]
+    J --> A
+```
 
-| Platform | Channel/Priority | Behavior |
-| :--- | :--- | :--- |
-| Android | `alerts` channel, high importance | Red LED, vibration, sound, `fullScreenIntent` |
-| iOS | `apns-priority: 10`, `interruptionLevel: critical` | Bypasses Do Not Disturb |
+---
+
+## 6. Notification Workflow
+
+```mermaid
+flowchart TD
+    A[FireEvent created] --> B[send_fire_alert_to_all]
+    B --> C[Get event config<br/>fire → 🔥 / smoke → 💨]
+    C --> D[Query NotificationPreference<br/>fire_alerts=True]
+    D --> E[Fetch FCMDevice tokens<br/>is_active=True, user in opted-in]
+    E --> F{Tokens found?}
+    F -->|No| G[Return skipped]
+    F -->|Yes| H[Build MulticastMessage]
+    H --> I[Set Android config<br/>priority=high, channel=alerts]
+    H --> J[Set APNS config<br/>priority=10, sound=default]
+    I --> K[send_each_for_multicast]
+    J --> K
+    K --> L{Check responses}
+    L --> M[Deactivate failed tokens]
+    L --> N[Return success/failure counts]
+```
+
+### Notification Payload Structure
+
+The FCM message includes both a `notification` object (for system tray display) and a `data` object (for client-side routing):
+
+```json
+{
+  "notification": {
+    "title": "🔥 Fire Detected!",
+    "body": "Building 3, Floor 2 — Storage Area — 87.5% confidence"
+  },
+  "data": {
+    "type": "fire_alert",
+    "event_id": "42",
+    "camera_id": "1",
+    "camera_name": "Warehouse Cam A",
+    "location": "Building 3, Floor 2",
+    "zone": "Storage Area",
+    "event_type": "fire",
+    "ai_confidence": "87.5",
+    "detected_at": "2026-05-28T14:30:00+00:00"
+  }
+}
+```
 
 ---
 
 ## 7. Deployment Architecture
 
+The current deployment uses the following infrastructure:
+
 ```mermaid
-flowchart LR
-    subgraph BUILD["🏗️ Build Phase"]
-        B1["backend/Dockerfile<br/>python:3.10-slim"]
-        B2["ai_service/Dockerfile<br/>python:3.10-slim<br/>+ libgl1, libglib2.0"]
+graph LR
+    subgraph LOCAL["Developer/Demo Machine"]
+        AI_SVC["camera.py<br/>(Python 3.10+)"]
+        WEBCAM["USB/WiFi Camera"]
     end
 
-    subgraph COMPOSE["🐳 docker compose up --build"]
-        S1["ai_service<br/>:8001 · uvicorn"]
-        S2["backend<br/>:8000 · gunicorn (3w)"]
-        S3["db<br/>postgres:15-alpine"]
-        NET[/"app_network<br/>bridge"/]
+    subgraph PA["PythonAnywhere (Free Tier)"]
+        DJANGO_SRV["Django 5.2<br/>WSGI"]
+        SQLITE_FILE["db.sqlite3"]
+        MEDIA["media/<br/>snapshots/"]
     end
 
-    subgraph LIFECYCLE["♻️ backend entrypoint.sh"]
-        L1["migrate --noinput"]
-        L2["collectstatic --noinput"]
-        L3["gunicorn fireguard.wsgi<br/>--bind 0.0.0.0:8000 --workers 3"]
+    subgraph GCP["Google Cloud (Managed)"]
+        FCM_SVC["Firebase Cloud<br/>Messaging"]
     end
 
-    B1 --> S2
-    B2 --> S1
-    S1 --- NET
-    S2 --- NET
-    S3 --- NET
-    S2 --> L1 --> L2 --> L3
+    subgraph USER_DEVICE["Android / iOS"]
+        FLUTTER_APP["Flutter App<br/>(APK / IPA)"]
+    end
 
-    style BUILD fill:#E3F2FD,stroke:#2496ED
-    style COMPOSE fill:#E8EAF6,stroke:#3F51B5
-    style LIFECYCLE fill:#F1F8E9,stroke:#7CB342
+    WEBCAM --> AI_SVC
+    AI_SVC -->|HTTPS| DJANGO_SRV
+    DJANGO_SRV --> SQLITE_FILE
+    DJANGO_SRV --> MEDIA
+    DJANGO_SRV -->|Firebase Admin SDK| FCM_SVC
+    FCM_SVC --> FLUTTER_APP
+    FLUTTER_APP -->|HTTPS| DJANGO_SRV
 ```
 
-### Health checks
+### Deployment Notes
 
-| Service | Probe | Interval | Retries |
-| :--- | :--- | :--- | :--- |
-| `ai_service` | `urllib.request.urlopen('http://localhost:8001/')` | 10s | 5 |
-| `backend` | `urllib.request.urlopen('http://localhost:8000/')` | 10s | 5 |
-| `db` | `pg_isready -U fireuser -d firedb` | 5s | 10 |
-
-> **Note:** The application currently runs on **SQLite**. The Postgres service in `docker-compose.yml` is provisioned for future migration, but Django reads/writes `db.sqlite3` inside the backend container.
+- The Django backend runs as a WSGI application on PythonAnywhere. The `Procfile` contains `web: gunicorn fireguard.wsgi`.
+- Static files are served from the `staticfiles/` directory via PythonAnywhere's static file configuration.
+- Media files (snapshots, avatars, camera thumbnails) are stored in the `media/` directory on the PythonAnywhere filesystem.
+- The AI service (`camera.py`) runs on a local machine and requires a physical camera connection. It communicates with the deployed backend over HTTPS.
+- Firebase credentials are stored as a JSON file on the server (not in version control).
 
 ---
 
-*This document is part of the FireGuard graduation project — May 2026.*
+## 8. Activity Diagram — Complete System Flow
+
+```mermaid
+flowchart TB
+    START([System Start]) --> INIT_CAM[Initialize Camera<br/>cv2.VideoCapture 0]
+    INIT_CAM --> LOAD_MODEL[Load YOLOv8 model<br/>best.pt]
+    LOAD_MODEL --> READ_FRAME[Read frame from camera]
+    READ_FRAME --> INFER[Run YOLO inference<br/>conf=0.5]
+    INFER --> DET{Fire/Smoke<br/>detected?}
+    DET -->|No| DISPLAY[Display frame<br/>cv2.imshow]
+    DET -->|Yes| COOL{Cooldown<br/>expired?}
+    COOL -->|No| DISPLAY
+    COOL -->|Yes| SAVE[Save annotated<br/>snapshot JPEG]
+    SAVE --> POST[POST /api/events/]
+    POST --> VALIDATE{Serializer<br/>valid?}
+    VALIDATE -->|No| ERR[Return 400 error]
+    VALIDATE -->|Yes| STORE[Create FireEvent<br/>in SQLite3]
+    STORE --> NOTIFY[send_fire_alert_to_all]
+    NOTIFY --> FCM_SEND[FCM multicast<br/>to all devices]
+    FCM_SEND --> MOBILE_RECV[Flutter receives<br/>push notification]
+    MOBILE_RECV --> SHOW_ALERT[Display alert screen<br/>+ play alarm sound]
+    SHOW_ALERT --> USER_ACTION{User action}
+    USER_ACTION -->|Resolve| RESOLVE[PATCH /resolve/<br/>status=resolved]
+    USER_ACTION -->|False Alarm| FALSE[PATCH /false-alarm/<br/>status=false_alarm]
+    RESOLVE --> NOTIFY_RESOLVED[send_resolved_alert]
+    ERR --> DISPLAY
+    DISPLAY --> QUIT{User pressed<br/>q?}
+    QUIT -->|No| READ_FRAME
+    QUIT -->|Yes| CLEANUP[Release camera<br/>Destroy windows]
+    CLEANUP --> END([End])
+```
+
+---
+
+## 9. DFD — Level 0 (Context Diagram)
+
+```mermaid
+flowchart LR
+    CAMERA([External Camera]) -->|Video feed| FG["FireGuard<br/>System"]
+    FG -->|Push notifications| USER([Mobile User])
+    USER -->|Event resolution commands| FG
+    ADMIN([Admin User]) -->|Camera/Zone management| FG
+```
+
+## 10. DFD — Level 1
+
+```mermaid
+flowchart TB
+    CAM([Camera Source]) -->|Video frames| P1["P1: AI Detection<br/>(camera.py + YOLOv8)"]
+    P1 -->|Event data + snapshot| P2["P2: Event Management<br/>(events app)"]
+    P2 -->|INSERT/UPDATE| D1[(D1: SQLite3<br/>FireEvent table)]
+    P2 -->|Trigger notification| P3["P3: Notification<br/>Dispatch (fcm.py)"]
+    P3 -->|Query preferences| D2[(D2: SQLite3<br/>NotificationPreference)]
+    P3 -->|Query tokens| D3[(D3: SQLite3<br/>FCMDevice)]
+    P3 -->|FCM message| EXT_FCM([Firebase Cloud])
+    EXT_FCM -->|Push| P4["P4: Mobile Alert<br/>(Flutter)"]
+    P4 -->|Display to| USER([User])
+    USER -->|Resolve / False Alarm| P2
+    USER -->|View events| P2
+    ADMIN([Admin]) -->|Manage cameras| P5["P5: Camera Management<br/>(cameras app)"]
+    P5 -->|CRUD| D4[(D4: SQLite3<br/>Camera, Zone tables)]
+    USER -->|Register / Login| P6["P6: Authentication<br/>(accounts app)"]
+    P6 -->|CRUD| D5[(D5: SQLite3<br/>User, UserProfile, Token)]
+```
+]]>
