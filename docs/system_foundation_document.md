@@ -116,22 +116,29 @@ architecture-beta
 *   **UC5: Manage System Data:** The System Administrator manages cameras and views all generated events.
 
 ```mermaid
-usecase
-    actor "AI Camera Node" as AI
-    actor "End User" as User
-    actor "Admin" as Admin
+flowchart LR
 
-    usecase "Detect Fire/Smoke" as UC1
-    usecase "Report Event to API" as UC2
-    usecase "Receive Push Notification" as UC3
-    usecase "Review Event Snapshot" as UC4
-    usecase "Manage System Data" as UC5
+    subgraph System[FireGuard System]
+
+        UC1((Detect Fire / Smoke))
+        UC2((Report Event to API))
+        UC3((Receive Push Notification))
+        UC4((Review Event Snapshot))
+        UC5((Manage System Data))
+
+    end
+
+    AI[AI Camera Node]
+    USER[End User]
+    ADMIN[Administrator]
 
     AI --> UC1
     AI --> UC2
-    User --> UC3
-    User --> UC4
-    Admin --> UC5
+
+    USER --> UC3
+    USER --> UC4
+
+    ADMIN --> UC5
 ```
 
 ## 15. Data Flow Overview
