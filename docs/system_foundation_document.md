@@ -70,24 +70,24 @@ The FireGuard architecture is a classic client-server model augmented with an ed
 
 ```mermaid
 architecture-beta
-    group edge(Server)[Edge Node]
-    group cloud(Cloud)[Backend Server]
-    group mobile(Mobile)[End User]
+    group edge(server)[Edge Node]
+    group cloud(server)[Backend Server]
+    group mobile(device)[End User]
 
-    service cam(Internet)[Webcam/USB Camera] in edge
-    service ai(Server)[Python AI Script] in edge
+    service cam(camera)[Webcam USB Camera] in edge
+    service ai(server)[Python AI Script] in edge
     
-    service api(Server)[Django REST API] in cloud
-    service db(Database)[SQLite3] in cloud
-    service fcm(Cloud)[Firebase FCM] in cloud
+    service api(server)[Django REST API] in cloud
+    service db(database)[SQLite3 Database] in cloud
+    service fcm(cloud)[Firebase FCM] in cloud
 
-    service app(Mobile)[Flutter App] in mobile
+    service app(mobile)[Flutter Mobile App] in mobile
 
-    cam:R --> L:ai
-    ai:R --> L:api
-    api:B --> T:db
-    api:R --> L:fcm
-    fcm:R --> L:app
+    cam:R -- L:ai
+    ai:R -- L:api
+    api:B -- T:db
+    api:R -- L:fcm
+    fcm:R -- L:app
 ```
 
 ## 11. Technology Stack Analysis
