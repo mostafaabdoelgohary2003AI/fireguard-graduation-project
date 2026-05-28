@@ -1,15 +1,16 @@
 <div align="center">
 
-# 🔥 FireGuard — Graduation Project Prompts Book
+# 🔥 FireGuard — Graduation Project Book Master Prompts
 
 ### AI-Powered Fire & Smoke Detection and Emergency Alert System
 
 ---
 
-**5 Master Prompts for Claude Sonnet / Opus**
+**10 Master Prompts for Claude Sonnet 4.6**
 
-Each prompt generates one complete team chapter (~15–25 pages)
-Optimized for token limits · IEEE citations · Word-ready formatting
+Each prompt generates one complete chapter for the graduation project book.
+All prompts are derived from the official repository documentation and source code.
+Optimized for IEEE citations · Word-ready formatting · Implementation-aligned content.
 
 ---
 
@@ -21,28 +22,83 @@ Optimized for token limits · IEEE citations · Word-ready formatting
 
 | Step | Action |
 |:-----|:-------|
-| 1 | Copy the **entire prompt** from a team section below |
-| 2 | Paste it into a new Claude Sonnet 4 / Opus conversation |
-| 3 | Replace all `[X]` placeholders with your real project data |
-| 4 | Review the output, then ask Claude to revise or expand sections |
-| 5 | Export to Word, apply formatting, insert real screenshots/diagrams |
-| 6 | Verify every citation — never submit AI-generated references without checking |
+| 1 | Copy the **entire prompt** from a chapter section below |
+| 2 | Paste it into a new Claude Sonnet 4.6 conversation on the Anthropic platform |
+| 3 | Replace all `[X]` placeholders with your real project data (dataset stats, metric values, screenshots) |
+| 4 | Review the output, then ask Claude to revise or expand sections as needed |
+| 5 | Export to Word, apply the specified formatting, insert real screenshots and diagrams |
+| 6 | **Verify every citation** — never submit AI-generated references without checking |
 
-> ⚠️ **Important**: These are **prompts**, not answers. Each prompt is designed to generate ~15–25 pages of structured academic content when submitted to Claude.
+> ⚠️ **Important**: These are **prompts**, not the final book content. Each prompt is designed to generate ~8–15 pages of structured academic content when submitted to Claude Sonnet 4.6.
 
 ---
-
-<br/>
 
 ## 📋 Table of Contents
 
-| # | Team Prompt | Covers |
-|:--|:-----------|:-------|
-| 1 | [🧠 AI Team](#1--ai-team-chapter) | Dataset, Roboflow, YOLOv8, PyTorch, inference pipeline, OpenCV, camera integration, model evaluation |
-| 2 | [🗄️ Backend Team](#2--backend-team-chapter) | Django, DRF APIs, authentication, Firebase notifications, system architecture |
-| 3 | [📱 Frontend / UI Team](#3--frontend--ui-team-chapter) | Flutter, state management, UI/UX, screens, navigation, emergency alert UX |
-| 4 | [💾 Database Team](#4--database-team-chapter) | SQLite3, Django ORM, schema design, ERD, migrations, query patterns |
-| 5 | [🐳 Deployment Team](#5--deployment-team-chapter) | Docker, Docker Compose, FastAPI/Uvicorn, Gunicorn, testing, results, challenges, future work |
+| # | Chapter Prompt | Chapter # | Approx. Pages | Key Topics |
+|:--|:--------------|:----------|:--------------|:-----------|
+| 1 | [Introduction](#1--introduction-chapter) | Chapter 1 | 8–10 | Problem statement, objectives, scope, project overview |
+| 2 | [Literature Review](#2--literature-review) | Chapter 2 | 10–15 | Fire detection research, YOLO evolution, related work |
+| 3 | [System Analysis & Design](#3--system-analysis-and-design) | Chapter 3 | 10–12 | Requirements, UML, DFD, architecture |
+| 4 | [AI Development](#4--ai-development-chapter) | Chapter 4 | 12–15 | Dataset, YOLOv8, PyTorch, inference pipeline, OpenCV |
+| 5 | [Backend Development](#5--backend-development-chapter) | Chapter 5 | 10–12 | Django, DRF, APIs, Firebase integration |
+| 6 | [Mobile Application & UI/UX](#6--mobile-application--uiux-chapter) | Chapter 6 | 10–12 | Flutter, Provider, screens, emergency UX |
+| 7 | [Database Design](#7--database-design-chapter) | Chapter 7 | 8–10 | SQLite3, schema, ERD, Django ORM |
+| 8 | [Deployment & Integration](#8--deployment--integration-chapter) | Chapter 8 | 6–8 | PythonAnywhere, component integration, environment |
+| 9 | [Testing & Results](#9--testing--results-chapter) | Chapter 9 | 8–10 | Manual testing, live demo, results analysis |
+| 10 | [Conclusion & Future Work](#10--conclusion--future-work-chapter) | Chapter 10 | 5–7 | Summary, achievements, limitations, future directions |
+
+**Total estimated book length: ~87–111 pages**
+
+---
+
+## 🔒 Terminology Consistency Rules (ALL PROMPTS)
+
+Every prompt below embeds the following mandatory terminology. Claude MUST use these terms consistently across all generated chapters:
+
+| Term | Definition |
+|------|-----------|
+| **FireEvent** | The core data entity representing a single fire or smoke detection incident, stored in `events_fireevent` table |
+| **AI Camera Node** / **Edge Node** | The local machine running `camera.py` with YOLOv8, performing inference at the edge |
+| **Detection Event** | The real-time occurrence of YOLOv8 identifying fire or smoke in a frame with confidence ≥ 50% |
+| **Confidence Threshold** | The minimum confidence score (0.5 / 50%) required for YOLOv8 to report a detection |
+| **Active Event** | A FireEvent with `status = 'active'` — not yet reviewed or resolved |
+| **Notification Payload** | The structured data package sent via FCM containing `notification` and `data` objects |
+| **Inference Pipeline** | The complete processing chain from raw camera frame to detection result |
+| **Cooldown** | A 10-second suppression interval between consecutive alerts in `camera.py` |
+| **Snapshot** | An annotated JPEG image captured at the moment of detection, with bounding boxes drawn by `r.plot()` |
+| **AlertPayload** | The Dart class in the Flutter app that maps FCM `data` payload to a structured object |
+
+---
+
+## 🏗️ Real Architecture Reference (ALL PROMPTS)
+
+All prompts must describe only the following real architecture:
+
+```
+AI Service (camera.py + YOLOv8 + OpenCV)
+    → HTTP POST /api/events/
+Django Backend (Django 5.2 + DRF 3.17)
+    → SQLite3 (db.sqlite3)
+    → Firebase Admin SDK → Firebase Cloud Messaging
+        → Flutter Mobile App (Flutter 3.9 + Provider + Dio)
+```
+
+**Deployment:** PythonAnywhere (backend), Local machine (AI service), Android device (Flutter app)
+
+**There is NO:** FastAPI, Docker, Docker Compose, Kubernetes, PostgreSQL, Redis, MySQL, Gunicorn (except in PythonAnywhere WSGI), microservices architecture, CI/CD pipeline, or cloud-native infrastructure.
+
+---
+
+## 👥 Team Responsibility Mapping
+
+| Area | Team Members |
+|------|-------------|
+| AI Development | Ali Khaled Abo Raya, Mohamed Abdelfatah Attalah, Mohamed Asaad |
+| Backend Development | Abdelrahman Reda Abdellah |
+| Mobile Application & UI/UX | Mohamed Hany El-Essawy, Saad Ezzat Saad |
+| Database Development | Tarek Mostafa Kashef |
+| Deployment & Integration | Mostafa Abdo El-Gohary |
 
 ---
 
@@ -50,182 +106,775 @@ Optimized for token limits · IEEE citations · Word-ready formatting
 
 ---
 
-# 1 — 🧠 AI Team Chapter
+# 1 — 📖 Introduction Chapter
 
 <details>
-<summary><b>Click to expand full prompt (~15–25 pages output)</b></summary>
+<summary><b>Click to expand full prompt (Chapter 1: ~8–10 pages)</b></summary>
 
 ```
-You are an expert academic engineering writer with deep expertise in deep learning,
-computer vision, and object detection. You are writing a chapter for a graduation
-project report/book submitted to a university engineering faculty.
-
-Write the COMPLETE AI / COMPUTER VISION CHAPTER for the following project.
+You are a senior academic engineering writer with expertise in computer vision,
+software engineering, and technical documentation. You are writing the INTRODUCTION
+CHAPTER (Chapter 1) for a graduation project book submitted to a university
+engineering faculty.
 
 ═══════════════════════════════════════════════════════════
 PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
 ═══════════════════════════════════════════════════════════
 
-SYSTEM OVERVIEW (for context only — focus this chapter on the AI pipeline):
-- Microservice architecture: FastAPI AI Service + Django Backend + Flutter Mobile App
-- Database: SQLite3 (zero-configuration, file-based)
-- Push notifications: Firebase Cloud Messaging (FCM)
-- Camera: External WiFi camera connected through USB and used as webcam input
-  during live demo/testing (accessed via OpenCV VideoCapture(0))
-- Containerization: Docker + Docker Compose
+PROJECT OVERVIEW:
+FireGuard is a graduation project that implements an AI-powered fire and smoke
+detection system with real-time mobile notifications. The system combines computer
+vision inference at the edge with a centralized backend and a cross-platform
+mobile application to provide end-to-end fire safety monitoring.
+
+REAL ARCHITECTURE (use ONLY this — do NOT invent additional components):
+- AI Service: Standalone Python script (camera.py) running on a local machine
+  with a webcam. Uses YOLOv8 (Ultralytics) for fire/smoke detection and OpenCV
+  for frame capture. Reports detections via HTTP POST to the Django backend.
+- Backend: Django 5.2 + Django REST Framework 3.17. SQLite3 database.
+  Firebase Admin SDK for push notification dispatch.
+- Mobile App: Flutter 3.9 with Provider state management. Receives FCM
+  push notifications. Uses Dio for HTTP communication with the backend.
+- Database: SQLite3 ONLY (file-based, managed by Django ORM).
+- Notifications: Firebase Cloud Messaging (FCM).
+- Deployment: Backend on PythonAnywhere. AI service runs locally.
+
+REAL WORKFLOW:
+Camera → OpenCV frame capture → YOLOv8 inference (conf ≥ 0.5) → Cooldown check
+→ Save annotated snapshot → POST /api/events/ → Django creates FireEvent in SQLite3
+→ Firebase Admin SDK sends FCM multicast → Flutter app receives notification
+→ Alert screen displayed → User resolves or marks as false alarm.
+
+TEAM MEMBERS:
+- AI Development: Ali Khaled Abo Raya, Mohamed Abdelfatah Attalah, Mohamed Asaad
+- Backend Development: Abdelrahman Reda Abdellah
+- Mobile Application & UI/UX: Mohamed Hany El-Essawy, Saad Ezzat Saad
+- Database Development: Tarek Mostafa Kashef
+- Deployment & Integration: Mostafa Abdo El-Gohary
+
+TERMINOLOGY (use these terms consistently throughout):
+- FireEvent, AI Camera Node, Detection Event, Confidence Threshold,
+  Active Event, Notification Payload, Edge Node, Inference Pipeline,
+  Cooldown, Snapshot, AlertPayload
+
+══════════════════════════════════════════════════════════
+CHAPTER 1 STRUCTURE — Generate ALL of the following sections:
+══════════════════════════════════════════════════════════
+
+CHAPTER OBJECTIVE:
+Introduce the reader to the FireGuard project by establishing the problem domain
+(fire hazards, limitations of traditional detection), presenting the proposed
+AI-based solution, defining project objectives and scope, and providing an
+overview of the system architecture and the graduation book structure.
+
+1.1 BACKGROUND AND MOTIVATION (600–800 words)
+   - The global impact of fire hazards on life, property, and industry
+   - Statistics on fire-related incidents (use real, citable statistics from
+     NFPA, WHO, or national fire safety organizations)
+   - Traditional fire detection systems: smoke detectors, heat sensors, sprinklers
+   - Limitations of traditional systems: limited spatial coverage, delayed
+     triggering, high false-alarm rates, no visual verification
+   - The rise of computer vision and deep learning as complementary detection methods
+   - Motivation for building FireGuard as a graduation project
+
+1.2 PROBLEM STATEMENT (300–400 words)
+   - Clearly define the problem being solved
+   - Emphasize: existing systems cannot provide visual verification,
+     real-time mobile alerts, or AI-confidence-based event management
+   - State the gap that FireGuard addresses
+
+1.3 PROJECT OBJECTIVES (300–400 words)
+   - List 5–7 specific, measurable objectives:
+     1. Develop a real-time fire and smoke detection system using YOLOv8
+     2. Build a Django REST API backend for event management and notification dispatch
+     3. Implement a Flutter mobile application for real-time alerts and event management
+     4. Integrate Firebase Cloud Messaging for instant push notifications
+     5. Design and implement a relational database schema using SQLite3
+     6. Deploy and integrate all system components into a functioning prototype
+     7. Validate the system through manual testing and live demonstration
+   - Each objective should be linked to a specific chapter
+
+1.4 PROJECT SCOPE (400–500 words)
+   - Explicitly define what IS included in the project:
+     * Real-time fire/smoke detection from a single webcam
+     * Event storage with status lifecycle (active → resolved / false_alarm)
+     * Push notifications via FCM
+     * Mobile app with alert and management UI
+     * Camera and zone management
+     * User authentication and profile management
+     * Notification preferences (per-user opt-in/opt-out)
+   - Explicitly state what is NOT included (and note "Not implemented in the
+     current project version"):
+     * Multi-camera concurrent processing
+     * Web-based admin dashboard
+     * Video clip recording
+     * CI/CD pipeline
+     * PostgreSQL or other production databases
+     * Role-based access control beyond admin/user
+   - Include a Table: "Table 1.1: Project Scope Summary"
+     with columns: Capability | Status (✅ Implemented / ❌ Not Implemented)
+
+1.5 PROPOSED SOLUTION OVERVIEW (500–700 words)
+   - Three-component architecture overview:
+     1. AI Camera Node (Edge): camera.py + YOLOv8 + OpenCV
+     2. Backend Tier: Django 5.2 + DRF 3.17 + SQLite3 + Firebase Admin SDK
+     3. Client Tier: Flutter 3.9 mobile app + FCM + local SQLite
+   - Include a Mermaid architecture diagram showing all three tiers
+   - Include a Mermaid sequence diagram showing the end-to-end detection workflow
+   - Technology stack table: "Table 1.2: Technology Stack"
+     | Layer | Technology | Version | Purpose |
+   - Briefly describe the data flow from camera to mobile alert
+
+1.6 BOOK STRUCTURE (300–400 words)
+   - Provide a chapter-by-chapter overview of the graduation book:
+     * Chapter 1: Introduction (this chapter)
+     * Chapter 2: Literature Review
+     * Chapter 3: System Analysis and Design
+     * Chapter 4: AI Development
+     * Chapter 5: Backend Development
+     * Chapter 6: Mobile Application & UI/UX
+     * Chapter 7: Database Design
+     * Chapter 8: Deployment & Integration
+     * Chapter 9: Testing & Results
+     * Chapter 10: Conclusion & Future Work
+   - Each chapter description should be 2–3 sentences
+
+═══════════════════════════════════════════════════════════
+FORMATTING REQUIREMENTS (MANDATORY):
+═══════════════════════════════════════════════════════════
+
+DOCUMENT FORMATTING (for Microsoft Word export):
+- Font: Times New Roman
+- Body text: 12 pt
+- Chapter title: 16 pt bold ("Chapter 1: Introduction")
+- Main section headings (1.1, 1.2, etc.): 14 pt bold
+- Subsection headings (1.1.1, etc.): 13 pt bold
+- Line spacing: 1.5
+- Text alignment: Justified
+- Standard A4 page size
+- All figures must have captions: "Figure 1.Y: [Description]"
+- All tables must have captions: "Table 1.Y: [Description]"
+- Suggest page breaks between major sections
+
+ACADEMIC STYLE:
+- Formal academic engineering tone, third person
+- In-text citations using IEEE style: [1], [2], [3]
+- Every technical claim and statistic must be supported by a citation
+- Do NOT fabricate citations — use real, verifiable references only
+- Do NOT use fake DOIs or broken URLs
+
+REFERENCES (minimum 8 references):
+- Real fire safety statistics (NFPA, WHO)
+- Real computer vision references (YOLO papers, OpenCV)
+- Real software engineering references
+- Official framework documentation (Django, Flutter, Firebase)
+- IEEE or Springer published papers on fire detection systems
+- Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
+
+End the chapter with:
+## References
+(formatted in IEEE style)
+
+DIAGRAMS AND VISUALS:
+- Include Mermaid diagrams wherever specified
+- Include tables wherever specified
+- Include figure placeholders: "Figure 1.Y: [Description] — [insert screenshot/diagram]"
+
+TOKEN OPTIMIZATION:
+- Target output: approximately 8–10 Word pages
+- If output must be split, clearly indicate the split point and provide
+  a continuation prompt
+```
+
+</details>
+
+---
+
+<br/>
+
+---
+
+# 2 — 📚 Literature Review
+
+<details>
+<summary><b>Click to expand full prompt (Chapter 2: ~10–15 pages)</b></summary>
+
+```
+You are a senior academic engineering writer with expertise in computer vision,
+deep learning, object detection, and software engineering. You are writing the
+LITERATURE REVIEW CHAPTER (Chapter 2) for a graduation project book submitted
+to a university engineering faculty.
+
+═══════════════════════════════════════════════════════════
+PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
+═══════════════════════════════════════════════════════════
+
+PROJECT CONTEXT (for reference only — this chapter reviews existing literature):
+FireGuard uses YOLOv8 (Ultralytics) for real-time fire and smoke detection from
+a webcam feed. The AI service (camera.py) runs locally as an Edge Node, posting
+detection events to a Django 5.2 backend with SQLite3. Firebase Cloud Messaging
+delivers push notifications to a Flutter 3.9 mobile app.
+
+TERMINOLOGY (use consistently):
+- FireEvent, AI Camera Node, Detection Event, Confidence Threshold,
+  Active Event, Notification Payload, Edge Node, Inference Pipeline
+
+══════════════════════════════════════════════════════════
+CHAPTER 2 STRUCTURE — Generate ALL of the following sections:
+══════════════════════════════════════════════════════════
+
+CHAPTER OBJECTIVE:
+Review existing literature and research related to fire detection systems,
+object detection algorithms, and the technologies used in FireGuard. Establish
+the theoretical foundation for the project's design decisions.
+
+2.1 INTRODUCTION TO FIRE DETECTION SYSTEMS (600–800 words)
+   - Evolution of fire detection: from manual observation to sensor-based
+     to vision-based systems
+   - Categories: point-type sensors, aspirating systems, video-based systems
+   - Advantages and limitations of each category
+   - Include Table: "Table 2.1: Comparison of Fire Detection Approaches"
+     | Approach | Detection Method | Response Time | Coverage | False Alarm Rate | Visual Evidence |
+
+2.2 TRADITIONAL FIRE DETECTION METHODS (500–700 words)
+   - Smoke detectors: ionization vs. photoelectric
+   - Heat detectors: fixed-temperature vs. rate-of-rise
+   - Flame detectors: UV, IR, UV/IR combined
+   - Multi-sensor systems
+   - Limitations in real-world deployment
+   - Reference real IEEE/Springer papers on sensor-based fire detection
+
+2.3 VISION-BASED FIRE DETECTION (800–1000 words)
+   - Color-based methods (RGB, HSV, YCbCr color space analysis)
+   - Motion-based methods (optical flow, background subtraction)
+   - Texture-based methods (wavelet analysis)
+   - Deep learning-based methods (CNN, R-CNN, SSD, YOLO)
+   - Comparison table: "Table 2.2: Vision-Based Fire Detection Methods"
+     | Method | Technique | Accuracy | Real-Time? | Limitations |
+   - Reference at least 5 real published papers on vision-based fire detection
+
+2.4 OBJECT DETECTION ALGORITHMS (1000–1500 words)
+   - Two-stage detectors: R-CNN → Fast R-CNN → Faster R-CNN
+   - Single-stage detectors: SSD, YOLO family, RetinaNet
+   - Transformer-based: DETR
+   - Evolution of YOLO: YOLOv1 through YOLOv8
+     * YOLOv1 (Redmon et al., 2016): unified detection, grid-based
+     * YOLOv2/v3: multi-scale, feature pyramids, anchor boxes
+     * YOLOv4/v5: CSPNet, mosaic augmentation, auto-anchor
+     * YOLOv8 (Ultralytics, 2023): anchor-free, decoupled head, CIoU loss
+   - Include Table: "Table 2.3: YOLO Version Comparison"
+     | Version | Year | Key Innovation | mAP (COCO) | Speed (FPS) |
+   - Justification for selecting YOLOv8 for FireGuard:
+     * Real-time performance, anchor-free design, Ultralytics ecosystem,
+       easy fine-tuning, Python API, active community support
+   - Reference real papers: Redmon et al. (2016), Bochkovskiy et al. (2020),
+     Jocher et al. (YOLOv5/v8 documentation)
+
+2.5 DEEP LEARNING FRAMEWORKS (500–700 words)
+   - TensorFlow vs. PyTorch comparison
+   - Why PyTorch was chosen for FireGuard (Ultralytics built on PyTorch)
+   - Include Table: "Table 2.4: PyTorch vs. TensorFlow Comparison"
+     | Feature | PyTorch | TensorFlow |
+   - Reference Paszke et al. (2019) for PyTorch
+
+2.6 BACKEND AND API TECHNOLOGIES (600–800 words)
+   - Web framework comparison: Django vs. Flask vs. FastAPI vs. Express.js
+   - Why Django was chosen: mature, batteries-included, ORM, admin, DRF
+   - RESTful API design principles (Fielding, 2000)
+   - Token-based authentication review
+   - Include Table: "Table 2.5: Backend Framework Comparison"
+     | Feature | Django | Flask | FastAPI | Express.js |
+   - Reference official Django and DRF documentation
+
+2.7 MOBILE APPLICATION TECHNOLOGIES (600–800 words)
+   - Cross-platform development: Flutter vs. React Native vs. Native
+   - Flutter architecture: widget tree, Dart language, hot reload
+   - State management patterns: Provider, BLoC, Riverpod, GetX
+   - Why Flutter with Provider was chosen for FireGuard
+   - Include Table: "Table 2.6: Mobile Framework Comparison"
+     | Feature | Flutter | React Native | Kotlin/Swift |
+   - Reference official Flutter documentation
+
+2.8 PUSH NOTIFICATION SYSTEMS (400–600 words)
+   - Firebase Cloud Messaging (FCM) overview
+   - FCM vs. OneSignal vs. Pusher vs. custom WebSocket
+   - Why FCM was chosen: Google-backed, free, cross-platform, reliable
+   - Include Table: "Table 2.7: Push Notification Service Comparison"
+
+2.9 DATABASE TECHNOLOGIES (400–600 words)
+   - SQLite3 overview: serverless, zero-configuration, file-based
+   - Comparison: SQLite3 vs. PostgreSQL vs. MySQL
+   - Why SQLite3 was appropriate for the graduation project prototype
+   - Django ORM as the abstraction layer
+   - Include Table: "Table 2.8: Database Comparison"
+
+2.10 RELATED WORK (800–1000 words)
+   - Review at least 4–5 real published systems/papers that combine:
+     * Computer vision for fire detection
+     * Mobile notification systems
+     * Edge computing for real-time inference
+   - For each related work, describe: approach, technology, results, limitations
+   - Include Table: "Table 2.9: Related Work Summary"
+     | Study | Year | Detection Method | Platform | Notification | Limitations |
+   - Discuss how FireGuard differs from and builds upon existing work
+   - Reference ONLY real published papers (IEEE, Springer, Elsevier, ACM)
+
+2.11 CHAPTER SUMMARY (200–300 words)
+   - Summarize the key findings from the literature review
+   - Link findings to FireGuard's design decisions
+
+═══════════════════════════════════════════════════════════
+FORMATTING REQUIREMENTS (MANDATORY):
+═══════════════════════════════════════════════════════════
+
+DOCUMENT FORMATTING (for Microsoft Word export):
+- Font: Times New Roman
+- Body text: 12 pt
+- Chapter title: 16 pt bold ("Chapter 2: Literature Review")
+- Main section headings (2.1, 2.2, etc.): 14 pt bold
+- Subsection headings (2.1.1, etc.): 13 pt bold
+- Line spacing: 1.5
+- Text alignment: Justified
+- Standard A4 page size
+- All figures must have captions: "Figure 2.Y: [Description]"
+- All tables must have captions: "Table 2.Y: [Description]"
+- Suggest page breaks between major sections
+
+ACADEMIC STYLE:
+- Formal academic engineering tone, third person
+- In-text citations using IEEE style: [1], [2], [3]
+- Every technical claim must be supported by a citation
+- Do NOT fabricate citations — use real, verifiable references only
+- Do NOT use fake DOIs, fake authors, or broken URLs
+- Verify all references are real before including them
+
+REFERENCES (minimum 20 references):
+- Real YOLO papers: Redmon et al. (2016), Bochkovskiy et al. (2020)
+- Real PyTorch paper: Paszke et al. (2019)
+- Real OpenCV references: Bradski (2000)
+- Real fire detection papers from IEEE, Springer, Elsevier
+- Real mobile development references
+- Official documentation: Ultralytics, Django, Flutter, Firebase, SQLite
+- Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
+
+End the chapter with:
+## References
+(formatted in IEEE style)
+
+DIAGRAMS AND VISUALS:
+- Include comparison tables wherever specified
+- Include figure placeholders for diagrams of algorithm architectures
+- Include a Mermaid diagram showing the evolution of YOLO versions
+
+TOKEN OPTIMIZATION:
+- Target output: approximately 10–15 Word pages
+- If output must be split, clearly indicate the split point and provide
+  a continuation prompt
+```
+
+</details>
+
+---
+
+<br/>
+
+---
+
+# 3 — 🔧 System Analysis and Design
+
+<details>
+<summary><b>Click to expand full prompt (Chapter 3: ~10–12 pages)</b></summary>
+
+```
+You are a senior academic engineering writer with expertise in software engineering,
+systems analysis, UML modeling, and software architecture. You are writing the
+SYSTEM ANALYSIS AND DESIGN CHAPTER (Chapter 3) for a graduation project book
+submitted to a university engineering faculty.
+
+═══════════════════════════════════════════════════════════
+PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
+═══════════════════════════════════════════════════════════
+
+REAL ARCHITECTURE (use ONLY this):
+- Three-tier architecture: Edge Tier (AI Service) + Backend Tier (Django) +
+  Client Tier (Flutter)
+- AI Service: camera.py + YOLOv8 (best.pt) + OpenCV. Runs on local machine.
+  Captures webcam frames, runs inference (conf=0.5), saves annotated snapshots,
+  POSTs to Django backend. 10-second cooldown between alerts.
+- Backend: Django 5.2 + DRF 3.17. Four Django apps: accounts, cameras, events,
+  notifications. SQLite3 database. Firebase Admin SDK for FCM.
+  Deployed on PythonAnywhere (bodareda0001.pythonanywhere.com).
+- Mobile App: Flutter 3.9. Provider state management. Dio HTTP client.
+  GoRouter navigation. Firebase Messaging + flutter_local_notifications.
+  Local SQLite for notification cache.
+- Communication: HTTP REST (AI→Backend, Mobile→Backend), FCM (Backend→Mobile)
+
+DJANGO APPS AND MODELS:
+- accounts: UserProfile (user, phone, avatar)
+- cameras: Zone (name, description), Camera (zone FK, name, location, stream_url,
+  thumbnail, status[online/offline])
+- events: FireEvent (camera FK, event_type[fire/smoke], status[active/resolved/
+  false_alarm], ai_confidence, snapshot, notes, detected_at, resolved_at)
+- notifications: FCMDevice (user FK, token, platform, is_active),
+  NotificationPreference (user OneToOne, fire_alerts, resolved_alerts,
+  false_alarm_alerts, sound_enabled)
+
+API ENDPOINTS:
+- POST /api/events/ (AllowAny — used by AI service)
+- GET/PATCH /api/events/{id}/, GET /api/events/active/, GET /api/events/stats/
+- PATCH /api/events/{id}/resolve/, PATCH /api/events/{id}/false-alarm/
+- POST /api/auth/register/, POST /api/auth/login/, POST /api/auth/logout/
+- GET/PATCH /api/auth/profile/, POST /api/auth/change-password/
+- GET/POST /api/cameras/zones/, GET/POST /api/cameras/cameras/
+- POST /api/notifications/register-device/, GET/PATCH /api/notifications/preferences/
+
+FLUTTER SCREENS:
+Splash, Login, Signup, ForgotPassword, Home (Dashboard), Cameras, CameraDetail,
+EditCamera, ActivityHistory, Alert, Settings, Profile
+
+TERMINOLOGY (use consistently):
+- FireEvent, AI Camera Node, Detection Event, Confidence Threshold,
+  Active Event, Notification Payload, Edge Node, Inference Pipeline,
+  Cooldown, Snapshot, AlertPayload
+
+══════════════════════════════════════════════════════════
+CHAPTER 3 STRUCTURE — Generate ALL of the following sections:
+══════════════════════════════════════════════════════════
+
+CHAPTER OBJECTIVE:
+Present the systematic analysis and design of the FireGuard system including
+functional/non-functional requirements, use case analysis, data flow diagrams,
+system architecture, and component design.
+
+3.1 INTRODUCTION (300–400 words)
+   - Purpose of the system analysis and design phase
+   - Overview of the methodologies used (structured analysis, UML)
+   - Chapter roadmap
+
+3.2 REQUIREMENTS ANALYSIS (800–1000 words)
+   3.2.1 Functional Requirements
+   - List ALL functional requirements as a numbered table:
+     "Table 3.1: Functional Requirements"
+     | FR-ID | Requirement | Priority | Component |
+     Include requirements for: detection, event management, authentication,
+     camera management, notification, mobile UI
+   3.2.2 Non-Functional Requirements
+   - "Table 3.2: Non-Functional Requirements"
+     | NFR-ID | Requirement | Category | Target |
+     Include: performance (real-time inference), reliability, usability,
+     portability (cross-platform mobile), security (token auth)
+
+3.3 USE CASE ANALYSIS (800–1000 words)
+   - Identify actors: AI Camera Node, Mobile User, Admin User, Firebase Cloud
+   - Include a Mermaid use case diagram showing all actors and use cases
+   - Detailed use case descriptions for at least 4 key use cases:
+     1. "Detect Fire/Smoke" (AI Camera Node → System)
+     2. "View and Manage Events" (Mobile User → System)
+     3. "Resolve Fire Event" (Mobile User → System)
+     4. "Manage Cameras and Zones" (Admin User → System)
+   - For each use case, provide:
+     * Use Case ID, Name, Actor, Precondition, Main Flow, Alternative Flow,
+       Postcondition
+
+3.4 SYSTEM ARCHITECTURE DESIGN (1000–1200 words)
+   3.4.1 Three-Tier Architecture
+   - Edge Tier: AI Camera Node (camera.py + YOLOv8 + OpenCV)
+   - Backend Tier: Django 5.2 + DRF + SQLite3 + Firebase Admin SDK
+   - Client Tier: Flutter 3.9 + Provider + Dio + FCM
+   - Include a Mermaid architecture diagram showing all three tiers with
+     subcomponents and communication paths
+   3.4.2 Component Communication
+   - Communication protocols: HTTP REST (AI→Backend, Mobile→Backend),
+     FCM push (Backend→Firebase→Mobile)
+   - Include Table: "Table 3.3: Communication Paths"
+     | Path | Protocol | Auth | Description |
+   3.4.3 Deployment Architecture
+   - PythonAnywhere (backend), Local machine (AI), Android device (Flutter)
+   - Include a Mermaid deployment diagram
+
+3.5 DATA FLOW DIAGRAMS (800–1000 words)
+   3.5.1 Context Diagram (DFD Level 0)
+   - Include a Mermaid DFD Level 0 diagram:
+     External Camera → FireGuard System → Mobile User
+     Mobile User → FireGuard System (resolve commands)
+     Admin User → FireGuard System (camera/zone management)
+   3.5.2 DFD Level 1
+   - Include a Mermaid DFD Level 1 diagram with processes:
+     P1: AI Detection (camera.py + YOLOv8)
+     P2: Event Management (events app)
+     P3: Notification Dispatch (fcm.py)
+     P4: Mobile Alert (Flutter)
+     P5: Camera Management (cameras app)
+     P6: Authentication (accounts app)
+   - Data stores: SQLite3 tables (FireEvent, Camera, Zone, User,
+     FCMDevice, NotificationPreference)
+
+3.6 SEQUENCE DIAGRAMS (600–800 words)
+   - Include Mermaid sequence diagrams for:
+     1. Event Creation Flow: camera.py → Django API → SQLite3 → fcm.py →
+        Firebase → Flutter App
+     2. Event Resolution Flow: Flutter App → Django API → SQLite3 →
+        fcm.py → Firebase → Flutter App
+     3. User Authentication Flow: Flutter App → Django API → SQLite3 →
+        Return Token → Store in SharedPreferences
+
+3.7 ACTIVITY DIAGRAM (400–500 words)
+   - Include a Mermaid activity diagram for the complete system flow:
+     Start → Initialize Camera → Load YOLO Model → Read Frame → Inference →
+     Detection? → Cooldown? → Save Snapshot → POST to API → Create FireEvent →
+     Send FCM → Display Alert → User Action (Resolve/False Alarm) → End
+
+3.8 CLASS DIAGRAM (400–500 words)
+   - Include a Mermaid class diagram showing Django models and their relationships:
+     User, UserProfile, Zone, Camera, FireEvent, FCMDevice, NotificationPreference,
+     Token
+   - Show relationships: OneToOne, ForeignKey, CASCADE
+
+═══════════════════════════════════════════════════════════
+FORMATTING REQUIREMENTS (MANDATORY):
+═══════════════════════════════════════════════════════════
+
+DOCUMENT FORMATTING (for Microsoft Word export):
+- Font: Times New Roman
+- Body text: 12 pt
+- Chapter title: 16 pt bold ("Chapter 3: System Analysis and Design")
+- Main section headings (3.1, 3.2, etc.): 14 pt bold
+- Subsection headings (3.1.1, etc.): 13 pt bold
+- Line spacing: 1.5
+- Text alignment: Justified
+- Standard A4 page size
+- All figures must have captions: "Figure 3.Y: [Description]"
+- All tables must have captions: "Table 3.Y: [Description]"
+- Suggest page breaks between major sections
+
+ACADEMIC STYLE:
+- Formal academic engineering tone, third person
+- In-text citations using IEEE style: [1], [2], [3]
+- Do NOT fabricate citations — use real, verifiable references only
+
+REFERENCES (minimum 8 references):
+- Software engineering textbooks (Pressman, Sommerville)
+- UML references (Booch, Rumbaugh)
+- REST API design (Fielding 2000)
+- Official framework documentation
+- Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
+
+End the chapter with:
+## References
+(formatted in IEEE style)
+
+DIAGRAMS AND VISUALS:
+- Include ALL Mermaid diagrams specified above
+- Include ALL tables specified above
+- The diagrams are the core deliverable of this chapter
+
+TOKEN OPTIMIZATION:
+- Target output: approximately 10–12 Word pages
+- If output must be split, clearly indicate the split point and provide
+  a continuation prompt
+```
+
+</details>
+
+---
+
+<br/>
+
+---
+
+# 4 — 🧠 AI Development Chapter
+
+<details>
+<summary><b>Click to expand full prompt (Chapter 4: ~12–15 pages)</b></summary>
+
+```
+You are a senior academic engineering writer with deep expertise in deep learning,
+computer vision, object detection, and PyTorch. You are writing the AI DEVELOPMENT
+CHAPTER (Chapter 4) for a graduation project book submitted to a university
+engineering faculty.
+
+═══════════════════════════════════════════════════════════
+PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
+═══════════════════════════════════════════════════════════
+
+SYSTEM CONTEXT (for context only — focus this chapter on the AI pipeline):
+- Three-tier architecture: Edge (AI Service) + Backend (Django) + Client (Flutter)
+- Database: SQLite3 ONLY
+- Notifications: Firebase Cloud Messaging
+- Camera: External WiFi camera connected through USB, used as webcam input
+  via OpenCV cv2.VideoCapture(0)
+- There is NO FastAPI, NO Docker, NO microservices. The AI service is a
+  standalone Python script (camera.py) that runs locally.
 
 AI SERVICE TECHNICAL DETAILS:
-- Framework: FastAPI (Python 3.10) served by Uvicorn (single worker)
-- Model: YOLOv8 (Ultralytics implementation) — custom-trained on fire/smoke dataset
-- Runtime: PyTorch (CPU inference in Docker; GPU optional for local training)
-- Weights file: best.pt (~6 MB, serialized via torch.save)
+- Script: ai_service/camera.py (standalone Python script, NOT a web service)
+- Model: YOLOv8 (Ultralytics YOLO class) — custom-trained on fire/smoke dataset
+- Weights file: best.pt (stored in ai_service/ directory)
+- Runtime: PyTorch (CPU or GPU inference, GPU optional)
 - Target classes: fire (class 0), smoke (class 1) — 2 classes only
-- Confidence threshold: 0.5 (50%)
-- Dataset management: Roboflow (annotation, preprocessing, augmentation, export)
-- Image processing: OpenCV (opencv-python-headless in container)
-- Inference endpoint: POST /predict (multipart image upload)
-- Model warmup: dummy inference on startup to pre-allocate memory
-- Backend notification: if confidence > 50%, AI service POSTs event to Django backend
+- Confidence threshold: 0.5 (50%), set via model(frame, conf=0.5, stream=True)
+- Frame capture: OpenCV cv2.VideoCapture(0)
+- Cooldown: 10-second minimum interval between consecutive alerts
+- Snapshot: Annotated JPEG saved as alert_YYYYMMDD_HHMMSS.jpg via cv2.imwrite()
+- Backend reporting: HTTP POST /api/events/ (multipart form data with snapshot)
+- Display: cv2.imshow() for live detection visualization
+- API URL: https://bodareda0001.pythonanywhere.com/api/events/
+- CAMERA_ID: 1 (hardcoded reference to camera record in backend)
 
-CAMERA INTEGRATION:
-- camera.py: Direct local inference mode — opens webcam via cv2.VideoCapture(0),
-  runs YOLO locally, posts detected events to Django backend, 10-second cooldown
-  between alerts, live visualization window
-- webcam_client.py: Client-server mode — captures frames, sends via HTTP POST
-  to AI service /predict endpoint every 2 seconds
-- demo.py: Simulated detection mode — sends pre-captured images for testing
-  without physical camera
+ACTUAL camera.py WORKFLOW:
+1. Load YOLO model: model = YOLO('best.pt')
+2. Open webcam: cap = cv2.VideoCapture(0)
+3. Loop: read frame → model(frame, conf=0.5, stream=True)
+4. Parse results: r.plot() for annotation, extract cls_id, confidence, label
+5. First detection only (break after first box)
+6. Cooldown check: current_time - last_sent_time > 10s
+7. Save snapshot: cv2.imwrite(f"alert_{timestamp}.jpg", annotated_frame)
+8. POST to backend: requests.post(API_URL, files={"snapshot": img}, data={...})
+9. Reset cooldown only on HTTP 201
+10. Display: cv2.imshow("Fire & Smoke Detection", annotated_frame)
+11. Quit on 'q' key press
+
+POST REQUEST FIELDS:
+- camera: 1 (integer, FK to Camera record)
+- event_type: "fire" or "smoke" (from YOLO class name)
+- ai_confidence: 0–100 (YOLO 0.0–1.0 × 100)
+- notes: "Detected automatically by AI system"
+- snapshot: JPEG file (multipart upload)
+
+AI DEPENDENCIES:
+- ultralytics ≥ 8.0.0, < 9.0.0
+- opencv-python ≥ 4.8.0, < 5.0.0
+- torch ≥ 2.0.0, < 3.0.0
+- numpy ≥ 1.24.0, < 2.0.0
+- pillow ≥ 10.0.0, < 13.0.0
+- requests ≥ 2.28.0, < 3.0.0
+
+AI TEAM MEMBERS: Ali Khaled Abo Raya, Mohamed Abdelfatah Attalah, Mohamed Asaad
+
+TERMINOLOGY (use consistently):
+- AI Camera Node, Edge Node, Detection Event, Confidence Threshold,
+  Inference Pipeline, Cooldown, Snapshot, FireEvent
 
 ══════════════════════════════════════════════════════════
-CHAPTER STRUCTURE — Generate ALL of the following sections:
+CHAPTER 4 STRUCTURE — Generate ALL of the following sections:
 ══════════════════════════════════════════════════════════
 
-1. CHAPTER INTRODUCTION (500–800 words)
-   - Role of the AI component as the "brain" of FireGuard
-   - Why computer vision was chosen over traditional sensors (smoke detectors, heat sensors)
-   - End-to-end AI pipeline overview at a high level:
-     Camera → Frame capture → Preprocessing → YOLOv8 Inference → Post-processing →
-     Event decision → Backend notification
+CHAPTER OBJECTIVE:
+Document the complete AI development process including dataset preparation,
+model training, inference pipeline implementation, and camera integration.
+
+4.1 CHAPTER INTRODUCTION (500–700 words)
+   - Role of the AI component as the detection engine of FireGuard
+   - Why computer vision was chosen over traditional sensors
+   - High-level pipeline overview:
+     Camera → Frame Capture → Preprocessing → YOLOv8 Inference →
+     Post-processing → Cooldown Check → Snapshot → Backend Notification
    - Include a Mermaid flowchart of the complete AI pipeline
-   - Include a KEY DESIGN DECISIONS TABLE:
+   - Include a Key Design Decisions Table:
      | Decision | Options Considered | Chosen | Justification |
-     (Cover: model architecture, input size, confidence threshold, target classes,
-      preprocessing approach)
-   - Chapter roadmap (list the subsections that follow)
+     (Cover: model architecture, confidence threshold, cooldown period,
+      camera input method, snapshot format)
 
-2. DATASET COLLECTION AND ANNOTATION (1500–2000 words)
-   - Data collection strategy: sources (public datasets, web scraping, custom captures)
-   - Diversity: indoor, outdoor, day, night, different fire types, negative samples
-   - Include a table: "Table X: Dataset Sources" — Source | Type | Image Count | Notes
-   - Annotation methodology: Roboflow annotation interface, YOLO format
-   - YOLO annotation format explanation with mathematical formulation:
+4.2 DATASET COLLECTION AND PREPARATION (1200–1500 words)
+   - Data collection strategy: public fire/smoke datasets, web sources, custom captures
+   - Dataset diversity: indoor, outdoor, day, night, different fire types, negatives
+   - Include Table: "Table 4.1: Dataset Sources"
+     | Source | Type | Image Count | Notes |
+   - Annotation methodology: Roboflow platform, YOLO annotation format
+   - YOLO annotation format with mathematical formulation:
      center_x = (x_min + x_max) / (2 × image_width)
    - Include example annotation file in a code block
-   - Dataset statistics:
-     Total images [X], Train/Val/Test split [X]%/[X]%/[X]%
+   - Dataset statistics (use [X] placeholders for actual values):
+     Total images: [X], Train/Val/Test split: [X]%/[X]%/[X]%
      Class distribution: fire [X] instances, smoke [X] instances
-   - Include a table: "Table X: Dataset Split Summary"
-   - Dataset challenges: class imbalance, ambiguous cases (steam vs. smoke),
-     small object detection, varying resolutions
-   - Figure placeholders for annotated sample images
-
-3. ROBOFLOW PREPROCESSING PIPELINE (1000–1500 words)
-   - What Roboflow is and why it was chosen
-   - Alternative tools comparison table: Roboflow vs. LabelImg vs. CVAT vs. Labelme
-   - Preprocessing steps: auto-orient, resize to [X]×[X], normalization
-   - Include a Mermaid flowchart:
-     Raw Images → Upload → Annotate → Preprocess → Augment → Export
+   - Include Table: "Table 4.2: Dataset Split Summary"
+   - Preprocessing steps: auto-orient, resize, normalization
    - Augmentation techniques table:
      | Technique | Parameters | Purpose |
-     (horizontal flip, rotation ±15°, brightness ±25%, blur up to 2px,
-      noise injection, mosaic)
-   - Figure placeholders for before/after augmentation examples
-   - Dataset versioning and export to YOLOv8 PyTorch format
-   - Export directory structure: train/images, train/labels, valid/, test/
-   - data.yaml file explanation
+   - Include a Mermaid flowchart:
+     Raw Images → Upload to Roboflow → Annotate → Preprocess → Augment →
+     Export (YOLOv8 format)
+   - Figure placeholders for annotated sample images
 
-4. YOLOv8 TRAINING METHODOLOGY (2000–2500 words)
-   - YOLOv8 variant selection table (nano/small/medium/large/xlarge):
+4.3 YOLOv8 MODEL ARCHITECTURE (800–1000 words)
+   - YOLOv8 architecture overview: backbone (CSPDarknet), neck (FPN+PAN), head
+   - Anchor-free detection design
+   - Decoupled head for classification and regression
+   - YOLOv8 variant selection table:
      | Variant | Parameters | FLOPs | mAP (COCO) | Chosen? |
+   - Explain which variant was selected and why
+   - Include a Mermaid diagram or figure placeholder showing YOLOv8 architecture
+
+4.4 MODEL TRAINING (1000–1500 words)
+   - Transfer learning: COCO pre-trained weights, fine-tuning strategy
    - Training hyperparameters table:
      | Parameter | Value | Justification |
-     (epochs, batch size, image size 640, learning rate, optimizer, weight decay,
-      momentum, warmup epochs, augmentation params)
-   - Transfer learning strategy: COCO pre-trained weights, fine-tuning approach
-   - Training process: hardware specs, training command example (Python code block),
-     monitoring (loss curves, mAP progression), early stopping
+     (epochs, batch size, image size=640, learning rate, optimizer, weight decay,
+      momentum, warmup epochs)
+   - Training command (Python code block)
    - Loss functions with mathematical formulas:
-     * Box loss (CIoU)
+     * Box loss (CIoU): L_CIoU = 1 - IoU + ρ²(b,b^gt)/c² + αv
      * Classification loss (Binary Cross-Entropy)
      * Distribution Focal Loss (DFL)
    - Evaluation metrics with formulas:
      * Precision = TP / (TP + FP)
      * Recall = TP / (TP + FN)
      * F1 = 2 × (P × R) / (P + R)
-     * mAP@0.5 and mAP@0.5:0.95 explanation
-   - Confusion matrix description
-   - Training results summary table with placeholder metrics
-   - Figure placeholders: PR curve, confusion matrix, F1-confidence curve,
-     training loss curve, mAP progression over epochs
-   - Model export: best.pt vs. last.pt, model size, inference speed benchmarks
+     * mAP@0.5 and mAP@0.5:0.95
+   - Training results table (use [X] placeholders):
+     | Metric | Fire | Smoke | Overall |
+   - Figure placeholders: loss curves, mAP progression, confusion matrix,
+     PR curve, F1-confidence curve
+   - Model export: best.pt vs. last.pt, model size
 
-5. PYTORCH IMPLEMENTATION DETAILS (800–1200 words)
-   - PyTorch framework overview and role in the ML ecosystem
-   - Comparison table: PyTorch vs. TensorFlow for object detection
-   - Ultralytics library: how it wraps PyTorch, YOLO class API
-     (load, train, predict, export)
-   - Model serialization (.pt files — torch.save)
-   - Inference runtime: GPU vs. CPU device selection, tensor operations,
-     Non-Maximum Suppression (NMS)
-   - Custom integration: how best.pt is loaded in FireGuard,
-     warmup strategy, thread safety
-   - Include code snippets from model.py
+4.5 PYTORCH AND ULTRALYTICS INTEGRATION (600–800 words)
+   - PyTorch framework role in the ML ecosystem
+   - Ultralytics library: how it wraps PyTorch
+   - YOLO class API: load, train, predict, export
+   - Model loading: model = YOLO('best.pt')
+   - Inference call: model(frame, conf=0.5, stream=True)
+   - Result processing: r.boxes, r.names, r.plot()
+   - Include code snippets from the actual implementation
 
-6. INFERENCE PIPELINE (1500–2000 words)
-   - Complete pipeline Mermaid flowchart:
-     HTTP POST /predict → Validate → Read Bytes → Decode (OpenCV) → BGR→RGB →
-     YOLO Inference → Filter Classes → Confidence Check → Return + Notify Backend
-   - Step-by-step breakdown with code walkthrough:
-     a. Image reception (FastAPI UploadFile)
-     b. Decoding (np.frombuffer → cv2.imdecode → cv2.cvtColor)
-     c. Model inference (model(image, conf=0.5, verbose=False))
-     d. Result parsing (boxes, labels, confidence)
-     e. Target class filtering (fire and smoke only)
-     f. Best detection selection (highest confidence)
-     g. Threshold decision (>50% → notify backend)
-     h. Backend notification (HTTP POST: camera_id, event_type, ai_confidence)
-     i. Response construction (JSON: event_type, confidence, detections[])
-   - Error handling: invalid image, empty data, model failure, backend failure
-   - Performance table: "Inference Pipeline Timing Breakdown"
-     | Step | Average Time (ms) |
-     (decode, color conversion, YOLO inference, post-processing, total)
+4.6 OPENCV INTEGRATION (600–800 words)
+   - OpenCV role: frame capture and image processing
+   - cv2.VideoCapture(0): opening the webcam
+   - Frame reading: ret, frame = cap.read() — BGR numpy array
+   - Snapshot generation: cv2.imwrite() with annotated frame from r.plot()
+   - Live display: cv2.imshow() for operator monitoring during demo
+   - Camera release and window cleanup
 
-7. OPENCV INTEGRATION (800–1200 words)
-   - OpenCV overview and role in computer vision
-   - opencv-python-headless for server (no GUI dependencies)
-   - Image processing pipeline:
-     * np.frombuffer(bytes, dtype=np.uint8)
-     * cv2.imdecode(buffer, cv2.IMREAD_COLOR)
-     * cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-     * Why BGR→RGB is necessary (OpenCV BGR default, YOLO expects RGB)
-   - Webcam integration: cv2.VideoCapture(0), cap.read(), cv2.imencode
-   - Detection visualization: result.plot(), cv2.imshow for demo
-   - Include code snippets and a Mermaid image processing flow diagram
+4.7 INFERENCE PIPELINE IMPLEMENTATION (1000–1200 words)
+   - Complete pipeline walkthrough with code:
+     1. Initialize model and camera
+     2. Main loop: read frame
+     3. Run YOLO inference
+     4. Parse results: extract class ID, confidence, label
+     5. First detection selection (break after first box)
+     6. Cooldown check: time.time() - last_sent_time > 10
+     7. Save annotated snapshot
+     8. HTTP POST to backend (multipart form data)
+     9. Reset cooldown on HTTP 201
+     10. Display annotated frame
+     11. Exit on 'q' key
+   - Include a Mermaid state diagram for the cooldown mechanism
+   - Include a Mermaid flowchart for the complete runtime processing flow
+   - Confidence transformation: YOLO 0.0–1.0 → ai_confidence 0–100
 
-8. CAMERA INTEGRATION WORKFLOW (1000–1500 words)
-   - Hardware: External WiFi camera connected through USB and used as webcam input
-     during live demo/testing. Appears as standard webcam (video device index 0).
-   - Integration Mode 1 — Direct Detection (camera.py):
-     Camera → VideoCapture(0) → YOLO local inference → cooldown → POST event to backend
-     Include Mermaid sequence diagram
-   - Integration Mode 2 — Client-Server (webcam_client.py):
-     Camera → VideoCapture(0) → capture every 2s → HTTP POST to /predict → AI service
-     Include Mermaid sequence diagram
-   - Integration Mode 3 — Simulation (demo.py):
-     Pre-captured images → HTTP POST to /predict → testing without camera
-   - Comparison table of the three integration modes
-   - Demo workflow: connect camera → start Docker → run camera.py → detect → alert
-   - Challenges: driver compatibility, frame rate, latency
+4.8 BACKEND EVENT REPORTING (400–500 words)
+   - POST /api/events/ request format (multipart form data)
+   - Request fields: camera, event_type, ai_confidence, notes, snapshot
+   - Response handling: HTTP 201 → reset cooldown, other → log error
+   - Include the actual request/response JSON examples
+
+4.9 LIMITATIONS AND FUTURE IMPROVEMENTS (300–400 words)
+   - Single camera only (hardcoded CAMERA_ID=1)
+   - No authentication on event creation endpoint
+   - Local snapshot storage (no automatic cleanup)
+   - Hardcoded API URL
+   - First detection only (single box per frame)
+   - CPU inference speed dependency
+   - Future: multi-camera support, GPU acceleration, model retraining pipeline
 
 ═══════════════════════════════════════════════════════════
 FORMATTING REQUIREMENTS (MANDATORY):
@@ -234,39 +883,45 @@ FORMATTING REQUIREMENTS (MANDATORY):
 DOCUMENT FORMATTING (for Microsoft Word export):
 - Font: Times New Roman
 - Body text: 12 pt
-- Section headings: 14 pt bold
-- Chapter title: 16 pt bold
+- Chapter title: 16 pt bold ("Chapter 4: AI Development")
+- Main section headings (4.1, 4.2, etc.): 14 pt bold
+- Subsection headings (4.1.1, etc.): 13 pt bold
 - Line spacing: 1.5
-- Text alignment: justified
-- All figures must have captions: "Figure X.Y: [Description]"
-- All tables must have captions: "Table X.Y: [Description]"
+- Text alignment: Justified
+- Standard A4 page size
+- All figures must have captions: "Figure 4.Y: [Description]"
+- All tables must have captions: "Table 4.Y: [Description]"
 - Suggest page breaks between major sections
-- Number all sections hierarchically (e.g., 5.1, 5.1.1, 5.1.2)
 
 ACADEMIC STYLE:
 - Formal academic engineering tone, third person
 - In-text citations using IEEE style: [1], [2], [3]
-- Every technical claim must be supported by a citation
 - Do NOT fabricate citations — use real, verifiable references only
-- Include a REFERENCES section at the end of this chapter with:
-  * Real YOLO papers (Redmon et al. 2016, Jocher et al. for YOLOv5/v8)
-  * Real PyTorch references (Paszke et al. 2019)
-  * Real OpenCV references (Bradski 2000)
-  * Real fire detection papers from IEEE/Springer/Elsevier
-  * Official Ultralytics, Roboflow, FastAPI documentation URLs with access dates
-  * Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
-  * Minimum 15 references for this chapter
+
+REFERENCES (minimum 15 references):
+- Real YOLO papers: Redmon et al. (2016), Bochkovskiy et al. (2020),
+  Jocher et al. (YOLOv5/v8)
+- Real PyTorch: Paszke et al. (2019)
+- Real OpenCV: Bradski (2000)
+- Real fire detection papers from IEEE/Springer/Elsevier
+- Official Ultralytics documentation (docs.ultralytics.com)
+- Official Roboflow documentation
+- Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
+
+End the chapter with:
+## References
+(formatted in IEEE style)
 
 DIAGRAMS AND VISUALS:
-- Include Mermaid diagrams wherever specified
-- Include tables wherever specified
-- Include figure placeholders: "Figure X.Y: [Description] — [insert screenshot]"
-- Suggest infographics where applicable
+- Include ALL Mermaid diagrams specified above
+- Include ALL tables specified above
+- Include figure placeholders for: training curves, confusion matrix, sample
+  detections, architecture diagrams
 
 TOKEN OPTIMIZATION:
-- Target output: approximately 15–25 Word pages
-- If the chapter is too long for a single generation, indicate clearly where
-  to split and provide a continuation prompt
+- Target output: approximately 12–15 Word pages
+- If output must be split, clearly indicate the split point and provide
+  a continuation prompt
 ```
 
 </details>
@@ -277,225 +932,250 @@ TOKEN OPTIMIZATION:
 
 ---
 
-# 2 — 🗄️ Backend Team Chapter
+# 5 — 🖥️ Backend Development Chapter
 
 <details>
-<summary><b>Click to expand full prompt (~15–25 pages output)</b></summary>
+<summary><b>Click to expand full prompt (Chapter 5: ~10–12 pages)</b></summary>
 
 ```
-You are an expert academic engineering writer specializing in backend development,
-REST API design, web security, and push notification systems. You are writing a
-chapter for a graduation project report/book submitted to a university engineering
-faculty.
-
-Write the COMPLETE BACKEND CHAPTER for the following project.
+You are a senior academic engineering writer specializing in backend development,
+REST API design, web security, and push notification systems. You are writing the
+BACKEND DEVELOPMENT CHAPTER (Chapter 5) for a graduation project book submitted
+to a university engineering faculty.
 
 ═══════════════════════════════════════════════════════════
 PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
 ═══════════════════════════════════════════════════════════
 
-SYSTEM OVERVIEW (for context only — focus this chapter on the backend):
-- Microservice architecture: FastAPI AI Service + Django Backend + Flutter Mobile App
-- Database: SQLite3 (zero-configuration, file-based, no PostgreSQL)
-- Push notifications: Firebase Cloud Messaging (FCM)
-- Camera: External WiFi camera connected through USB and used as webcam input
-  during live demo/testing
-- Containerization: Docker + Docker Compose
+SYSTEM CONTEXT (for context only — focus this chapter on the backend):
+- Three-tier architecture: Edge (AI Service) + Backend (Django) + Client (Flutter)
+- There is NO FastAPI, NO Docker, NO Docker Compose, NO microservices.
+- The AI service is a standalone Python script (camera.py) that sends HTTP POST
+  requests to the Django backend.
 
 BACKEND TECHNICAL DETAILS:
 - Framework: Django 5.2 + Django REST Framework (DRF) 3.17
-- Server: Gunicorn 21.2 (3 sync workers, --bind 0.0.0.0:8000)
-- Database: SQLite3 (db.sqlite3 file inside backend container)
+- Database: SQLite3 (db.sqlite3, file-based, managed by Django ORM)
 - Authentication: DRF Token Authentication (rest_framework.authtoken)
-- Firebase: firebase-admin SDK (Python) for push notifications
-- CORS: django-cors-headers (CORS_ALLOW_ALL_ORIGINS = True in development)
+- Push notifications: Firebase Admin SDK 7.4 (firebase_admin Python package)
+- CORS: django-cors-headers (CORS_ALLOW_ALL_ORIGINS = True — development setting)
 - Environment: python-dotenv for .env loading
-- Docker: python:3.10-slim base image
-- Startup: entrypoint.sh (migrate → collectstatic → exec gunicorn)
+- Deployment: PythonAnywhere (bodareda0001.pythonanywhere.com), WSGI
+- Default permission: IsAuthenticated on all endpoints (except POST /api/events/)
+- Pagination: PageNumberPagination, PAGE_SIZE=20
 
-DJANGO APPS:
-- accounts: UserProfile (phone, avatar — OneToOneField to auth.User)
-- cameras: Zone (name, description), Camera (name, location, stream_url, thumbnail, status)
-- events: FireEvent (event_type, status, ai_confidence, snapshot, notes, detected_at, resolved_at)
-- notifications: FCMDevice (token, platform, is_active), NotificationPreference (fire/resolved/false_alarm/sound flags)
+DJANGO PROJECT STRUCTURE:
+backend/
+├── fireguard/          # Project config (settings.py, urls.py, firebase.py, wsgi.py)
+├── accounts/           # User authentication & profiles
+├── cameras/            # Camera & zone management
+├── events/             # Fire event lifecycle
+├── notifications/      # FCM device & notification management
+├── manage.py
+├── requirements.txt
+└── firebase_credentials.json (not in VCS)
 
-API STRUCTURE:
-- Base URL: http://localhost:8000/api/
-- Authentication: Token Authentication (Authorization: Token <key>)
-- Response format: JSON
-- Pagination: PageNumberPagination (PAGE_SIZE=20)
+DJANGO APPS AND MODELS:
+- accounts: UserProfile (user OneToOne, phone, avatar) — auto-created via post_save signal
+- cameras: Zone (name, description), Camera (zone FK, name, location, stream_url,
+  thumbnail, status[online/offline])
+- events: FireEvent (camera FK, event_type[fire/smoke], status[active/resolved/
+  false_alarm], ai_confidence, snapshot, notes, detected_at, resolved_at)
+  Ordered by -detected_at. Status lifecycle: active → resolved | false_alarm
+- notifications: FCMDevice (user FK, token unique, platform, is_active),
+  NotificationPreference (user OneToOne, fire_alerts, resolved_alerts,
+  false_alarm_alerts, sound_enabled) — auto-created via post_save signal
 
-API GROUPS:
-1. Auth APIs (/api/auth/)
-   - POST /register/ — create new user account
-   - POST /login/ — authenticate and return token
-   - POST /logout/ — invalidate token
-   - GET /profile/ — get current user profile
-   - PUT /profile/update/ — update profile (phone, avatar)
-   - POST /change-password/ — change password
+DRF CONFIGURATION:
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
 
-2. Cameras APIs (/api/cameras/)
-   - GET /zones/ — list all zones
-   - POST /zones/ — create zone
-   - GET /cameras/ — list all cameras
-   - POST /cameras/ — create camera
-   - DELETE /cameras/<id>/ — delete camera
-   - PATCH /cameras/<id>/toggle-status/ — toggle online/offline
-   - GET /cameras/stats/ — camera statistics
+COMPLETE API ENDPOINTS:
 
-3. Events APIs (/api/events/)
-   - GET / — list all events (paginated)
-   - POST / — create event (used by AI service)
-   - GET /<id>/ — get event detail
-   - PATCH /<id>/resolve/ — mark as resolved
-   - PATCH /<id>/false-alarm/ — mark as false alarm
-   - GET /active/ — list active events
-   - GET /stats/ — event statistics
+Authentication (/api/auth/):
+- POST /register/ — AllowAny — Create user + UserProfile + NotificationPreference + Token
+- POST /login/ — AllowAny — Authenticate, return token
+- POST /logout/ — IsAuthenticated — Delete token
+- GET /profile/ — IsAuthenticated — Get profile
+- PATCH /profile/ — IsAuthenticated — Update profile (name, email, phone, avatar)
+- POST /change-password/ — IsAuthenticated — Change password, regenerate token
 
-4. Notifications APIs (/api/notifications/)
-   - POST /register-device/ — register FCM token
-   - DELETE /unregister-device/ — unregister FCM token
-   - GET /preferences/ — get notification preferences
-   - PUT /preferences/ — update notification preferences
-   - POST /test-push/ — send test notification
+Cameras (/api/cameras/):
+- GET /zones/ — Authenticated — List zones with camera_count annotation
+- POST /zones/ — Admin (IsAdminOrReadOnly) — Create zone
+- GET/PUT/PATCH/DELETE /zones/{id}/ — Admin for write, Authenticated for read
+- GET /cameras/ — Authenticated — List cameras (filterable by zone, status)
+- POST /cameras/ — Admin — Create camera
+- GET/PUT/PATCH/DELETE /cameras/{id}/ — Admin for write, Authenticated for read
+- PATCH /cameras/{id}/status/ — Admin — Update camera status
+- GET /stats/ — Authenticated — Camera statistics (total, online, offline)
 
-FIREBASE CONTEXT:
-- Firebase initialization in Django (firebase.py → AppConfig.ready())
-- Idempotent init with firebase_admin._apps check
-- FCM functions: send_fire_alert_to_all(event), send_resolved_alert(event), send_test_push(token)
-- Multicast: send_each_for_multicast() to all opted-in devices
-- Notification types: fire_alert, smoke_alert, event_resolved
-- Payload: notification block + data block (JSON)
-- Graceful degradation: if Firebase init fails, app continues without push
+Events (/api/events/):
+- GET / — IsAuthenticated — List events (filterable by status, camera, zone, type)
+- POST / — AllowAny — Create event (used by AI service camera.py)
+- GET /{id}/ — IsAuthenticated — Event detail
+- PATCH /{id}/ — IsAuthenticated — Update event notes
+- PATCH /{id}/resolve/ — IsAuthenticated — Set status=resolved, resolved_at=now
+- PATCH /{id}/false-alarm/ — IsAuthenticated — Set status=false_alarm
+- GET /active/ — IsAuthenticated — Most recent active event
+- GET /stats/ — IsAuthenticated — Aggregate counts {total, fire, smoke, active, resolved, false_alarm}
 
-SECURITY CONTEXT:
-- DRF Token Authentication (rest_framework.authtoken)
-- Default permission: IsAuthenticated on all endpoints
-- Password hashing: Django PBKDF2 + SHA256
-- No plaintext passwords stored
-- Firebase credentials: JSON file (firebase_credentials.json)
+Notifications (/api/notifications/):
+- POST /register-device/ — IsAuthenticated — Register/update FCM token
+- DELETE /unregister-device/ — IsAuthenticated — Deactivate FCM token
+- GET /preferences/ — IsAuthenticated — Get notification preferences
+- PATCH /preferences/ — IsAuthenticated — Update preferences
+- POST /test-push/ — IsAuthenticated — Send test push notification
+
+FIREBASE INTEGRATION:
+- Firebase initialization: firebase.py → NotificationsConfig.ready() → initialize_firebase()
+- Idempotent init: checks firebase_admin._apps before initializing
+- FCM functions in notifications/fcm.py:
+  * send_fire_alert_to_all(event): Query users with fire_alerts=True, fetch active tokens,
+    build MulticastMessage (notification + data payload), send_each_for_multicast
+  * send_resolved_alert(event): Query users with resolved_alerts=True, send resolved notification
+  * send_test_push(token): Send test to single device
+- Failed token handling: deactivate is_active=False for failed FCM tokens
+
+NOTIFICATION PAYLOAD:
+notification: { title: "🔥 Fire Detected!", body: "Building 3, Floor 2 — 87.5%" }
+data: { type, event_id, camera_id, camera_name, location, zone, event_type,
+        ai_confidence, detected_at }
+
+SERIALIZERS:
+RegisterSerializer, UserSerializer, UserProfileSerializer, UpdateProfileSerializer,
+ChangePasswordSerializer, ZoneSerializer (annotated camera_count), CameraSerializer
+(zone_name), CameraStatusSerializer, FireEventSerializer (nested camera_detail),
+FireEventCreateSerializer (validates ai_confidence 0-100, camera not offline),
+FireEventUpdateSerializer, FCMDeviceSerializer, NotificationPreferenceSerializer
+
+BACKEND DEPENDENCIES:
+Django 5.2.13, djangorestframework 3.17.1, django-cors-headers 4.9.0,
+firebase_admin 7.4.0, python-dotenv 1.2.2, pillow 12.2.0, requests 2.33.1,
+gunicorn 21.2.0
+
+BACKEND TEAM MEMBER: Abdelrahman Reda Abdellah
+
+TERMINOLOGY (use consistently):
+- FireEvent, Active Event, Detection Event, Notification Payload, Cooldown,
+  Snapshot, FCM, DRF, Token Authentication, Zone, MulticastMessage
 
 ══════════════════════════════════════════════════════════
-CHAPTER STRUCTURE — Generate ALL of the following sections:
+CHAPTER 5 STRUCTURE — Generate ALL of the following sections:
 ══════════════════════════════════════════════════════════
 
-1. CHAPTER INTRODUCTION (800–1200 words)
+CHAPTER OBJECTIVE:
+Document the complete backend implementation including Django project structure,
+DRF API design, authentication system, Firebase notification integration, and
+the event lifecycle management.
+
+5.1 CHAPTER INTRODUCTION (600–800 words)
    - Backend role: central business logic, data persistence, API gateway,
      event receiver from AI service, notification dispatcher
    - Technology justification table:
      | Technology | Version | Purpose | Why Chosen |
-     (Django, DRF, Gunicorn, SQLite3, firebase-admin, python-dotenv, django-cors-headers)
-   - Django project structure overview:
-     * fireguard/ (settings.py, urls.py, firebase.py, wsgi.py)
-     * accounts/, cameras/, events/, notifications/
-   - Include a Mermaid diagram showing Django app structure and relationships
-   - System architecture overview: how the backend connects AI service, database,
-     Firebase, and mobile app
-   - Include a Mermaid architecture diagram:
-     Camera → AI Service → Backend → SQLite3
-     Backend → Firebase → Flutter App
-     Flutter App → Backend (REST API)
+   - Django project structure overview with directory tree
+   - Include a Mermaid diagram showing Django app architecture and relationships
+   - How the backend connects AI service, database, Firebase, and mobile app
 
-2. DJANGO REST FRAMEWORK APIs (2000–2500 words)
-   - API design principles: RESTful conventions, resource naming, HTTP method semantics,
-     status codes (200, 201, 400, 401, 403, 404, 500)
-   - ENDPOINT DOCUMENTATION — for EACH endpoint, provide:
-     * HTTP Method + URL
-     * Description
-     * Authentication required (Yes/No)
-     * Request body (JSON example in code block)
-     * Response body (JSON example in code block)
-     * Status codes
-     Present as formatted tables or structured blocks
-   - Serializer architecture: how DRF serializers validate and transform data,
-     key serializers (UserSerializer, CameraSerializer, FireEventSerializer, FCMDeviceSerializer),
-     nested serialization
-   - View architecture: ViewSets vs. APIViews, custom @action decorators,
-     permission classes
-   - URL routing: Django URL config, DRF Router, URL pattern → view mapping table
+5.2 DJANGO REST FRAMEWORK API DESIGN (1500–2000 words)
+   - RESTful API design principles: resource naming, HTTP methods, status codes
+   - Complete endpoint documentation for ALL four API groups:
+     For each endpoint group, provide a table with:
+     | Method | Endpoint | Permission | Description |
+   - Include JSON code blocks for key request/response examples:
+     * Register request/response
+     * Login request/response
+     * Create event request/response (multipart)
+     * Event stats response
+     * Register device request/response
+   - Serializer architecture: validation, nested serialization, custom validation
+     (ai_confidence range, camera status check)
+   - View architecture: APIView, custom actions, permission classes
+   - URL routing: Django URL config, include() pattern
    - Include a Mermaid diagram showing URL routing structure
-   - Include JSON code blocks for request/response examples
 
-3. AUTHENTICATION AND SECURITY (1200–1500 words)
-   - Authentication flow with Mermaid sequence diagram:
-     Register → Hash password → Store → Login → Validate → Generate Token → Return →
-     Subsequent requests with "Authorization: Token <key>" → Logout → Delete token
-   - Token-based authentication:
-     * How DRF TokenAuthentication works
-     * Token storage (authtoken_token table)
-     * Token in HTTP headers
-     * Token invalidation on logout
-     * Comparison with JWT — why token auth was chosen
-   - Authorization: IsAuthenticated class, admin via Django admin (is_staff)
-   - Mobile-side security:
-     * flutter_secure_storage for encrypted token storage
-     * Dio interceptor for automatic token injection
-     * Auto-logout on 401
+5.3 AUTHENTICATION AND SECURITY (800–1000 words)
+   - Token-based authentication flow with Mermaid sequence diagram:
+     Register → Create User + Profile + Preferences → Generate Token →
+     Login → Validate → Return Token → Subsequent requests with header →
+     Logout → Delete Token
+   - DRF TokenAuthentication mechanism
+   - Permission model: IsAuthenticated (default), AllowAny (POST /api/events/),
+     IsAdminOrReadOnly (cameras/zones write operations)
+   - Password handling: Django PBKDF2 + SHA256 hashing
    - Security assessment table:
-     | Threat | Current Status | Mitigation | Priority |
-     (HTTPS, CORS restriction, Firebase credentials, rate limiting — noted as future work)
+     | Aspect | Implementation | Notes |
+     (Token Auth, CORS, Firebase credentials, AllowAny on event creation)
 
-4. FIREBASE NOTIFICATION SYSTEM (1500–2000 words)
-   - FCM overview: what it is, how it works (client → FCM server → device)
-   - Comparison table: FCM vs. OneSignal vs. Pusher vs. custom WebSocket
+5.4 FIREBASE NOTIFICATION SYSTEM (1000–1200 words)
+   - FCM overview and architecture
    - Backend implementation:
-     * Firebase init in Django (firebase.py → AppConfig.ready())
-     * Idempotent init with _apps check
-     * Dispatch functions: send_fire_alert_to_all, send_resolved_alert, send_test_push
-     * Notification payload JSON example (notification block + data block)
-   - Include Mermaid sequence diagram:
-     Event Created → Filter Opted-in Users → Collect Tokens → Multicast → FCM → Devices
-   - Mobile implementation summary:
-     * Firebase init in Flutter, token lifecycle, foreground/background handling
-     * Local notifications (flutter_local_notifications)
-     * AlarmService: siren + vibration on fire alerts
-     * Full-screen alert navigation
-   - Notification preferences: NotificationPreference model, user opt-in/opt-out,
-     backend filters devices by preferences before sending
-   - Platform comparison table: Android vs. iOS notification behavior
-     (notification channels, importance levels, APNS priority)
+     * Firebase initialization (firebase.py → AppConfig.ready())
+     * send_fire_alert_to_all(event): flow with query preferences → collect tokens
+       → MulticastMessage → send → handle failures
+     * send_resolved_alert(event): same pattern for resolved events
+     * send_test_push(token): single device test
+   - Notification payload structure (notification + data blocks)
+   - Include a Mermaid sequence diagram for the complete notification flow
+   - Failed token handling: deactivate invalid tokens
+   - Platform configuration: Android (priority=high, channel=alerts),
+     APNS (priority=10, sound=default)
+   - Include Table: "Table 5.X: Notification Types"
+     | Type | Trigger | Recipients | Payload |
+
+5.5 EVENT LIFECYCLE MANAGEMENT (500–700 words)
+   - FireEvent status lifecycle: active → resolved | false_alarm
+   - Include a Mermaid state diagram for event status transitions
+   - Event creation from AI service (AllowAny, multipart form)
+   - Event resolution and false alarm marking
+   - Event statistics aggregation
+   - Event filtering and pagination
+
+5.6 LIMITATIONS AND FUTURE IMPROVEMENTS (300–400 words)
+   - AllowAny on event creation (should use API key)
+   - CORS_ALLOW_ALL_ORIGINS (development setting)
+   - SQLite3 concurrency limitations
+   - No automated testing
+   - Manual deployment
+   - Future: API key auth for AI service, rate limiting, automated tests
 
 ═══════════════════════════════════════════════════════════
 FORMATTING REQUIREMENTS (MANDATORY):
 ═══════════════════════════════════════════════════════════
 
 DOCUMENT FORMATTING (for Microsoft Word export):
-- Font: Times New Roman
-- Body text: 12 pt
-- Section headings: 14 pt bold
-- Chapter title: 16 pt bold
-- Line spacing: 1.5
-- Text alignment: justified
-- All figures must have captions: "Figure X.Y: [Description]"
-- All tables must have captions: "Table X.Y: [Description]"
-- Suggest page breaks between major sections
-- Number all sections hierarchically (e.g., 6.1, 6.1.1, 6.1.2)
+- Font: Times New Roman, Body: 12pt, Chapter title: 16pt bold,
+  Sections: 14pt bold, Subsections: 13pt bold
+- Line spacing: 1.5, Justified, A4
+- All figures: "Figure 5.Y: [Description]"
+- All tables: "Table 5.Y: [Description]"
+- Page breaks between major sections
 
 ACADEMIC STYLE:
 - Formal academic engineering tone, third person
-- In-text citations using IEEE style: [1], [2], [3]
-- Every technical claim must be supported by a citation
-- Do NOT fabricate citations — use real, verifiable references only
-- Include a REFERENCES section at the end of this chapter with:
-  * Real Django documentation references (djangoproject.com)
-  * Real DRF documentation references
-  * Real Firebase documentation references
-  * Real web security references (OWASP, RFC standards)
-  * Real REST API design references (Fielding 2000)
-  * Real Gunicorn documentation references
-  * Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
-  * Minimum 12 references for this chapter
+- IEEE citations: [1], [2], [3]
+- Do NOT fabricate citations
 
-DIAGRAMS AND VISUALS:
-- Include Mermaid diagrams wherever specified
-- Include tables wherever specified
-- Include figure placeholders: "Figure X.Y: [Description] — [insert screenshot]"
-- Include JSON code blocks for all API examples
+REFERENCES (minimum 10 references):
+- Official Django documentation (djangoproject.com)
+- Official DRF documentation (django-rest-framework.org)
+- Official Firebase documentation (firebase.google.com)
+- REST API design (Fielding 2000)
+- Web security references (OWASP)
+- Format: [#] Author(s), "Title," Source, Month Year. DOI/URL.
+
+End the chapter with:
+## References
+(formatted in IEEE style)
 
 TOKEN OPTIMIZATION:
-- Target output: approximately 15–25 Word pages
-- If the chapter is too long for a single generation, indicate clearly where
-  to split and provide a continuation prompt
+- Target: approximately 10–12 Word pages
+- If split needed, indicate clearly with continuation prompt
 ```
 
 </details>
@@ -506,191 +1186,234 @@ TOKEN OPTIMIZATION:
 
 ---
 
-# 3 — 📱 Frontend / UI Team Chapter
+# 6 — 📱 Mobile Application & UI/UX Chapter
 
 <details>
-<summary><b>Click to expand full prompt (~15–25 pages output)</b></summary>
+<summary><b>Click to expand full prompt (Chapter 6: ~10–12 pages)</b></summary>
 
 ```
-You are an expert academic engineering writer specializing in mobile application
-development, Flutter, state management, and UI/UX design. You are writing a
-chapter for a graduation project report/book submitted to a university engineering
-faculty.
-
-Write the COMPLETE FRONTEND / FLUTTER CHAPTER for the following project.
+You are a senior academic engineering writer specializing in mobile application
+development, Flutter, state management, and UI/UX design. You are writing the
+MOBILE APPLICATION & UI/UX CHAPTER (Chapter 6) for a graduation project book
+submitted to a university engineering faculty.
 
 ═══════════════════════════════════════════════════════════
 PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
 ═══════════════════════════════════════════════════════════
 
-SYSTEM OVERVIEW (for context only — focus this chapter on the mobile app):
-- Microservice architecture: FastAPI AI Service + Django Backend + Flutter Mobile App
-- Database: SQLite3 (zero-configuration, file-based, no PostgreSQL)
-- Push notifications: Firebase Cloud Messaging (FCM)
-- Camera: External WiFi camera connected through USB and used as webcam input
-  during live demo/testing
-- Containerization: Docker + Docker Compose
+SYSTEM CONTEXT (for context only — focus this chapter on the mobile app):
+- Three-tier: Edge (AI Service) + Backend (Django 5.2 + SQLite3) + Client (Flutter)
+- Backend deployed on PythonAnywhere (bodareda0001.pythonanywhere.com)
+- Push notifications via Firebase Cloud Messaging (FCM)
 
 FLUTTER TECHNICAL DETAILS:
-- Framework: Flutter 3.9+ / Dart ^3.9
-- Architecture: Feature-first clean architecture
-- State management: Provider ^6.1.5 (ChangeNotifier-based)
-- HTTP client: Dio ^5.7.0 with auth interceptor
-- Navigation: go_router ^17.2.1
-- Push notifications: firebase_core ^3.13 + firebase_messaging ^15.2
-- Local notifications: flutter_local_notifications ^18.0
-- Responsive sizing: flutter_screenutil ^5.9.3
-- Secure storage: flutter_secure_storage ^9.2.2
-- Audio: audioplayers ^6.4.0 (alarm siren)
-- Haptic: vibration ^3.1.0
+- Framework: Flutter 3.9 / Dart
+- Architecture: Feature-first directory structure with shared core layer
+- State management: Provider 6.1.5 (ChangeNotifier-based)
+- HTTP client: Dio 5.9.2 with token interceptor
+- Navigation: GoRouter 17.2.1 (declarative routing)
+- Push notifications: firebase_core, firebase_messaging 16.2.2
+- Local notifications: flutter_local_notifications 18.0.1 with custom fire_alarm sound
+- Local database: sqflite 2.4.1 (fire_guard.db for notification cache)
+- Responsive sizing: flutter_screenutil 5.9.3 (designSize: 360×690)
+- Token storage: SharedPreferences (via CacheHelper)
+- Date formatting: intl 0.20.2
+- Image selection: image_picker 1.2.2
 
-FEATURE MODULES:
-- splash: animated logo, auto-auth check
-- auth: login, signup, forgot_password
-- home: dashboard stats, camera network, recent activity, simulate alert toggle
-- cameras: camera grid, add/delete camera
-- alert: FULL-SCREEN emergency — pulsing red background, event details,
-  "Mark Resolved" / "False Alarm" buttons, siren + vibration
-- notification: tabbed history (All, Fire, Smoke, Resolved)
-- settings: notification preferences, profile, logout
+FLUTTER PROJECT STRUCTURE:
+lib/
+├── main.dart                    # Entry point
+├── fire_gaurd.dart              # Root widget (MultiProvider + MaterialApp.router)
+├── firebase_options.dart        # Generated Firebase config
+├── core/                        # Shared infrastructure
+│   ├── constant/                # Route name constants
+│   ├── error/                   # Exception classes
+│   ├── models/                  # ActivityEvent, Camera, AlertPayload
+│   ├── navigation/              # GoRouter configuration
+│   ├── services/                # ApiService, CacheHelper, DatabaseService, FirebaseNotifications
+│   ├── theme/                   # AppTheme, AppColors, AppTextStyle
+│   └── widgets/                 # Shared UI components
+└── feature/                     # Feature modules
+    ├── splash/                  # Auto-login check
+    ├── auth/                    # Login, Signup, Forgot Password
+    ├── home/                    # Dashboard
+    ├── cameras/                 # Camera CRUD
+    ├── activity/                # Event history
+    ├── alert/                   # Real-time fire alert
+    ├── notification/            # Notification history
+    └── settings/                # Settings, Profile
 
-CORE MODULES:
-- constant, models, navigation, services, theme, widgets
+PROVIDER REGISTRY (registered via MultiProvider in fire_gaurd.dart):
+- Provider<ApiService>: Singleton Dio HTTP client with token interceptor
+- ProxyProvider<ApiService, AuthRepository>: Auth API calls
+- ProxyProvider<ApiService, CameraRepository>: Camera/Zone API calls
+- ProxyProvider<ApiService, ActivityRepository>: Event history API calls
+- ChangeNotifierProvider<AuthProvider>: Login/logout state, token persistence
+- ChangeNotifierProvider<CameraProvider>: Camera list state, CRUD
+- ChangeNotifierProvider<HomeProvider>: Dashboard statistics
+- ChangeNotifierProvider<ActivityProvider>: Event history, resolve actions
 
-PROVIDERS:
-- AuthProvider — login state, user data, token management
-- HomeProvider — dashboard stats, recent activity, system status
-- CameraProvider — camera list, CRUD operations, stats
-- AlertProvider — active alert state, siren control, resolution actions
-- NotificationProvider — notification history, tab filtering, preferences
-- SplashProvider — initial auth check, auto-navigation
+SCREENS AND ROUTES:
+| Screen | Route Path | Description |
+| SplashScreen | / | Auto-login check (cached token → Home, else → Login) |
+| LoginScreen | /login | Username/password login |
+| SignupScreen | /Singup | Registration form |
+| ForgotPasswordScreen | /forgotPassword | Password recovery |
+| HomeScreen | /home | Dashboard with stats and quick actions |
+| CamerasScreen | /livecamere | Camera list with zone filtering |
+| CameraDetailScreen | /camera/:id | Camera details + events |
+| EditCameraScreen | /editCamera | Camera edit form |
+| ActivityHistoryScreen | /activityHistory | Event history list |
+| AlertScreen | /alert | Full-screen emergency alert |
+| SettingsScreen | /settings | App settings |
+| ProfileScreen | /profile | User profile editing |
 
-UI/UX CONTEXT:
-- Dark theme with emergency-focused color palette
-- Custom color system: AppColors class
-- Typography: AppTextStyle custom class
-- Emergency UX: full-screen alert with pulsing red, siren audio, vibration
-- Color psychology: red = danger, green = safe, amber = warning
+NOTIFICATION HANDLING:
+- FirebaseNotifications class manages all FCM functionality
+- Foreground: onMessage → show local notification + broadcast via stream + store in local DB
+- Background: _firebaseMessagingBackgroundHandler → store in local DB + show notification
+- Terminated: getInitialMessage() → navigate to alert screen on app open
+- Notification tap: onMessageOpenedApp → navigate to alert screen with AlertPayload
+- Custom notification channel: 'fire_emergency_v3', Importance.max, fire_alarm sound
+- FCM token registration: sent to backend after login/signup
+- AlertPayload model: maps FCM data to Dart object (type, eventId, cameraId,
+  cameraName, location, zone, eventType, aiConfidence, detectedAt)
+
+LOCAL DATABASE (fire_guard.db):
+CREATE TABLE notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT, event_id TEXT UNIQUE, camera_id TEXT, camera_name TEXT,
+    location TEXT, zone TEXT, event_type TEXT, ai_confidence REAL, detected_at TEXT
+);
+- Operations: insertNotification, getAllNotifications, clearAll
+- UNIQUE constraint on event_id with ConflictAlgorithm.replace
+
+API SERVICE (Dio):
+- Base URL: https://bodareda0001.pythonanywhere.com/
+- Token interceptor: reads from CacheHelper, adds "Authorization: Token {token}" header
+- Timeout: 30 seconds connect/receive
+
+MOBILE TEAM: Mohamed Hany El-Essawy, Saad Ezzat Saad
+
+TERMINOLOGY (use consistently):
+- AlertPayload, FireEvent, Active Event, Notification Payload, Provider,
+  GoRouter, DatabaseService, ApiService
 
 ══════════════════════════════════════════════════════════
-CHAPTER STRUCTURE — Generate ALL of the following sections:
+CHAPTER 6 STRUCTURE — Generate ALL of the following sections:
 ══════════════════════════════════════════════════════════
 
-1. CHAPTER INTRODUCTION (800–1200 words)
-   - What Flutter is and its advantages for this project
-   - Cross-platform benefit (Android + iOS from single codebase)
-   - Widget-based declarative UI approach
+CHAPTER OBJECTIVE:
+Document the complete Flutter mobile application including architecture,
+state management, UI/UX design, notification handling, and screen implementations.
+
+6.1 CHAPTER INTRODUCTION (600–800 words)
+   - Flutter overview and advantages for this project
+   - Cross-platform benefit (Android + iOS from single Dart codebase)
+   - Widget-based declarative UI
    - Comparison table: Flutter vs. React Native vs. Native Development
-   - Project structure: feature-first directory organization
-   - Include a directory tree diagram showing Core vs. Feature separation
-   - Include a Mermaid diagram showing feature module dependencies
    - Key dependencies table:
-     | Package | Version | Purpose | Justification |
-   - Chapter roadmap
+     | Package | Version | Purpose |
+   - Include directory structure showing core/ vs. feature/ organization
 
-2. STATE MANAGEMENT AND PROVIDERS (1500–2000 words)
-   - State management comparison table:
-     Provider vs. BLoC vs. Riverpod vs. GetX — why Provider was chosen
-   - Provider architecture:
-     * ChangeNotifier base class explanation
-     * notifyListeners() mechanism
-     * Consumer and context.read/watch patterns
-     * MultiProvider setup at app root
-   - Include a Mermaid diagram of the provider tree structure
-   - Provider descriptions table — for each provider:
-     | Provider | Responsibility | Key State Variables | Key Methods | API Calls |
-   - Data flow with Mermaid sequence diagram:
-     UI Action → Provider Method → API Service → Backend → Response →
+6.2 APPLICATION ARCHITECTURE (800–1000 words)
+   - Feature-first architecture pattern
+   - Core layer: services, models, navigation, theme, widgets
+   - Feature layer: independent feature modules
+   - Include a Mermaid architecture diagram showing all layers and dependencies
+   - Data flow: UI → Provider → Repository → ApiService → Backend → Response →
      State Update → UI Rebuild
-     (Use "Load home dashboard" as example flow)
-   - Error handling in providers:
-     * Loading states (isLoading flag)
-     * Error states (errorMessage)
-     * UI feedback (SnackBar, error widgets)
-   - Include code snippets showing provider patterns
 
-3. UI/UX DESIGN AND DISCUSSION (1500–2000 words)
-   - Design philosophy:
-     * Safety-first: emergency visibility over aesthetics
-     * Dark theme justification (reduces eye strain, makes red alerts stand out)
-     * Color psychology: red for danger, green for safe, amber for warning
-     * Minimal interaction during emergencies (large touch targets)
-   - Color palette table:
-     | Color Name | Hex Code | Usage |
+6.3 STATE MANAGEMENT WITH PROVIDER (1000–1200 words)
+   - State management comparison table:
+     | Approach | Complexity | Boilerplate | Testability | Chosen? |
+     (Provider, BLoC, Riverpod, GetX)
+   - Provider architecture: ChangeNotifier, notifyListeners(), Consumer
+   - MultiProvider setup at app root
+   - Provider descriptions table:
+     | Provider | Responsibility | Key State | Key Methods |
+   - Include a Mermaid diagram of the provider dependency tree
+   - Include a Mermaid sequence diagram showing data flow for a specific
+     user action (e.g., "Load Home Dashboard")
+   - Error handling: loading states, error messages, UI feedback
+
+6.4 UI/UX DESIGN (1200–1500 words)
+   - Design philosophy: safety-first emergency UX
+   - Design system: AppTheme, AppColors, AppTextStyle
+   - Responsive design with flutter_screenutil
    - Screen-by-screen walkthrough — for EACH screen describe:
-     * Purpose and user goal
-     * Key UI elements
-     * User interactions
-     * Navigation connections
-     * Figure placeholder: "Figure X.Y: [ScreenName] screen — [insert screenshot]"
-     Cover ALL screens: Splash, Login, Signup, ForgotPassword, Home,
-     Cameras, Alert, Notification, Settings
-   - Emergency UX design:
-     * Full-screen alert rationale (cannot be dismissed accidentally)
-     * Multi-sensory feedback: visual (pulsing red) + audio (siren) + haptic (vibration)
-     * Action buttons: "Mark Resolved" and "False Alarm"
+     * Purpose, key UI elements, user interactions, navigation connections
+     * Include figure placeholder: "Figure 6.Y: [ScreenName] — [insert screenshot]"
+     Cover ALL screens: Splash, Login, Signup, Home, Cameras, CameraDetail,
+     Activity History, Alert, Settings, Profile
+   - Emergency UX design for AlertScreen:
+     * Full-screen alert with event details
+     * Resolution actions: "Mark Resolved" / "False Alarm" buttons
      * Event info: camera name, zone, event type, confidence, timestamp
-     * Suggest infographic: "Emergency alert UX multi-sensory feedback model"
-   - Responsive design:
-     * flutter_screenutil configuration and usage
-     * Layout adaptation across screen sizes
-     * Font scaling and spacing calculations
+     * Custom fire alarm sound notification
+   - Color psychology in emergency UI: red for danger, green for resolved
 
-4. NAVIGATION ARCHITECTURE (800–1000 words)
-   - go_router route definitions
-   - Named routes and path parameters
-   - Auth-guarded routes (redirect to login if unauthenticated)
-   - Include a Mermaid diagram of the complete navigation graph
+6.5 NAVIGATION ARCHITECTURE (500–700 words)
+   - GoRouter configuration: declarative routes, path parameters
+   - Auth-guarded navigation (redirect to login if no cached token)
    - Deep linking from push notifications to alert screen
+   - Include a Mermaid navigation flow diagram
+   - Named routes table:
+     | Route Name | Path | Screen |
 
-5. ACCESSIBILITY AND PLATFORM CONSIDERATIONS (500–800 words)
-   - Color contrast ratios
-   - Touch target sizes (minimum 48×48 dp)
-   - Screen reader compatibility (semantic widgets)
-   - Android vs. iOS platform differences
-   - Push notification handling: foreground, background, app killed states
+6.6 NOTIFICATION HANDLING (800–1000 words)
+   - FirebaseNotifications service architecture
+   - FCM initialization, permission requests, token management
+   - Notification handling by app state table:
+     | App State | Handler | Behavior |
+     (Foreground, Background, Terminated, Tap)
+   - Local notification configuration (channel, sound, importance)
+   - Include a Mermaid sequence diagram for the alert notification flow:
+     FCM → FirebaseNotifications → Parse AlertPayload → Store in local DB →
+     Broadcast stream → Show local notification → User taps → Navigate to AlertScreen
+   - Notification stream: broadcast StreamController for real-time UI updates
+
+6.7 LOCAL DATA PERSISTENCE (400–500 words)
+   - Local SQLite database (fire_guard.db) via sqflite
+   - Notification cache schema (notifications table)
+   - DatabaseService: insertNotification, getAllNotifications, clearAll
+   - Token storage via SharedPreferences (CacheHelper)
+
+6.8 LIMITATIONS AND FUTURE IMPROVEMENTS (300–400 words)
+   - Primarily tested on Android (iOS testing not performed)
+   - No widget tests or integration tests
+   - SharedPreferences for token (could use flutter_secure_storage)
+   - No offline event viewing (requires backend connection)
+   - Future: iOS testing, widget tests, secure storage, offline mode
 
 ═══════════════════════════════════════════════════════════
 FORMATTING REQUIREMENTS (MANDATORY):
 ═══════════════════════════════════════════════════════════
 
-DOCUMENT FORMATTING (for Microsoft Word export):
-- Font: Times New Roman
-- Body text: 12 pt
-- Section headings: 14 pt bold
-- Chapter title: 16 pt bold
-- Line spacing: 1.5
-- Text alignment: justified
-- All figures must have captions: "Figure X.Y: [Description]"
-- All tables must have captions: "Table X.Y: [Description]"
-- Suggest page breaks between major sections
-- Number all sections hierarchically (e.g., 7.1, 7.1.1, 7.1.2)
+DOCUMENT FORMATTING: Times New Roman, 12pt body, 16pt chapter title,
+14pt sections, 13pt subsections. 1.5 spacing, justified, A4.
+Figures: "Figure 6.Y: [Description]", Tables: "Table 6.Y: [Description]"
+Page breaks between major sections.
 
-ACADEMIC STYLE:
-- Formal academic engineering tone, third person
-- In-text citations using IEEE style: [1], [2], [3]
-- Every technical claim must be supported by a citation
-- Do NOT fabricate citations — use real, verifiable references only
-- Include a REFERENCES section at the end of this chapter with:
-  * Real Flutter documentation references (flutter.dev)
-  * Real Dart documentation references
-  * Real Provider package documentation
-  * Real Firebase Flutter plugin documentation
-  * Real UI/UX design references (Nielsen Norman Group, Material Design guidelines)
-  * Real mobile accessibility references (WCAG)
-  * Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
-  * Minimum 12 references for this chapter
+ACADEMIC STYLE: Formal third person, IEEE citations [1], [2].
+Do NOT fabricate citations.
 
-DIAGRAMS AND VISUALS:
-- Include Mermaid diagrams wherever specified
-- Include tables wherever specified
-- Include figure placeholders for ALL screens
-- Include code snippets where specified
+REFERENCES (minimum 10 references):
+- Official Flutter documentation (flutter.dev)
+- Official Dart documentation
+- Provider package documentation
+- Firebase Flutter documentation
+- GoRouter documentation
+- UI/UX references (Material Design, Nielsen Norman Group)
+- Mobile accessibility references (WCAG)
+- Format: [#] Author(s), "Title," Source, Month Year. DOI/URL.
 
-TOKEN OPTIMIZATION:
-- Target output: approximately 15–25 Word pages
-- If the chapter is too long for a single generation, indicate clearly where
-  to split and provide a continuation prompt
+End the chapter with:
+## References
+(formatted in IEEE style)
+
+TOKEN OPTIMIZATION: Target 10–12 Word pages.
+If split needed, indicate clearly with continuation prompt.
 ```
 
 </details>
@@ -701,228 +1424,213 @@ TOKEN OPTIMIZATION:
 
 ---
 
-# 4 — 💾 Database Team Chapter
+# 7 — 💾 Database Design Chapter
 
 <details>
-<summary><b>Click to expand full prompt (~15–25 pages output)</b></summary>
+<summary><b>Click to expand full prompt (Chapter 7: ~8–10 pages)</b></summary>
 
 ```
-You are an expert academic engineering writer specializing in database design,
-data modeling, and ORM systems. You are writing a chapter for a graduation project
-report/book submitted to a university engineering faculty.
-
-Write the COMPLETE DATABASE DESIGN CHAPTER for the following project.
+You are a senior academic engineering writer specializing in database design,
+data modeling, relational databases, and ORM systems. You are writing the
+DATABASE DESIGN CHAPTER (Chapter 7) for a graduation project book submitted
+to a university engineering faculty.
 
 ═══════════════════════════════════════════════════════════
 PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
 ═══════════════════════════════════════════════════════════
 
-SYSTEM OVERVIEW (for context only — focus this chapter on the database):
-- Microservice architecture: FastAPI AI Service + Django Backend + Flutter Mobile App
-- Database: SQLite3 ONLY (zero-configuration, file-based, NO PostgreSQL, NO MySQL)
-- Push notifications: Firebase Cloud Messaging (FCM)
-- Camera: External WiFi camera connected through USB and used as webcam input
-  during live demo/testing
-- Containerization: Docker + Docker Compose
-- ORM: Django ORM (models define schema, migrations manage schema evolution)
-- Database file location: backend/db.sqlite3 (inside backend container)
+CRITICAL: This project uses SQLite3 EXCLUSIVELY. There is NO PostgreSQL,
+NO MySQL, NO Redis anywhere in the system. You may mention other databases
+ONLY in comparison tables. Do NOT describe them as being used.
 
-IMPORTANT: This project uses SQLite3 exclusively. There is NO PostgreSQL and NO MySQL
-anywhere in the system. Do NOT mention PostgreSQL or MySQL as being used in this
-project. You may only mention them in comparison tables for justification purposes.
+DATABASE CONFIGURATION:
+Server-side: SQLite3 (backend/db.sqlite3, managed by Django ORM)
+- Engine: django.db.backends.sqlite3
+- Default PK: BigAutoField (64-bit auto-incrementing integer)
+- Migration tool: python manage.py migrate
 
-DATABASE ENTITIES AND MODELS:
+Client-side: Local SQLite (fire_guard.db on Flutter device via sqflite)
+- Used for offline notification cache only
 
-1. User (Django built-in auth_user table):
-   - id (INTEGER, PK, auto-increment)
-   - username (VARCHAR(150), UNIQUE, NOT NULL)
-   - email (VARCHAR(254))
-   - password (VARCHAR(128), hashed PBKDF2+SHA256)
-   - first_name (VARCHAR(150))
-   - last_name (VARCHAR(150))
-   - is_staff (BOOLEAN)
-   - is_active (BOOLEAN)
-   - date_joined (DATETIME)
+ALL DATABASE ENTITIES (from Django models):
 
-2. UserProfile (accounts app):
-   - id (INTEGER, PK)
-   - user (OneToOneField → auth.User, CASCADE)
-   - phone (VARCHAR, nullable)
-   - avatar (ImageField, nullable)
+1. User (Django built-in auth_user):
+   id BigAutoField PK, username CharField(150) UNIQUE, email CharField(254),
+   first_name CharField(150), last_name CharField(150), password CharField(128),
+   is_staff BooleanField, is_active BooleanField, date_joined DateTimeField
 
-3. Zone (cameras app):
-   - id (INTEGER, PK)
-   - name (VARCHAR, NOT NULL)
-   - description (TEXT, nullable)
-   - created_at (DATETIME, auto)
+2. UserProfile (accounts_userprofile):
+   id BigAutoField PK, user_id OneToOneField→User CASCADE,
+   phone CharField(20) nullable, avatar ImageField(avatars/) nullable,
+   created_at DateTimeField auto_now_add, updated_at DateTimeField auto_now
+   Auto-created via post_save signal on User creation.
 
-4. Camera (cameras app):
-   - id (INTEGER, PK)
-   - name (VARCHAR, NOT NULL)
-   - location (VARCHAR)
-   - stream_url (URLField)
-   - thumbnail (ImageField, nullable)
-   - status (VARCHAR — choices: online/offline)
-   - zone (ForeignKey → Zone, CASCADE)
-   - created_at (DATETIME, auto)
+3. Zone (cameras_zone):
+   id BigAutoField PK, name CharField(100), description TextField nullable,
+   created_at DateTimeField auto_now_add
 
-5. FireEvent (events app):
-   - id (INTEGER, PK)
-   - event_type (VARCHAR — choices: fire/smoke)
-   - status (VARCHAR — choices: active/resolved/false_alarm)
-   - ai_confidence (FLOAT)
-   - snapshot (ImageField, nullable)
-   - notes (TEXT, nullable)
-   - detected_at (DATETIME, auto)
-   - resolved_at (DATETIME, nullable)
-   - camera (ForeignKey → Camera, CASCADE)
+4. Camera (cameras_camera):
+   id BigAutoField PK, zone_id ForeignKey→Zone CASCADE,
+   name CharField(100), location CharField(200),
+   stream_url URLField nullable, thumbnail ImageField(cameras/) nullable,
+   status CharField(10) choices=[online,offline] default=online,
+   created_at DateTimeField auto_now_add, updated_at DateTimeField auto_now
 
-6. FCMDevice (notifications app):
-   - id (INTEGER, PK)
-   - user (ForeignKey → auth.User, CASCADE)
-   - token (VARCHAR, UNIQUE)
-   - platform (VARCHAR — choices: android/ios)
-   - is_active (BOOLEAN, default True)
-   - created_at (DATETIME, auto)
+5. FireEvent (events_fireevent):
+   id BigAutoField PK, camera_id ForeignKey→Camera CASCADE,
+   event_type CharField(10) choices=[fire,smoke],
+   status CharField(15) choices=[active,resolved,false_alarm] default=active,
+   ai_confidence FloatField (0.0–100.0),
+   snapshot ImageField(snapshots/) nullable, notes TextField nullable,
+   detected_at DateTimeField auto_now_add, resolved_at DateTimeField nullable
+   Meta: ordering = ['-detected_at']
 
-7. NotificationPreference (notifications app):
-   - id (INTEGER, PK)
-   - user (OneToOneField → auth.User, CASCADE)
-   - fire_alerts (BOOLEAN, default True)
-   - resolved_alerts (BOOLEAN, default True)
-   - false_alarm_alerts (BOOLEAN, default True)
-   - sound_enabled (BOOLEAN, default True)
+6. FCMDevice (notifications_fcmdevice):
+   id BigAutoField PK, user_id ForeignKey→User CASCADE,
+   token TextField UNIQUE, platform CharField(10) choices=[android,ios],
+   is_active BooleanField default=True,
+   created_at DateTimeField auto_now_add, updated_at DateTimeField auto_now
+
+7. NotificationPreference (notifications_notificationpreference):
+   id BigAutoField PK, user_id OneToOneField→User CASCADE,
+   fire_alerts BooleanField default=True, resolved_alerts BooleanField default=True,
+   false_alarm_alerts BooleanField default=False, sound_enabled BooleanField default=True,
+   created_at DateTimeField auto_now_add, updated_at DateTimeField auto_now
+   Auto-created via post_save signal on User creation.
+
+8. Token (authtoken_token — DRF built-in):
+   key CharField(40) PK UNIQUE, user_id OneToOneField→User,
+   created DateTimeField auto_now_add
 
 RELATIONSHIPS:
-- User 1:1 UserProfile (auto-created via Django signal)
-- User 1:1 NotificationPreference
-- User 1:N FCMDevice (one user, multiple devices)
-- Zone 1:N Camera (one zone, multiple cameras)
-- Camera 1:N FireEvent (one camera, multiple events)
+- User 1:1 UserProfile (CASCADE)
+- User 1:1 NotificationPreference (CASCADE)
+- User 1:1 Token (CASCADE)
+- User 1:N FCMDevice (CASCADE)
+- Zone 1:N Camera (CASCADE)
+- Camera 1:N FireEvent (CASCADE)
+
+CASCADE DELETION BEHAVIOR:
+- Delete User → cascades to: UserProfile, NotificationPreference, FCMDevices, Token
+- Delete Zone → cascades to: all Cameras → all FireEvents from those cameras
+- Delete Camera → cascades to: all FireEvents from that camera
+
+DJANGO ORM QUERY PATTERNS USED:
+- select_related('camera', 'camera__zone') in events/views.py
+- annotate(camera_count=Count('cameras')) in cameras/views.py
+- filter() with query params (status, camera_id, zone, type)
+- update_or_create() for FCMDevice token registration
+- get_or_create() for Token on registration
+- values_list('user_id', flat=True) for notification queries
+- post_save signals for auto-creating UserProfile and NotificationPreference
+
+CLIENT-SIDE DATABASE (Flutter):
+CREATE TABLE notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT, event_id TEXT UNIQUE, camera_id TEXT, camera_name TEXT,
+    location TEXT, zone TEXT, event_type TEXT, ai_confidence REAL, detected_at TEXT
+);
+Operations: insertNotification (ConflictAlgorithm.replace), getAllNotifications
+(ORDER BY detected_at DESC), clearAll
+
+DATABASE TEAM MEMBER: Tarek Mostafa Kashef
+
+TERMINOLOGY: FireEvent, Active Event, Zone, Snapshot, FCMDevice, NotificationPreference
 
 ══════════════════════════════════════════════════════════
-CHAPTER STRUCTURE — Generate ALL of the following sections:
+CHAPTER 7 STRUCTURE — Generate ALL of the following sections:
 ══════════════════════════════════════════════════════════
 
-1. CHAPTER INTRODUCTION (500–800 words)
-   - Role of the database in the FireGuard system
-   - Why a relational database approach was chosen
-   - Overview of Django ORM as the data access layer
-   - Chapter roadmap
+CHAPTER OBJECTIVE:
+Document the complete database design including schema, relationships,
+ERD, normalization analysis, Django ORM integration, and query patterns.
 
-2. DATABASE ENGINE SELECTION (1000–1500 words)
-   - Why SQLite3 was chosen for this project
-   - Advantages: zero configuration, file-based, no separate server process,
-     built into Python, ACID-compliant, perfect for single-server deployments
-   - Limitations: single writer at a time, no concurrent write scaling,
-     no network access (local file only)
-   - Why limitations are acceptable for this project's scale
-     (single backend instance, low concurrent write volume, graduation demo)
-   - Comparison table: SQLite3 vs. PostgreSQL vs. MySQL
+7.1 CHAPTER INTRODUCTION (400–500 words)
+   - Role of the database in FireGuard
+   - SQLite3 overview: serverless, zero-configuration, file-based
+   - Justification for choosing SQLite3 for the graduation project
+   - Include Table: "Table 7.1: Database Technology Comparison"
      | Feature | SQLite3 | PostgreSQL | MySQL |
-     (configuration, server requirement, concurrent writes, max DB size,
-      ACID compliance, deployment complexity, use case fit)
-   - SQLite3 in the Django ecosystem: built-in support, no additional packages
-   - Include code snippet from settings.py showing DATABASES configuration
+   - Dual database architecture: server-side (Django) + client-side (Flutter)
 
-3. ENTITY-RELATIONSHIP DIAGRAM (1500–2000 words)
-   - Complete Mermaid erDiagram showing ALL 7 entities with:
-     * All columns and data types
-     * Cardinality (1:1, 1:N)
-     * Primary keys (PK) and foreign keys (FK)
-   - Entity descriptions — for EACH entity provide:
-     * Purpose in the system
-     * Key attributes and their data types
-     * Business rules and constraints
-     * Relationships in natural language
-     Present as a structured table per entity
-   - Relationship analysis — explain each relationship with examples:
-     * "A User has exactly one UserProfile" (1:1, auto-created via Django signal)
-     * "A Zone contains zero or more Cameras" (1:N)
-     * "A Camera triggers zero or more FireEvents" (1:N)
-     * "A User owns zero or more FCMDevices" (1:N)
-     * "A User has exactly one NotificationPreference" (1:1)
-   - Referential integrity: CASCADE vs. SET_NULL on delete — explain choices
-   - Relationship matrix table:
-     | Entity A | Entity B | Cardinality | On Delete | Description |
+7.2 ENTITY RELATIONSHIP DIAGRAM (500–700 words)
+   - Include a complete Mermaid ERD showing ALL 8 entities with:
+     * All fields, types, and constraints
+     * All relationships with cardinality
+   - Describe each relationship and its business meaning
+   - Include Table: "Table 7.2: Entity Relationships"
+     | Relationship | Type | On Delete | Description |
 
-4. DATABASE SCHEMA DETAIL (1500–2000 words)
-   - For EACH table, provide a complete schema table:
-     | Column | Type | Constraints | Default | Description |
-   - Include Django model code snippets for each model
-   - Discuss field choices:
-     * CharField vs. TextField decisions
-     * ImageField storage configuration
-     * DateTimeField auto_now vs. auto_now_add
-     * Choices fields (status, event_type, platform)
-   - Indexes: Django auto-creates indexes on ForeignKey and unique fields
-   - Django built-in tables used: auth_user, authtoken_token, django_session
+7.3 DATABASE ENTITIES (1500–2000 words)
+   - For EACH entity, provide:
+     * Entity description and business purpose
+     * Complete field table: | Field | Type | Constraints | Description |
+     * Special behaviors (auto-creation via signals, ordering, status lifecycle)
+   - Cover ALL 8 entities in detail
+   - Include FireEvent status lifecycle state diagram (Mermaid)
 
-5. DJANGO ORM AND MIGRATIONS (1000–1500 words)
-   - How Django ORM maps Python classes to SQL tables
-   - Migration system: makemigrations → migrate workflow
-   - Migration files and version control
-   - Docker startup: migrate --noinput in entrypoint.sh
-   - Common Django ORM query patterns with code examples:
-     * List active events: FireEvent.objects.filter(status='active')
-     * Count by type: FireEvent.objects.values('event_type').annotate(count=Count('id'))
-     * Filter by camera: FireEvent.objects.filter(camera__zone__name='Zone A')
-     * Get user with profile: User.objects.select_related('userprofile')
-   - Query optimization: select_related, prefetch_related
-   - SQLite3-specific considerations:
-     * WAL mode for better read concurrency
-     * No connection pooling needed (file-based)
-     * JSON field limitations (not natively supported until SQLite 3.38)
+7.4 NORMALIZATION ANALYSIS (500–700 words)
+   - Analyze the database schema against normalization forms:
+     * 1NF: atomic values, no repeating groups
+     * 2NF: full functional dependency on primary key
+     * 3NF: no transitive dependencies
+   - Demonstrate that the schema satisfies 3NF
+   - Include Table: "Table 7.3: Normalization Verification"
 
-6. NORMALIZATION AND DATA INTEGRITY (800–1000 words)
-   - Schema normalization analysis (3NF compliance)
-   - Identify any denormalization decisions and justification
-   - Data integrity mechanisms:
-     * Django model validation (clean methods, validators)
-     * Database-level constraints (NOT NULL, UNIQUE, FK)
-     * Application-level validation (DRF serializers)
-   - Data lifecycle: event creation → status transitions → resolution
+7.5 DJANGO ORM INTEGRATION (600–800 words)
+   - How Django ORM maps models to SQLite3 tables
+   - Migration management: makemigrations, migrate, showmigrations
+   - Query patterns used in the project (with code examples):
+     * select_related for JOIN optimization
+     * annotate for aggregations
+     * filter for conditional queries
+     * update_or_create for upserts
+     * post_save signals for auto-creation
+   - Include Table: "Table 7.4: ORM Query Patterns"
+     | Pattern | Location | Purpose |
+
+7.6 EVENT STORAGE WORKFLOW (400–500 words)
+   - Include a Mermaid sequence diagram:
+     camera.py → DRF → Serializer validation → ORM → SQLite3 → Return
+   - Validation rules: ai_confidence 0–100, camera not offline
+   - Event creation → FCM notification trigger
+
+7.7 CLIENT-SIDE DATABASE (400–500 words)
+   - Flutter local SQLite (fire_guard.db) via sqflite
+   - Schema: notifications table
+   - DatabaseService operations
+   - UNIQUE constraint and ConflictAlgorithm.replace
+   - Purpose: offline notification history cache
+
+7.8 LIMITATIONS AND FUTURE IMPROVEMENTS (300–400 words)
+   - SQLite3 limited concurrent writes
+   - No database backup strategy
+   - No custom indexes beyond Django defaults
+   - File-based storage limitations
+   - Future: PostgreSQL migration, backup automation, custom indexes
 
 ═══════════════════════════════════════════════════════════
 FORMATTING REQUIREMENTS (MANDATORY):
 ═══════════════════════════════════════════════════════════
 
-DOCUMENT FORMATTING (for Microsoft Word export):
-- Font: Times New Roman
-- Body text: 12 pt
-- Section headings: 14 pt bold
-- Chapter title: 16 pt bold
-- Line spacing: 1.5
-- Text alignment: justified
-- All figures must have captions: "Figure X.Y: [Description]"
-- All tables must have captions: "Table X.Y: [Description]"
-- Suggest page breaks between major sections
-- Number all sections hierarchically (e.g., 8.1, 8.1.1, 8.1.2)
+DOCUMENT FORMATTING: Times New Roman, 12pt body, 16pt chapter title,
+14pt sections, 13pt subsections. 1.5 spacing, justified, A4.
+Figures: "Figure 7.Y:", Tables: "Table 7.Y:"
 
-ACADEMIC STYLE:
-- Formal academic engineering tone, third person
-- In-text citations using IEEE style: [1], [2], [3]
-- Every technical claim must be supported by a citation
-- Do NOT fabricate citations — use real, verifiable references only
-- Include a REFERENCES section at the end of this chapter with:
-  * Real SQLite documentation references (sqlite.org)
-  * Real Django ORM documentation references (djangoproject.com)
-  * Real database design textbooks (e.g., Elmasri & Navathe, Date)
-  * Real normalization theory references
-  * Real ER modeling references (Chen 1976)
-  * Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
-  * Minimum 10 references for this chapter
+ACADEMIC STYLE: Formal third person, IEEE citations.
+Do NOT fabricate citations.
 
-DIAGRAMS AND VISUALS:
-- Include complete Mermaid erDiagram
-- Include tables wherever specified
-- Include Django model code snippets
-- Include figure placeholders where applicable
+REFERENCES (minimum 8 references):
+- Official SQLite documentation (sqlite.org)
+- Official Django ORM documentation
+- Database design textbooks (Elmasri & Navathe, Date)
+- Normalization references
+- Official sqflite documentation
+- Format: [#] Author(s), "Title," Source, Month Year. DOI/URL.
 
-TOKEN OPTIMIZATION:
-- Target output: approximately 15–20 Word pages
-- If the chapter is too long for a single generation, indicate clearly where
-  to split and provide a continuation prompt
+End with: ## References (IEEE style)
+
+TOKEN OPTIMIZATION: Target 8–10 Word pages.
 ```
 
 </details>
@@ -933,241 +1641,183 @@ TOKEN OPTIMIZATION:
 
 ---
 
-# 5 — 🐳 Deployment Team Chapter
+# 8 — 🚀 Deployment & Integration Chapter
 
 <details>
-<summary><b>Click to expand full prompt (~15–25 pages output)</b></summary>
+<summary><b>Click to expand full prompt (Chapter 8: ~6–8 pages)</b></summary>
 
 ```
-You are an expert academic engineering writer specializing in DevOps, containerization,
-deployment, software testing, and project evaluation. You are writing a chapter for a
-graduation project report/book submitted to a university engineering faculty.
-
-Write the COMPLETE DEPLOYMENT, TESTING, AND EVALUATION CHAPTER for the following project.
+You are a senior academic engineering writer specializing in software deployment,
+system integration, and DevOps. You are writing the DEPLOYMENT & INTEGRATION
+CHAPTER (Chapter 8) for a graduation project book submitted to a university
+engineering faculty.
 
 ═══════════════════════════════════════════════════════════
 PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
 ═══════════════════════════════════════════════════════════
 
-SYSTEM OVERVIEW:
-- Microservice architecture: FastAPI AI Service + Django Backend + Flutter Mobile App
-- Database: SQLite3 ONLY (zero-configuration, file-based, no PostgreSQL)
-- Push notifications: Firebase Cloud Messaging (FCM)
-- Camera: External WiFi camera connected through USB and used as webcam input
-  during live demo/testing
-- Containerization: Docker + Docker Compose
+CRITICAL RESTRICTIONS:
+- There is NO Docker, NO Docker Compose, NO Kubernetes, NO CI/CD pipeline.
+- There is NO microservices architecture.
+- Deployment is MANUAL to PythonAnywhere (free tier).
+- The AI service runs LOCALLY on a developer machine with a webcam.
+- The Flutter app is built and installed via "flutter run" or APK generation.
+- Do NOT invent containerization or cloud-native infrastructure.
 
-DOCKER CONFIGURATION:
-- docker-compose.yml (version: "3.10") with 2 application services:
-  * ai_service: python:3.10-slim + OpenCV native libs (libgl1, libglib2.0-0, libsm6,
-    libxext6, libxrender1, libxcb1) + pip requirements + CMD uvicorn main:app
-    --host 0.0.0.0 --port 8001
-  * backend: python:3.10-slim + pip requirements + sed CRLF fix +
-    ENTRYPOINT entrypoint.sh
-- Network: app_network (bridge driver, container DNS resolution)
-- Health checks: python urllib.request.urlopen for ai_service and backend
-- depends_on with health check conditions
-- Environment variables passed via docker-compose.yml
+ACTUAL DEPLOYMENT ARCHITECTURE:
 
-BACKEND DEPLOYMENT:
-- Gunicorn 21.2: --bind 0.0.0.0:8000 --workers 3
-- entrypoint.sh workflow:
-  * set -e (exit on error)
-  * python manage.py migrate --noinput
-  * python manage.py collectstatic --noinput || true
-  * exec gunicorn fireguard.wsgi:application --bind 0.0.0.0:8000 --workers 3
-- Procfile: web: gunicorn fireguard.wsgi (for PythonAnywhere/Heroku)
-- PythonAnywhere as alternative cloud host
+1. AI Service (Local Machine):
+   - camera.py runs on a laptop/desktop with Python 3.10+
+   - Requires: USB/WiFi camera connected as webcam
+   - Dependencies: ultralytics, opencv-python, torch, numpy, pillow, requests
+   - Started manually: "python camera.py"
+   - Connects to production backend via HTTPS
 
-AI SERVICE DEPLOYMENT:
-- FastAPI 0.110+ served by Uvicorn (ASGI, single worker)
-- Endpoints: GET / (health), GET /status, GET /cameras, POST /predict
-- Model loaded at import time, warmup inference on startup
-- Single worker for model thread safety
+2. Django Backend (PythonAnywhere):
+   - PythonAnywhere free tier hosting
+   - WSGI application (fireguard.wsgi)
+   - Static files served via PythonAnywhere static file config
+   - Media files (snapshots, avatars, thumbnails) stored on PythonAnywhere filesystem
+   - SQLite3 database file (db.sqlite3) on PythonAnywhere
+   - URL: https://bodareda0001.pythonanywhere.com
+   - Firebase credentials JSON file stored on server (not in VCS)
+   - Environment variables loaded from .env file
 
-TESTING CONTEXT:
-- AI model evaluation: mAP, precision, recall, F1, confusion matrix
-- API testing: manual with curl/Postman, health check endpoints
-- Mobile testing: physical Android devices
-- Integration testing: end-to-end detection → notification flow
-- Live demo: USB camera → AI detection → push notification → mobile alert
+3. Firebase (Google Cloud — Managed):
+   - Firebase project configured for FCM
+   - Service account JSON for backend authentication
+   - Flutter app configured via flutterfire configure
+   - firebase_options.dart generated for Flutter
+
+4. Flutter Mobile App (Android Device):
+   - Built via "flutter run" for development
+   - APK generated for distribution
+   - Requires Firebase configuration
+   - Connects to PythonAnywhere backend over HTTPS
+
+INTEGRATION POINTS:
+- AI → Backend: HTTPS POST to /api/events/ (AllowAny, multipart form data)
+- Mobile → Backend: HTTPS (Dio, Token Authentication)
+- Backend → Firebase: Firebase Admin SDK (service account JSON)
+- Firebase → Mobile: FCM push notifications
+
+ENVIRONMENT CONFIGURATION (.env.example):
+- SECRET_KEY: Django secret key
+- DEBUG: True/False
+- ALLOWED_HOSTS: list of allowed hosts
+- FIREBASE_CREDENTIALS_PATH: path to firebase_credentials.json
+
+DEPLOYMENT TEAM MEMBER: Mostafa Abdo El-Gohary
+
+TERMINOLOGY: AI Camera Node, Edge Node, PythonAnywhere, WSGI
 
 ══════════════════════════════════════════════════════════
-CHAPTER STRUCTURE — Generate ALL of the following sections:
+CHAPTER 8 STRUCTURE — Generate ALL of the following sections:
 ══════════════════════════════════════════════════════════
 
-1. DEPLOYMENT CHAPTER INTRODUCTION (600–800 words)
-   - Deployment strategy overview: local dev, Docker-based, cloud (PythonAnywhere)
-   - Mobile app distribution (APK build for Android)
-   - Deployment comparison table:
-     | Method | Environment | Pros | Cons | Use Case |
-   - Include Mermaid diagram: Docker Compose topology showing services,
-     ports, networks, external connections (Firebase, mobile, camera)
+CHAPTER OBJECTIVE:
+Document the deployment strategy, integration of all system components,
+environment configuration, and the operational workflow for running FireGuard.
+
+8.1 CHAPTER INTRODUCTION (300–400 words)
+   - Overview of the deployment strategy
+   - Three-component deployment: local AI, cloud backend, mobile device
    - Chapter roadmap
 
-2. DOCKER ARCHITECTURE (1500–2000 words)
-   - Docker and containerization overview
-   - Comparison table: Containers vs. VMs
-   - Dockerfile analysis — for EACH Dockerfile, line-by-line explanation:
-     * Base image: python:3.10-slim justification
-     * System dependencies (AI service: OpenCV native libs)
-     * Requirements installation (layer caching)
-     * Code copy strategy
-     * Entrypoint vs. CMD
-     Include annotated Dockerfile code blocks
-   - Docker Compose configuration — annotated docker-compose.yml:
-     * Service definitions and relationships
-     * depends_on with health check conditions
-     * Port mapping (8000, 8001)
-     * Environment variables
-     * Network (bridge driver, DNS)
-   - Build and run workflow: docker compose up --build
-   - Include Mermaid startup sequence diagram:
-     ai_service starts → health check passes → backend starts → migrate → gunicorn
-   - Health check strategy table:
-     | Service | Method | Interval | Timeout | Retries |
+8.2 DEPLOYMENT ARCHITECTURE (600–800 words)
+   - Include a Mermaid deployment diagram showing all components and their
+     hosting locations:
+     * Local Machine: camera.py + USB Camera
+     * PythonAnywhere: Django + SQLite3 + media/
+     * Firebase Cloud: FCM
+     * User Device: Flutter App
+   - Include Table: "Table 8.1: Deployment Targets"
+     | Component | Target | Notes |
+   - Communication paths and protocols
 
-3. FASTAPI / UVICORN DEPLOYMENT (1000–1200 words)
-   - FastAPI overview: modern, async-first, Starlette + Pydantic,
-     auto OpenAPI/Swagger docs
-   - Comparison table: FastAPI vs. Flask vs. Django for AI serving
-   - Uvicorn ASGI server: ASGI vs. WSGI comparison
-   - Single-worker config for model thread safety
-   - Endpoint architecture table:
-     | Endpoint | Method | Purpose | Input | Output |
-   - Model lifecycle: load once at import, warmup, thread safety
-   - Deployment commands (Docker CMD and local dev)
+8.3 BACKEND DEPLOYMENT ON PYTHONANYWHERE (800–1000 words)
+   - PythonAnywhere platform overview: free tier, WSGI support, file storage
+   - Step-by-step deployment procedure:
+     1. Create PythonAnywhere account
+     2. Upload project files (git clone or manual upload)
+     3. Create virtual environment and install dependencies
+     4. Configure WSGI file (fireguard.wsgi)
+     5. Set up static files serving
+     6. Configure media files directory
+     7. Run database migrations
+     8. Upload Firebase credentials JSON
+     9. Set environment variables
+     10. Reload web app
+   - Include Table: "Table 8.2: PythonAnywhere Configuration"
+     | Setting | Value | Purpose |
+   - Static and media file serving configuration
+   - HTTPS configuration (PythonAnywhere provides HTTPS by default)
 
-4. GUNICORN DEPLOYMENT (800–1000 words)
-   - Gunicorn overview: pre-fork worker model
-   - Comparison table: Django runserver vs. Gunicorn
-   - Worker configuration: 3 workers (2×CPU + 1), sync type
-   - entrypoint.sh annotated walkthrough:
-     * set -e, migrate, collectstatic, exec gunicorn
-     * exec replaces shell (PID 1 signal forwarding for Docker)
-   - Production considerations: static files, timeouts, logging
+8.4 AI SERVICE SETUP (500–700 words)
+   - Local machine requirements: Python 3.10+, webcam, sufficient RAM
+   - Installation: pip install -r requirements.txt
+   - Model weights: best.pt must be present in ai_service/ directory
+   - Camera connection: USB or WiFi camera mapped as webcam (device index 0)
+   - Configuration: API_URL pointing to PythonAnywhere backend
+   - Running: python camera.py
+   - Live monitoring: OpenCV window displays detection feed
 
-5. TESTING AND VALIDATION (2000–2500 words)
-   - Testing strategy overview and matrix:
-     | Test Type | Scope | Tool | Status |
-   - AI model validation:
-     * Metrics: Precision, Recall, F1, mAP@0.5, mAP@0.5:0.95
-     * Results tables with placeholder metrics [X]
-     * Confusion matrix analysis
-     * Figure placeholders: PR curve, confusion matrix, sample detections
-   - API testing:
-     * Endpoint testing methodology (curl/Postman)
-     * Test case table: Test ID | Endpoint | Input | Expected | Result
-   - Mobile app testing:
-     * Physical device testing, screen verification
-     * Push notification testing (foreground, background, killed)
-     * Emergency UX testing (siren, vibration, full-screen)
-   - Integration testing:
-     * End-to-end flow: camera → AI → backend → Firebase → mobile
-     * Include Mermaid integration test flow diagram
-   - Live demo testing:
-     * USB camera setup, fire/smoke simulation
-     * Response time measurement, false positive analysis
-     * Demo results table
+8.5 FLUTTER APP BUILD AND INSTALLATION (500–700 words)
+   - Flutter SDK setup (3.9+)
+   - Firebase configuration: flutterfire configure
+   - flutter pub get (dependency installation)
+   - Development: flutter run (connected device/emulator)
+   - Release build: flutter build apk
+   - Include the Firebase configuration checklist
 
-6. RESULTS AND PERFORMANCE ANALYSIS (2000–2500 words)
-   - AI model performance tables:
-     * Overall: mAP@0.5, mAP@0.5:0.95, precision, recall (placeholder [X])
-     * Per-class: fire P/R/F1, smoke P/R/F1
-     * Inference speed: FPS, ms/frame, hardware specs
-   - Figure placeholders (minimum 6):
-     PR curve, F1-confidence curve, confusion matrix, training loss curves,
-     mAP progression, sample detection results
-   - System performance — end-to-end latency table:
-     | Stage | Latency (ms) |
-     (frame capture, network transfer, AI inference, backend processing,
-      FCM delivery, total)
-   - Notification delivery performance
-   - Mobile app performance (startup, transitions, memory)
-   - Comparative analysis table: FireGuard vs. [Paper 1] vs. [Paper 2]
-   - Discussion: objectives achievement, limitations, threats to validity
-   - Suggest infographic: "End-to-end pipeline performance waterfall"
+8.6 SYSTEM INTEGRATION (600–800 words)
+   - How all three components work together
+   - Include a Mermaid sequence diagram showing the end-to-end integrated flow:
+     Camera → camera.py → HTTPS POST → PythonAnywhere Django → SQLite3 →
+     Firebase Admin SDK → FCM → Flutter App → Alert Screen
+   - Running all components simultaneously:
+     * Terminal 1: Django backend (or PythonAnywhere)
+     * Terminal 2: python camera.py
+     * Terminal 3: flutter run (or installed APK)
+   - Integration verification checklist
 
-7. CHALLENGES AND PROBLEMS FACED (1000–1500 words)
-   - Technical challenges:
-     * YOLOv8 training on limited GPU
-     * OpenCV native libs in Docker
-     * Windows CRLF breaking entrypoint.sh in Linux containers
-     * SQLite concurrent write limitations with Gunicorn workers
-     * Firebase init failures, camera driver compatibility
-     * Docker image size (OpenCV + PyTorch)
-   - Integration challenges:
-     * Docker service synchronization (health checks)
-     * Flutter FCM token lifecycle
-     * CORS configuration
-   - For each challenge: Problem | Impact | Solution | Lesson Learned
-   - Key lessons learned summary
+8.7 ENVIRONMENT AND SECURITY CONFIGURATION (400–500 words)
+   - .env file configuration
+   - Firebase credentials management (not in VCS)
+   - SECRET_KEY management
+   - ALLOWED_HOSTS configuration
+   - CORS settings (development vs. production)
 
-8. FUTURE WORK (1000–1500 words)
-   - AI: multi-class detection, model quantization (INT8/FP16), ONNX/TensorRT,
-     temporal analysis, severity estimation
-   - Backend: WebSocket dashboard (Django Channels), rate limiting, RBAC,
-     analytics dashboard, PostgreSQL migration for production
-   - Mobile: live camera streaming, offline mode, multi-language,
-     App Store/Play Store distribution
-   - Infrastructure: Kubernetes, CI/CD (GitHub Actions), monitoring
-     (Prometheus/Grafana), HTTPS/SSL
-   - Hardware: RTSP IP cameras, edge AI (Jetson/Coral), IoT sensor fusion
-   - Future work roadmap table:
-     | Category | Improvement | Priority | Effort | Impact |
-   - Include Mermaid roadmap diagram: short-term vs. medium-term vs. long-term
-
-9. CONCLUSION (800–1000 words)
-   - Project summary (restate problem, summarize solution)
-   - Objectives achievement table:
-     | Objective | Status (Achieved/Partial/Not Achieved) | Evidence |
-   - Key contributions (3–5 items)
-   - Limitations (honest assessment)
-   - Final remarks: significance, real-world impact, AI in public safety
+8.8 LIMITATIONS AND FUTURE IMPROVEMENTS (300–400 words)
+   - Manual deployment process (no CI/CD)
+   - PythonAnywhere free tier limitations (bandwidth, CPU, storage)
+   - SQLite3 not suitable for high-concurrency production
+   - No HTTPS on local AI service (communicates via HTTPS to PythonAnywhere)
+   - No automated backup
+   - Future: CI/CD pipeline, PostgreSQL, cloud deployment (AWS/GCP), automated backups
 
 ═══════════════════════════════════════════════════════════
 FORMATTING REQUIREMENTS (MANDATORY):
 ═══════════════════════════════════════════════════════════
 
-DOCUMENT FORMATTING (for Microsoft Word export):
-- Font: Times New Roman
-- Body text: 12 pt
-- Section headings: 14 pt bold
-- Chapter title: 16 pt bold
-- Line spacing: 1.5
-- Text alignment: justified
-- All figures must have captions: "Figure X.Y: [Description]"
-- All tables must have captions: "Table X.Y: [Description]"
-- Suggest page breaks between major sections
-- Number all sections hierarchically (e.g., 9.1, 9.1.1, 9.1.2)
+DOCUMENT FORMATTING: Times New Roman, 12pt body, 16pt chapter title,
+14pt sections, 13pt subsections. 1.5 spacing, justified, A4.
+Figures: "Figure 8.Y:", Tables: "Table 8.Y:"
 
-ACADEMIC STYLE:
-- Formal academic engineering tone, third person
-- In-text citations using IEEE style: [1], [2], [3]
-- Every technical claim must be supported by a citation
-- Do NOT fabricate citations — use real, verifiable references only
-- Include a REFERENCES section at the end of this chapter with:
-  * Real Docker documentation references (docs.docker.com)
-  * Real FastAPI documentation references (fastapi.tiangolo.com)
-  * Real Gunicorn documentation references (gunicorn.org)
-  * Real software testing references (IEEE 829, ISTQB)
-  * Real DevOps and CI/CD references
-  * Real containerization research papers
-  * Format: [#] Author(s), "Title," Source, vol., no., pp., Month Year. DOI/URL.
-  * Minimum 15 references for this chapter
+ACADEMIC STYLE: Formal third person, IEEE citations.
+Do NOT fabricate citations.
 
-DIAGRAMS AND VISUALS:
-- Include Mermaid diagrams wherever specified
-- Include tables wherever specified
-- Include annotated code blocks for Dockerfiles and scripts
-- Include figure placeholders for performance charts
-- Suggest infographics where applicable
+REFERENCES (minimum 6 references):
+- PythonAnywhere documentation
+- Django deployment documentation
+- Firebase deployment documentation
+- Flutter build documentation
+- Software deployment references
+- Format: [#] Author(s), "Title," Source, Month Year. DOI/URL.
 
-TOKEN OPTIMIZATION:
-- Target output: approximately 20–25 Word pages
-- This is the largest chapter — if too long for a single generation,
-  split at section 5 (Testing) and provide a continuation prompt:
-  "Continue from section 5: Testing and Validation..."
+End with: ## References (IEEE style)
+
+TOKEN OPTIMIZATION: Target 6–8 Word pages.
 ```
 
 </details>
@@ -1178,38 +1828,402 @@ TOKEN OPTIMIZATION:
 
 ---
 
-<div align="center">
+# 9 — 🧪 Testing & Results Chapter
 
-## 📌 Tips for Using These Prompts
+<details>
+<summary><b>Click to expand full prompt (Chapter 9: ~8–10 pages)</b></summary>
 
-| Tip | Description |
-|:---|:---|
-| 🎯 **Replace Placeholders** | Replace all `[X]` with your actual data before submitting |
-| 📐 **Adapt Length** | Adjust word counts based on your university's requirements |
-| 🔗 **Cross-Reference** | After generating all chapters, ensure they reference each other consistently |
-| 📸 **Screenshots** | Replace figure placeholders with actual app screenshots and diagrams |
-| 📖 **Verify Citations** | **Every single reference must be verified** — never submit unchecked AI citations |
-| 🔄 **Iterate** | Ask Claude to revise, expand, or restructure sections after first output |
-| 📄 **Word Export** | Copy output to Word, apply Times New Roman / 1.5 spacing / justified alignment |
-| 🗣️ **Your Voice** | Always add your personal observations and project-specific technical details |
-| ⚠️ **Token Limits** | If Claude truncates output, say: "Continue from section X..." |
-| 🔢 **Chapter Numbers** | Adjust section numbering (e.g., 5.1, 6.1) to match your report's chapter order |
+```
+You are a senior academic engineering writer specializing in software testing,
+quality assurance, and system evaluation. You are writing the TESTING & RESULTS
+CHAPTER (Chapter 9) for a graduation project book submitted to a university
+engineering faculty.
+
+═══════════════════════════════════════════════════════════
+PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
+═══════════════════════════════════════════════════════════
+
+CRITICAL HONESTY REQUIREMENT:
+The project has NO automated test suites (no unit tests, no integration tests,
+no CI/CD pipeline). All testing was performed MANUALLY through live demonstrations,
+DRF browsable API testing, HTTP client testing, and manual QA on Android devices.
+You MUST be honest about this. Do NOT fabricate automated test results.
+Explicitly state: "Automated unit and integration tests are not implemented
+in the current project version."
+
+ACTUAL TESTING PERFORMED:
+
+1. AI MODEL TESTING (Manual):
+   - Model evaluated during training using: Precision, Recall, mAP@0.5, mAP@0.5:0.95
+   - Specific metric values from training are NOT stored in the repository
+   - Live detection testing scenarios:
+     * Fire detection (real flame): ✅ Verified
+     * Smoke detection: ✅ Verified
+     * No fire/smoke (normal scene): ✅ Verified — no false alerts
+     * Cooldown mechanism (two rapid detections within 10s): ✅ First only triggers
+     * Snapshot generation: ✅ JPEG with bounding boxes created
+     * Low-confidence rejection (<50%): ✅ No alert triggered
+
+2. API ENDPOINT TESTING (Manual via DRF Browsable API + HTTP Clients):
+   Authentication:
+   - Register new user: 201 ✅ | Duplicate username: 400 ✅ | Duplicate email: 400 ✅
+   - Mismatched passwords: 400 ✅ | Valid login: 200+token ✅ | Invalid login: 401 ✅
+   - Logout: 200 ✅ | Get profile (auth): 200 ✅ | Get profile (no token): 401 ✅
+   - Update profile: 200 ✅ | Change password: 200+new token ✅
+
+   Events:
+   - Create event (valid): 201+FCM ✅ | Offline camera: 400 ✅ | Invalid confidence: 400 ✅
+   - List events: 200 ✅ | Filter by status: 200 ✅ | Filter by camera: 200 ✅
+   - Event detail: 200 ✅ | Resolve: 200 ✅ | False alarm: 200 ✅
+   - Active event: 200 ✅ | Stats: 200 ✅
+
+   Cameras & Zones:
+   - Create zone (admin): 201 ✅ | Create zone (non-admin): 403 ✅
+   - List zones: 200 ✅ | Create camera: 201 ✅
+   - Update camera status: 200 ✅ | Camera stats: 200 ✅
+
+   Notifications:
+   - Register device: 201 ✅ | Re-register: 200 ✅ | Unregister: 200 ✅
+   - Get preferences: 200 ✅ | Update preferences: 200 ✅ | Test push: 200 ✅
+
+3. NOTIFICATION TESTING (Manual):
+   - Fire alert (foreground): local notification + stream + alert screen ✅
+   - Fire alert (background): system notification with custom sound ✅
+   - Fire alert (terminated): notification → tap → alert screen ✅
+   - Resolved notification: system notification with message ✅
+   - Test push: "FireGuard Test" notification ✅
+   - Opt-out user: no notification received ✅
+   - Custom alarm sound: fire_alarm plays on Android ✅
+
+4. INTEGRATION TESTING (Manual — Live Demo):
+   - Fire detection → notification: AI → Backend → FCM → Flutter ✅
+   - Event resolution → notification: Flutter → Backend → FCM → Flutter ✅
+   - User registration → auto-profile: register creates User + Profile + Prefs ✅
+   - FCM token registration: login triggers token registration ✅
+   - Failed token cleanup: invalid tokens marked inactive ✅
+
+5. LIVE DEMO SETUP:
+   - Camera: USB camera connected to laptop (WiFi camera as webcam)
+   - AI Service: python camera.py on laptop (webcam index 0)
+   - Backend: PythonAnywhere (production, remote)
+   - Mobile: Flutter app on Android device
+
+6. WHAT WAS NOT TESTED:
+   - ❌ No automated unit tests (Django tests.py files are empty)
+   - ❌ No automated integration tests
+   - ❌ No CI/CD pipeline
+   - ❌ No performance/load testing
+   - ❌ No cross-platform iOS testing
+   - ❌ No security/penetration testing
+
+TERMINOLOGY: FireEvent, Detection Event, Cooldown, Snapshot, AI Camera Node
+
+══════════════════════════════════════════════════════════
+CHAPTER 9 STRUCTURE — Generate ALL of the following sections:
+══════════════════════════════════════════════════════════
+
+CHAPTER OBJECTIVE:
+Document all testing activities, present results honestly, analyze system
+performance, and acknowledge testing limitations.
+
+9.1 CHAPTER INTRODUCTION (300–400 words)
+   - Testing methodology overview: primarily manual verification
+   - Honestly acknowledge: no automated test suites
+   - Chapter roadmap
+
+9.2 TESTING METHODOLOGY (400–500 words)
+   - Testing categories used: manual, live demo, API testing
+   - Tools used: DRF Browsable API, Postman/cURL, Django Admin, Android device
+   - Include Table: "Table 9.1: Testing Summary"
+     | Category | Status | Approach |
+
+9.3 AI MODEL TESTING AND RESULTS (800–1000 words)
+   - Model evaluation metrics (from training, use [X] placeholders if not available)
+   - Live detection test scenarios table:
+     | Scenario | Method | Expected | Result | Status |
+   - Include a Mermaid flowchart of the AI testing workflow
+   - Detection accuracy discussion
+   - Figure placeholders for: detection examples, confusion matrix, accuracy charts
+
+9.4 API ENDPOINT TESTING (1000–1200 words)
+   - Complete test case tables for all four endpoint groups:
+     | Test Case | Method | Endpoint | Expected Status | Result |
+   - Cover ALL tested endpoints from the actual testing data
+   - Validation testing: edge cases (offline camera, invalid confidence, etc.)
+
+9.5 NOTIFICATION TESTING (500–700 words)
+   - Notification test matrix table:
+     | Test | Trigger | Expected | Result |
+   - Platform-specific behavior (Android tested, iOS not tested)
+   - Custom sound verification
+
+9.6 INTEGRATION TESTING (600–800 words)
+   - End-to-end flow testing results
+   - Include a Mermaid flowchart of the integration test procedure:
+     Start camera.py → Point at fire → Verify detection → Check HTTP 201 →
+     Open Flutter app → Verify notification → Verify alert screen →
+     Tap Resolve → Verify status updated → Verify resolved notification
+   - Integration test scenarios table:
+     | Scenario | Components | Expected | Result |
+
+9.7 LIVE DEMONSTRATION (400–500 words)
+   - Demo setup description (hardware, software, network)
+   - Step-by-step demo procedure
+   - Demo results and observations
+
+9.8 RESULTS ANALYSIS AND DISCUSSION (500–700 words)
+   - Overall system performance assessment
+   - Strengths: real-time detection, end-to-end integration, reliable notifications
+   - Weaknesses: single camera, no automated tests, manual deployment
+   - Detection reliability discussion
+   - Notification latency observations
+
+9.9 TESTING LIMITATIONS (400–500 words)
+   - Honestly list ALL testing limitations:
+     * No automated unit/integration tests
+     * No CI/CD pipeline
+     * No performance/load testing
+     * No iOS testing
+     * No security testing
+     * Manual-only process
+   - Include Table: "Table 9.X: Testing Limitations"
+
+9.10 RECOMMENDATIONS FOR FUTURE TESTING (300–400 words)
+   - Django TestCase classes, DRF APIClient, Flutter widget tests
+   - CI/CD with GitHub Actions
+   - AI model benchmarking with test datasets
+   - Include Table: "Table 9.X: Future Testing Recommendations"
+   - Note: "These recommendations are not implemented in the current project version."
+
+═══════════════════════════════════════════════════════════
+FORMATTING REQUIREMENTS (MANDATORY):
+═══════════════════════════════════════════════════════════
+
+DOCUMENT FORMATTING: Times New Roman, 12pt body, 16pt chapter title,
+14pt sections, 13pt subsections. 1.5 spacing, justified, A4.
+Figures: "Figure 9.Y:", Tables: "Table 9.Y:"
+
+ACADEMIC STYLE: Formal third person, IEEE citations.
+Do NOT fabricate citations. Be HONEST about testing limitations.
+
+REFERENCES (minimum 6 references):
+- Software testing textbooks (Myers, Pressman)
+- Django testing documentation
+- Flutter testing documentation
+- Object detection evaluation metrics references
+- Format: [#] Author(s), "Title," Source, Month Year. DOI/URL.
+
+End with: ## References (IEEE style)
+
+TOKEN OPTIMIZATION: Target 8–10 Word pages.
+```
+
+</details>
 
 ---
 
-### 📊 Output Size Estimates
-
-| Prompt | Estimated Pages | Estimated Word Count | References |
-|:-------|:----------------|:---------------------|:-----------|
-| AI Team | 18–25 pages | 8,000–12,000 words | 15+ refs |
-| Backend Team | 15–22 pages | 6,500–9,000 words | 12+ refs |
-| Frontend/UI Team | 15–20 pages | 6,000–8,500 words | 12+ refs |
-| Database Team | 12–18 pages | 5,000–7,000 words | 10+ refs |
-| Deployment Team | 20–25 pages | 9,000–13,000 words | 15+ refs |
-| **Total** | **80–110 pages** | **34,500–49,500 words** | **64+ refs** |
+<br/>
 
 ---
 
-*Generated for the FireGuard Graduation Project — May 2026*
+# 10 — 🎓 Conclusion & Future Work Chapter
 
-</div>
+<details>
+<summary><b>Click to expand full prompt (Chapter 10: ~5–7 pages)</b></summary>
+
+```
+You are a senior academic engineering writer. You are writing the CONCLUSION AND
+FUTURE WORK CHAPTER (Chapter 10, the final chapter) for a graduation project book
+submitted to a university engineering faculty.
+
+═══════════════════════════════════════════════════════════
+PROJECT: FireGuard — AI-Powered Fire & Smoke Detection and Emergency Alert System
+═══════════════════════════════════════════════════════════
+
+PROJECT SUMMARY:
+FireGuard is a graduation project implementing an AI-powered fire and smoke
+detection system with real-time mobile notifications. It consists of:
+1. AI Camera Node: camera.py + YOLOv8 + OpenCV (local machine with webcam)
+2. Backend: Django 5.2 + DRF 3.17 + SQLite3 + Firebase Admin SDK (PythonAnywhere)
+3. Mobile App: Flutter 3.9 + Provider + Dio + FCM (Android)
+
+WHAT WAS ACHIEVED:
+✅ Real-time fire and smoke detection from a webcam using YOLOv8
+✅ Event storage with status lifecycle (active → resolved / false_alarm)
+✅ Push notifications via Firebase Cloud Messaging
+✅ Mobile app with real-time alert screen and event management
+✅ Camera and zone management (CRUD)
+✅ User authentication (token-based) and profile management
+✅ Notification preferences (per-user opt-in/opt-out)
+✅ Backend deployed on PythonAnywhere
+✅ Complete API with 20+ endpoints
+✅ Manual testing verified all components
+
+WHAT WAS NOT ACHIEVED / NOT IMPLEMENTED:
+❌ Multi-camera concurrent processing
+❌ Web-based admin dashboard
+❌ Video clip recording
+❌ CI/CD pipeline
+❌ Automated testing (unit, integration)
+❌ Role-based access control beyond admin/user
+❌ SMS/email alerts
+❌ Model retraining pipeline
+❌ PostgreSQL migration
+❌ iOS testing
+
+TEAM:
+- AI: Ali Khaled Abo Raya, Mohamed Abdelfatah Attalah, Mohamed Asaad
+- Backend: Abdelrahman Reda Abdellah
+- Mobile: Mohamed Hany El-Essawy, Saad Ezzat Saad
+- Database: Tarek Mostafa Kashef
+- Deployment: Mostafa Abdo El-Gohary
+
+TERMINOLOGY: FireEvent, AI Camera Node, Detection Event, Confidence Threshold,
+Active Event, Notification Payload, Edge Node, Inference Pipeline, Cooldown, Snapshot
+
+══════════════════════════════════════════════════════════
+CHAPTER 10 STRUCTURE — Generate ALL of the following sections:
+══════════════════════════════════════════════════════════
+
+CHAPTER OBJECTIVE:
+Summarize the entire project, evaluate achievements against objectives,
+discuss challenges faced, and propose concrete future improvements.
+
+10.1 PROJECT SUMMARY (600–800 words)
+   - Brief recap of the problem statement (fire detection limitations)
+   - Summary of the proposed solution (three-tier architecture)
+   - Summary of each component's implementation:
+     * AI: YOLOv8 custom-trained model, camera.py with OpenCV, cooldown mechanism
+     * Backend: Django REST API with 20+ endpoints, Firebase integration
+     * Mobile: Flutter app with Provider state management, alert system, FCM
+     * Database: SQLite3 schema with 8 entities, Django ORM
+     * Deployment: PythonAnywhere backend, local AI service
+   - System workflow recap: Camera → YOLO → API → DB → FCM → Flutter
+
+10.2 OBJECTIVES EVALUATION (500–700 words)
+   - Revisit each objective from Chapter 1
+   - Include Table: "Table 10.1: Objectives Achievement"
+     | # | Objective | Status | Evidence |
+   - For each objective: state whether achieved, partially achieved, or not achieved
+   - Provide specific evidence (which chapter, which component)
+
+10.3 CHALLENGES AND LESSONS LEARNED (600–800 words)
+   - Technical challenges encountered during development:
+     * AI: model training, dataset quality, confidence tuning
+     * Backend: Firebase integration, token management, API security
+     * Mobile: FCM notification handling across app states, state management
+     * Database: schema design, migration management
+     * Deployment: PythonAnywhere limitations, CORS configuration
+     * Integration: end-to-end communication, debugging across components
+   - Lessons learned from each challenge
+   - Team collaboration challenges and solutions
+
+10.4 LIMITATIONS (400–500 words)
+   - Honestly list all project limitations:
+     * Single camera support only
+     * SQLite3 not suitable for production scale
+     * No automated testing
+     * Manual deployment
+     * Android-only mobile testing
+     * AllowAny on event creation endpoint
+     * Hardcoded camera ID and API URL in camera.py
+     * No video recording (snapshots only)
+     * PythonAnywhere free tier constraints
+   - Group limitations by category (AI, Backend, Mobile, Deployment)
+
+10.5 FUTURE WORK (800–1000 words)
+   - Provide CONCRETE, REALISTIC future improvements organized by priority:
+   - Short-term (next iteration):
+     * Multi-camera support (parameterized camera.py)
+     * API key authentication for AI service
+     * Automated unit and integration tests
+     * CI/CD pipeline with GitHub Actions
+   - Medium-term:
+     * PostgreSQL migration for production scalability
+     * Web-based admin dashboard
+     * Video clip recording around detection events
+     * Role-based access control
+     * Model retraining pipeline with false alarm feedback
+     * SMS/email secondary notification channels
+   - Long-term:
+     * Multi-site deployment with geo-fencing
+     * GPU-accelerated edge inference
+     * Cloud deployment (AWS/GCP)
+     * Predictive analytics (fire risk scoring)
+     * Integration with building management systems
+   - Include Table: "Table 10.2: Future Work Roadmap"
+     | Priority | Feature | Description | Estimated Effort |
+
+10.6 FINAL REMARKS (200–300 words)
+   - Closing statement about the project's contribution
+   - Value as a graduation project prototype
+   - Potential real-world applicability
+   - Acknowledgment of team effort
+
+═══════════════════════════════════════════════════════════
+FORMATTING REQUIREMENTS (MANDATORY):
+═══════════════════════════════════════════════════════════
+
+DOCUMENT FORMATTING: Times New Roman, 12pt body, 16pt chapter title,
+14pt sections, 13pt subsections. 1.5 spacing, justified, A4.
+Figures: "Figure 10.Y:", Tables: "Table 10.Y:"
+
+ACADEMIC STYLE: Formal third person, IEEE citations.
+Do NOT fabricate citations.
+
+REFERENCES (minimum 4 references):
+- Software engineering references (project management, SDLC)
+- References to technologies used (for future work justification)
+- Format: [#] Author(s), "Title," Source, Month Year. DOI/URL.
+
+End with: ## References (IEEE style)
+
+TOKEN OPTIMIZATION: Target 5–7 Word pages.
+```
+
+</details>
+
+---
+
+<br/>
+
+---
+
+## ✅ Cross-Chapter Consistency Checklist
+
+Before submitting each prompt to Claude Sonnet 4.6, verify:
+
+| Check | Description |
+|:------|:-----------|
+| ☐ Architecture | All chapters describe the SAME three-tier architecture (Edge + Backend + Client) |
+| ☐ Technology Stack | Django 5.2, DRF 3.17, SQLite3, YOLOv8, Flutter 3.9, Provider, FCM — no additions |
+| ☐ Terminology | All chapters use the same terms from the glossary (FireEvent, AI Camera Node, etc.) |
+| ☐ No Hallucinations | No Docker, FastAPI, PostgreSQL, Redis, Kubernetes, CI/CD, microservices |
+| ☐ Team Mapping | Each chapter credits the correct team members |
+| ☐ Chapter Numbers | Sections use correct chapter prefix (e.g., Chapter 4 uses 4.1, 4.2, Figure 4.1) |
+| ☐ References | All citations are real, verifiable, IEEE-formatted |
+| ☐ Scope Honesty | Unimplemented features explicitly stated as "Not implemented in the current project version" |
+| ☐ Formatting | Times New Roman, 12pt body, 1.5 spacing, justified, A4 |
+| ☐ Transitions | Each chapter introduction references the previous chapter's conclusion |
+
+---
+
+## 📝 Post-Generation Workflow
+
+After generating all 10 chapters with Claude Sonnet 4.6:
+
+1. **Merge** all chapters into a single Word document
+2. **Verify** cross-chapter terminology consistency
+3. **Replace** all `[X]` placeholders with real data
+4. **Insert** real screenshots from the `screenshots/` directory
+5. **Render** all Mermaid diagrams as images and embed them
+6. **Verify** every IEEE reference is real (check DOIs, URLs, authors)
+7. **Add** front matter: title page, abstract, acknowledgments, table of contents
+8. **Add** back matter: appendices (if needed), full reference list
+9. **Format** the complete document with consistent Word styles
+10. **Review** with the full team before submission
+
+---
+
+*Generated from the official FireGuard repository documentation.*
+*Source of truth: README.md, docs/system_overview.md, docs/architecture.md, docs/ai_pipeline.md, docs/backend.md, docs/mobile_app.md, docs/database.md, docs/testing.md, docs/glossary.md*
