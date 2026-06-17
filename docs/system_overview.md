@@ -50,7 +50,7 @@ The system is composed of three independent components that communicate over HTT
 A standalone Python script (`camera.py`) that runs on a machine with access to a webcam or USB camera. It performs:
 
 - Frame capture via OpenCV (`cv2.VideoCapture`)
-- Object detection via YOLOv8 (Ultralytics `YOLO` class)
+- Object detection via YOLOv26 (Ultralytics `YOLO` class)
 - Cooldown-based alert throttling (10-second interval)
 - Snapshot generation (annotated JPEG frames)
 - HTTP POST requests to the Django backend
@@ -109,7 +109,7 @@ graph LR
 
 ## 6. Data Flow Summary
 
-1. **Detection** — The AI service captures frames, runs YOLOv8 inference, and reports detections to the backend.
+1. **Detection** — The AI service captures frames, runs YOLOv26 inference, and reports detections to the backend.
 2. **Storage** — The backend stores the event in SQLite3 with status `active`.
 3. **Notification** — The backend sends an FCM multicast message to all eligible devices.
 4. **Alert** — The mobile app receives the notification, plays an alarm sound, and displays the alert screen.
@@ -124,7 +124,7 @@ graph LR
 graph TB
     subgraph LOCAL["Local Machine"]
         CAM[USB/WiFi Camera]
-        AI[camera.py + YOLOv8]
+        AI[camera.py + YOLOv26]
     end
 
     subgraph CLOUD["PythonAnywhere"]
