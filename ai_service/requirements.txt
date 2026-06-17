@@ -5,7 +5,7 @@
 # Used by:  ai_service/camera.py
 # ─────────────────────────────────────────────────────────────
 
-ultralytics>=8.0.0,<9.0.0        # YOLOv8 model loading and inference
+ultralytics>=8.3.0,<9.0.0        # YOLOv8 model loading and inference
 opencv-python>=4.8.0,<5.0.0      # Webcam capture, image encoding, GUI display
 torch>=2.0.0,<3.0.0              # PyTorch backend (required by ultralytics)
 numpy>=1.24.0,<2.0.0             # Array operations (transitive, pinned for stability)
