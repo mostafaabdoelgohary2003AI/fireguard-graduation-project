@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-The AI detection pipeline is the entry point of the FireGuard system. It runs as a standalone Python script (`ai_service/camera.py`) on a local machine equipped with a webcam or USB camera. The script continuously captures video frames, performs YOLOv8 object detection for fire and smoke, and reports positive detections to the Django backend via HTTP POST requests.
+The AI detection pipeline is the entry point of the FireGuard system. It runs as a standalone Python script (`ai_service/camera.py`) on a local machine equipped with a webcam or USB camera. The script continuously captures video frames, performs YOLOv26 object detection for fire and smoke, and reports positive detections to the Django backend via HTTP POST requests.
 
 ---
 
@@ -10,7 +10,7 @@ The AI detection pipeline is the entry point of the FireGuard system. It runs as
 
 ```mermaid
 flowchart LR
-    A["🎥 Camera<br/>cv2.VideoCapture(0)"] -->|Raw frame| B["🧠 YOLOv8<br/>model(frame, conf=0.5)"]
+    A["🎥 Camera<br/>cv2.VideoCapture(0)"] -->|Raw frame| B["🧠 YOLOv26<br/>model(frame, conf=0.5)"]
     B -->|Detection results| C{"Fire / Smoke<br/>detected?"}
     C -->|No| A
     C -->|Yes| D{"Cooldown<br/>expired? (10s)"}
@@ -49,7 +49,7 @@ cap = cv2.VideoCapture(0)
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| `model` | `YOLO('best.pt')` | Custom-trained YOLOv8 model for fire/smoke detection |
+| `model` | `YOLO('best.pt')` | Custom-trained YOLOv26 model for fire/smoke detection |
 | `API_URL` | `https://bodareda0001.pythonanywhere.com/api/events/` | Production Django backend endpoint |
 | `COOLDOWN_SECONDS` | `10` | Minimum seconds between consecutive alerts |
 | `CAMERA_ID` | `1` | Hardcoded reference to the camera record in the backend database |
