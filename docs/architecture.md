@@ -10,7 +10,7 @@ graph TB
         direction LR
         CAM[🎥 Camera Hardware]
         CV[OpenCV<br/>Frame Capture]
-        YOLO[YOLOv8<br/>Inference Engine]
+        YOLO[YOLOv26<br/>Inference Engine]
         SNAP[Snapshot<br/>Generator]
     end
 
@@ -65,7 +65,7 @@ graph TB
 | Component | File | Responsibility |
 |-----------|------|---------------|
 | Camera Capture | `camera.py` | Opens webcam via `cv2.VideoCapture(0)`, reads frames in a loop |
-| YOLOv8 Inference | `camera.py` | Loads `best.pt`, runs `model(frame, conf=0.5, stream=True)` |
+| YOLOv26 Inference | `camera.py` | Loads `best.pt`, runs `model(frame, conf=0.5, stream=True)` |
 | Cooldown Controller | `camera.py` | Enforces 10-second minimum interval between alerts |
 | Snapshot Generator | `camera.py` | Saves annotated frames as `alert_YYYYMMDD_HHMMSS.jpg` |
 | Event Reporter | `camera.py` | Sends `POST /api/events/` with multipart form data (snapshot + metadata) |
