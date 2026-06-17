@@ -55,7 +55,7 @@ There is a need for an intelligent, vision-based detection system that can **ide
 
 **FireGuard** is a complete end-to-end system that addresses this gap by combining:
 
-1. **AI-powered detection** — A YOLOv8 deep learning model processes live webcam frames to detect fire and smoke with configurable confidence thresholds.
+1. **AI-powered detection** — A YOLOv26 deep learning model processes live webcam frames to detect fire and smoke with configurable confidence thresholds.
 2. **Backend event management** — A Django REST API receives detection events, stores them in an SQLite3 database, and triggers push notifications.
 3. **Instant mobile alerts** — A Flutter mobile application receives Firebase Cloud Messaging (FCM) notifications with full event details, enabling immediate response.
 
@@ -67,7 +67,7 @@ The system is designed as a **graduation project prototype** that demonstrates t
 
 | Category | Feature | Description |
 |----------|---------|-------------|
-| 🤖 **AI** | Real-time fire & smoke detection | YOLOv8 model (`best.pt`) processes webcam frames in real time |
+| 🤖 **AI** | Real-time fire & smoke detection | YOLOv26 model (`best.pt`) processes webcam frames in real time |
 | 🤖 **AI** | Confidence-based filtering | Only detections above 50% confidence are reported |
 | 🤖 **AI** | Cooldown mechanism | 10-second cooldown prevents duplicate alerts |
 | 🤖 **AI** | Snapshot generation | Annotated detection frames saved as JPEG images |
@@ -92,7 +92,7 @@ The system is designed as a **graduation project prototype** that demonstrates t
 
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
-| **AI Model** | YOLOv8 (Ultralytics) | ≥ 8.0 | Object detection for fire/smoke |
+| **AI Model** | YOLOv8 (Ultralytics) | ≥ 26.0 | Object detection for fire/smoke |
 | **AI Runtime** | PyTorch | ≥ 2.0 | Deep learning inference backend |
 | **Computer Vision** | OpenCV | ≥ 4.8 | Webcam capture, frame processing, GUI display |
 | **Backend Framework** | Django | 5.2 | Web application framework |
@@ -114,7 +114,7 @@ The system is designed as a **graduation project prototype** that demonstrates t
 graph TB
     subgraph AI["AI Service (Edge Node)"]
         CAM[🎥 WiFi Camera / Webcam]
-        YOLO[🧠 YOLOv8 Model - best.pt]
+        YOLO[🧠 YOLOv26 Model - best.pt]
         CV[📷 OpenCV Frame Capture]
     end
 
