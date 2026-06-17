@@ -25,7 +25,7 @@ This document describes the testing approaches used and available for the FireGu
 
 ### 3.1 Model Evaluation
 
-The YOLOv8 model (`best.pt`) was evaluated during the training process using standard object detection metrics:
+The YOLOv26 model (`best.pt`) was evaluated during the training process using standard object detection metrics:
 
 | Metric | Description | Evaluated During |
 |--------|-------------|-----------------|
@@ -34,7 +34,7 @@ The YOLOv8 model (`best.pt`) was evaluated during the training process using sta
 | mAP@0.5 | Mean Average Precision at IoU threshold 0.5 | Model training |
 | mAP@0.5:0.95 | Mean Average Precision across IoU thresholds 0.5–0.95 | Model training |
 
-> **Note:** Specific metric values from the training run are not stored in the repository. The model was trained using the Ultralytics YOLOv8 framework, which outputs these metrics during training. See the Ultralytics documentation for the training pipeline details.
+> **Note:** Specific metric values from the training run are not stored in the repository. The model was trained using the Ultralytics YOLOv26 framework, which outputs these metrics during training. See the Ultralytics documentation for the training pipeline details.
 
 ### 3.2 Live Detection Testing
 
