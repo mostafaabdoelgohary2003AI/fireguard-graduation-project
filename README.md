@@ -92,7 +92,7 @@ The system is designed as a **graduation project prototype** that demonstrates t
 
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
-| **AI Model** | YOLOv8 (Ultralytics) | ≥ 26.0 | Object detection for fire/smoke |
+| **AI Model** | YOLOv26 (Ultralytics) | ≥ 26.0 | Object detection for fire/smoke |
 | **AI Runtime** | PyTorch | ≥ 2.0 | Deep learning inference backend |
 | **Computer Vision** | OpenCV | ≥ 4.8 | Webcam capture, frame processing, GUI display |
 | **Backend Framework** | Django | 5.2 | Web application framework |
@@ -157,7 +157,7 @@ The end-to-end detection and alerting workflow operates as follows:
 ```mermaid
 sequenceDiagram
     participant CAM as WiFi Camera
-    participant AI as camera.py (YOLOv8)
+    participant AI as camera.py (YOLOv26)
     participant API as Django REST API
     participant DB as SQLite3
     participant FCM as Firebase Cloud Messaging
@@ -165,7 +165,7 @@ sequenceDiagram
 
     CAM->>AI: Video stream (OpenCV capture)
     loop Every frame
-        AI->>AI: YOLOv8 inference (conf ≥ 0.5)
+        AI->>AI: YOLOv26 inference (conf ≥ 0.5)
         alt Fire or Smoke detected
             AI->>AI: Check cooldown (10s)
             alt Cooldown expired
@@ -190,7 +190,7 @@ sequenceDiagram
 ### Workflow Steps
 
 1. **Frame Capture** — `camera.py` opens the webcam via OpenCV (`cv2.VideoCapture(0)`) and reads frames in a continuous loop.
-2. **AI Inference** — Each frame is passed to the YOLOv8 model (`best.pt`) with a confidence threshold of `0.5` (50%).
+2. **AI Inference** — Each frame is passed to the YOLOv26 model (`best.pt`) with a confidence threshold of `0.5` (50%).
 3. **Cooldown Check** — If a detection occurs, the system checks if at least 10 seconds have passed since the last alert to prevent flooding.
 4. **Snapshot Generation** — The annotated frame (with bounding boxes) is saved as a timestamped JPEG file.
 5. **Event Reporting** — A `POST` request is sent to the Django backend with the camera ID, event type (fire/smoke), AI confidence score, and snapshot image.
@@ -217,7 +217,7 @@ flowchart LR
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| Model file | `best.pt` | Custom-trained YOLOv8 weights |
+| Model file | `best.pt` | Custom-trained YOLOv26 weights |
 | Confidence threshold | `0.5` (50%) | Minimum detection confidence |
 | Cooldown period | `10` seconds | Minimum interval between alerts |
 | Camera source | `cv2.VideoCapture(0)` | Default system webcam |
@@ -268,8 +268,8 @@ The notification payload includes:
 ```
 Fire Detection/
 ├── ai_service/                    # AI detection service
-│   ├── camera.py                  # Main detection script (OpenCV + YOLOv8)
-│   ├── best.pt                    # Trained YOLOv8 model weights
+│   ├── camera.py                  # Main detection script (OpenCV + YOLOv26)
+│   ├── best.pt                    # Trained YOLOv26 model weights
 │   └── requirements.txt           # Python dependencies
 │
 ├── backend/                       # Django REST API server
