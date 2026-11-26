@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo.png" width="128" alt="fireguard-graduation-project logo"></p>
+
 <div align="center">
 
 # 🔥 FireGuard
